@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { formatDate } from '../../utils/formateDate'
 
 const BarberAbout = ({name, about, achievements, experience}) => {
@@ -7,13 +8,11 @@ const BarberAbout = ({name, about, achievements, experience}) => {
               <h3 className='text-[20px] leading-[30px] text-headingColor font-semibold
               flex items-center gap-2'>About of
                   <span className='text-irisBlueColor font-bold text-[20px] leading-9'>
-                      Sadiqq Ahmed
+                      {name}
                   </span>
               </h3>
               <p className="text__para">
-                  Lorem ipsum, dolor sit amet consectetur adipisicing elit. Pariatur
-                  blanditiis repellendus distinctio aspernatur, minima iure dolorem nostrum ut
-                  maxime, dolor at eius. Dolorum rem quaerat labore esse quasi? Nobis, alias.
+                  {about}
               </p>
           </div>
 
@@ -25,35 +24,25 @@ const BarberAbout = ({name, about, achievements, experience}) => {
 
                {/* ====== MAIN ====== */}
               <ul className='pt-4 md:p-5'>
-                 {/* ======1ST====== */}
-                  <li className='flex flex-col sm:flex-row sm:justify-between sm:items-end md:gap-5 mb-[30px]'>
-                      <div>
-                          <span className='text-irisBlueColor text-[15px] leading-6 font-semibold'>
-                              {formatDate('03-04-2010')} - {formatDate('04-04-2010')}
-                          </span>
-                          {/* <p className='text-[16px] leading-6 font-medium text-textColor'>
-                          Type Of Achievement
-                          </p> */}
-                      </div>
-                      <p className='text-[14px] leading-5 font-medium text-textColor'>
-                      Type Of Achievement
-                          </p>
-                  </li>
 
-                  {/* =====2ND======== */}
-                  <li className='flex flex-col sm:flex-row sm:justify-between sm:items-end md:gap-5 mb-[30px]'>
+                {achievements?.map((item,index)=>   <li key={index} className='flex flex-col sm:flex-row sm:justify-between sm:items-end md:gap-5 mb-[30px]'>
                       <div>
                           <span className='text-irisBlueColor text-[15px] leading-6 font-semibold'>
-                              {formatDate('12-04-2010')} - {formatDate('12-04-2010')}
+                              {formatDate(item.startingDate)} - {formatDate(item.endingDate)}
                           </span>
                           {/* <p className='text-[16px] leading-6 font-medium text-textColor'>
                           Type Of Achievement
                           </p> */}
                       </div>
                       <p className='text-[14px] leading-5 font-medium text-textColor'>
-                      Type Of Achievement
+                      {item.achievement}
                           </p>
                   </li>
+)}
+                 {/* ======1ST====== */}
+               
+                  {/* =====2ND======== */}
+                  
               </ul>
           </div>
 
@@ -64,31 +53,23 @@ const BarberAbout = ({name, about, achievements, experience}) => {
                   Experience
               </h3>
               <ul className='grid sm:grid-cols-2 gap-[30px] pt-4 md:p-5'>
-                    {/* ===== 1st ======== */}
-                  <li className='p-4 rounded bg-[#fff9ea]'>
+
+                {experience?.map((item,index)=>         <li key={index} className='p-4 rounded bg-[#fff9ea]'>
                       <span className='text-yellowColor text-[15px] leading-6 font-semibold'>
-                        {formatDate('12-04-2010')} - {formatDate('12-04-2010')}
+                        {formatDate(item.startingDate)} - {formatDate(item.endingDate)}
                       </span>
                       <p className='text-[16px] leading-6 font-medium text-textColor'>
-                              Grooming
+                              {item.experience}
                       </p>
                       <p className='text-[14px] leading-5 font-medium text-textColor'>
-                              Place of Education
+                              {item.experience}
                         </p>
-                  </li>
+                  </li>)}
+                    {/* ===== 1st ======== */}
+          
 
                     {/* ===== 2nd ======== */}
-                  <li className='p-4 rounded bg-[#fff9ea]'>
-                      <span className='text-yellowColor text-[15px] leading-6 font-semibold'>
-                        {formatDate('12-04-2010')} - {formatDate('12-04-2010')}
-                      </span>
-                      <p className='text-[16px] leading-6 font-medium text-textColor'>
-                              Grooming
-                      </p>
-                      <p className='text-[14px] leading-5 font-medium text-textColor'>
-                              Place of Education
-                        </p>
-                  </li>
+                 
               </ul>
           </div>
     </div>

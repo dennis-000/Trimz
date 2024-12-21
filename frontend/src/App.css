@@ -65,7 +65,7 @@
             /* Positioning at the top */
             left: 0;
             /* Aligning to the left */
-            z-index: 99999;
+            z-index: 9999;
             /* High z-index to ensure the header stays on top of other elements */
             box-shadow: 3px 3px -8px 3px #ddd;
             /* Adds a shadow for depth */
@@ -86,41 +86,41 @@
                 /* Aligning to the top */
                 left: 0;
                 /* Aligning to the left */
-                z-index: 100;
+                z-index: 1000;
                 /* Ensures it sits above most elements */
                 background: #00000084;
                 /* A semi-transparent black background */
                 display: none;
                 /* Initially hidden; it will be shown when the menu is toggled */
+                background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+                width: 100%;
+                height: 100vh;
+
             }
             /* Styling for the menu list in mobile view */
             .menu {
-                width: 15rem;
-                /* Fixed width of the menu (15rem units) */
-                height: 100%;
-                /* Full screen height */
-                position: absolute;
-                /* Positioned relative to the navigation */
-                top: 0;
-                /* Aligning to the top */
-                right: 0;
-                /* Aligning to the right */
-                background: #fff;
-                /* White background for the menu */
-                z-index: 200;
-                /* Higher z-index to ensure it's above the navigation background */
-                flex-direction: column;
-                /* Stacking the menu items vertically */
-                justify-content: center;
-                /* Centering menu items vertically */
-                align-items: center;
-                /* Centering menu items horizontally */
-                line-height: 30px;
-                /* Space between menu items */
+                width: 15rem; /* Fixed width of the menu */
+                position: absolute; /* Positioned relative to the navigation */
+                /* top: 9px;  */
+                right: 0; /* Aligning to the right */
+                background:rgb(255, 255, 255); /* Yellow background for the menu */
+                z-index: 1100; /* Ensures it's above other elements */
+                display: flex; /* Enables flexbox layout */
+                flex-direction: column; /* Stacks the menu items vertically */
+                justify-content: center; /* Centers menu items vertically */
+                align-items: center; /* Centers menu items horizontally */
+                line-height: 30px; /* Space between menu items */
+                height: 100vh;
+                /* backdrop-filter: blur(3px); */
             }
+            
             /* Class to show the menu when toggled (in mobile view) */
             .show__menu {
-                display: block;
-                /* Changes the display from 'none' to 'block' */
+                display: flex;
+                z-index: 9999;
+                /* backdrop-filter: blur(0px); */
+            }
+            .navigation.show__menu{
+                /* backdrop-filter: blur(3px) */
             }
         }
