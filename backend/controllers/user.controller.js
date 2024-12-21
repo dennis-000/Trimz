@@ -6,6 +6,7 @@ import fs from 'fs'
 import cloudinary from '../config/cloudinary.config.js';
 import upload from '../config/upload.config.js';
 import path from "path"
+import { deleteFile } from '../config/functions.js';
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -99,7 +100,7 @@ export const createNewUser = async (req, res) => {
         const newCreatedUser = await newUser.save()
 
         if (req.file) {
-            fs.unlinkSync(req.file.path);
+            await deleteFile(req.file.path)
         }
         console.log(req.user);
 
@@ -180,7 +181,7 @@ export const updateUser = async (req, res) => {
             url: result.secure_url,
             public_id: result.public_id,
         };
-        fs.unlinkSync(req.file.path);
+        await deleteFile(req.file.path)
     }
 
     let hash = user.password
