@@ -5,6 +5,7 @@ import { createAuditLog } from './audit.controller.js';
 import fs from 'fs'
 import cloudinary from '../config/cloudinary.config.js';
 import upload from '../config/upload.config.js';
+import { deleteFile } from '../config/functions.js';
 
 // const deleteFile = async (filePath) => {
 //     try {
@@ -73,7 +74,7 @@ export const addGalleryImages = async (req, res) => {
             uploadedImages.push({ url: result.secure_url, public_id: result.public_id });
 
             // Remove the file from the local server
-            fs.unlinkSync(file.path);
+            await deleteFile(file.path)
         }
 
         // Update the user's gallery

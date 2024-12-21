@@ -18,6 +18,8 @@ import cloudinary from "./config/cloudinary.config.js"
 import galleryRouter from "./routes/gallery.routes.js"
 import { updateAverageRating } from "./controllers/rating.controller.js"
 import ratingRouter from "./routes/rating.routes.js"
+import passport from "passport"
+import "./config/passport.config.js"
 
 dotenv.config()
 
@@ -34,6 +36,7 @@ app.use('*', cors(corsOptions))
 
 app.use(express.json()) //allows us to accept json data in the req.body
 app.use(cookieParser());
+app.use(passport.initialize())
 
 app.use("/api/users", userRouter)
 app.use("/api/services", serviceRouter)
