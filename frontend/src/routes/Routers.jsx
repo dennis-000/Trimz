@@ -7,7 +7,7 @@ import Contact from '../pages/Contact'
 import Barbers from '../pages/Barbers/Barbers'
 import BarbersDetails from '../pages/Barbers/BarbersDetails'
 import Aboutus from '../pages/Aboutus'
-import Dashboard from '../Dashboard/Barber-account/Dashboard'
+import Dashboard from '../Dashboard/barber-account/Dashboard'
 import {Routes, Route} from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
 import MyAccount from '../Dashboard/user-account/MyAccount'
@@ -35,9 +35,9 @@ const Routers = () => {
     />
 
     <Route 
-    path="/barber/profile/me" 
+    path="/barbers/profile/me" 
     element={
-      <ProtectedRoute allowedRoles={['barber']}>
+      <ProtectedRoute allowedRoles={['provider']}>
         <Dashboard />
       </ProtectedRoute>
     } 

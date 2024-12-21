@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
   totalRating: { type: Number, default: 0 }, // Total rating for provider
   verified: {
     type: Boolean,
-    default: false, // Indicates if the provider is verified
+    default: true, // Indicates if the provider is verified
   },
   // For both customers and providers
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }], // Appointments for both customers and providers

@@ -323,7 +323,7 @@ const BookingSystem = () => {
             <span className="font-semibold">{calculateTotalDuration()} min</span>
           </div>
 
-          {/* ===== Display Total Prices of Serevices ======= */}
+          {/* ===== Display Total Prices of services ======= */}
           <div className="flex justify-between pt-3 border-t">
             <span className="text-gray-600">Total Price:</span>
             <span className="font-bold text-lg">{formatPrice(calculateTotalPrice())}</span>

@@ -1,6 +1,6 @@
 import { formatDate } from '../../utils/formateDate'
 
-const BarberAbout = () => {
+const BarberAbout = ({name, about, achievements, experience}) => {
   return (
       <div>
           <div>
@@ -20,7 +20,7 @@ const BarberAbout = () => {
             {/* ====== ABOUT SPECIFIC (EDUCATION) ====== */}
           <div className='mt-12'>
               <h3 className='text-[20px] leading-[30px] text-headingColor font-semibold'>
-                  Education
+              Achievements
               </h3>
 
                {/* ====== MAIN ====== */}
@@ -31,12 +31,12 @@ const BarberAbout = () => {
                           <span className='text-irisBlueColor text-[15px] leading-6 font-semibold'>
                               {formatDate('03-04-2010')} - {formatDate('04-04-2010')}
                           </span>
-                          <p className='text-[16px] leading-6 font-medium text-textColor'>
-                              Place program or something here
-                          </p>
+                          {/* <p className='text-[16px] leading-6 font-medium text-textColor'>
+                          Type Of Achievement
+                          </p> */}
                       </div>
                       <p className='text-[14px] leading-5 font-medium text-textColor'>
-                              Place of Education
+                      Type Of Achievement
                           </p>
                   </li>
 
@@ -46,12 +46,12 @@ const BarberAbout = () => {
                           <span className='text-irisBlueColor text-[15px] leading-6 font-semibold'>
                               {formatDate('12-04-2010')} - {formatDate('12-04-2010')}
                           </span>
-                          <p className='text-[16px] leading-6 font-medium text-textColor'>
-                              Place program or something here
-                          </p>
+                          {/* <p className='text-[16px] leading-6 font-medium text-textColor'>
+                          Type Of Achievement
+                          </p> */}
                       </div>
                       <p className='text-[14px] leading-5 font-medium text-textColor'>
-                              Place of Education
+                      Type Of Achievement
                           </p>
                   </li>
               </ul>
