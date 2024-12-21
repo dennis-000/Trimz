@@ -60,8 +60,11 @@ const Header = () => {
   
 
   // Function to toggle the visibility of the menu (for mobile view)
-  const toggleMenu = () => menuRef.current.classList.toggle('show__menu')
-  console.log(user);
+  const toggleMenu = () => {
+    menuRef.current.classList.toggle('show__menu');
+    console.log(menuRef.current.classList); // Debugging to see the class list
+  };
+  
 
   return (
     <header className="header flex items-center" ref={headerRef}>  {/* Header with a reference */}
