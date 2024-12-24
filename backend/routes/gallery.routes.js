@@ -9,6 +9,6 @@ const galleryRouter = Router()
 // Add images to gallery
 galleryRouter.post("/:id", requireAuth, upload.array("galleryImages", 10), addGalleryImages);
 // Remove image from gallery
-galleryRouter.delete("/:id/gallery", requireAuth, deleteGalleryImage);
+galleryRouter.delete("/:id", requireAuth, deleteGalleryImage);
 
 export default galleryRouter
