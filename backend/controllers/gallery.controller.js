@@ -7,41 +7,6 @@ import cloudinary from '../config/cloudinary.config.js';
 import upload from '../config/upload.config.js';
 import { deleteFile } from '../config/functions.js';
 
-// const deleteFile = async (filePath) => {
-//     try {
-//         if (!filePath) return;
-        
-//         // Check if the file exists
-//         await fs.access(filePath); // Will throw an error if the file does not exist
-//         await fs.unlink(filePath);
-//         console.log(`File deleted successfully: ${filePath}`);
-//     } catch (error) {
-//         if (error.code === 'ENOENT') {
-//             console.warn(`File not found, skipping deletion: ${filePath}`);
-//         } else {
-//             console.error(`Error deleting file: ${filePath}`, error.message);
-//         }
-//     }
-// };
-
-// export const addGalleryPhotos = async (files) => {
-//     const gallery = [];
-
-//     for (const file of files) {
-//         // Upload each file to Cloudinary
-//         const result = await cloudinary.uploader.upload(file.path, {
-//             folder: 'ecutz/gallery',
-//         });
-
-//         // Add the uploaded file's URL and public ID to the gallery
-//         gallery.push({
-//             url: result.secure_url,
-//             public_id: result.public_id,
-//         });
-//     }
-
-//     return gallery;
-// };
 
 // export const removeGalleryPhotos = async (publicIds) => {
 //     for (const publicId of publicIds) {
@@ -94,29 +59,43 @@ export const addGalleryImages = async (req, res) => {
 
 export const deleteGalleryImage = async (req, res) => {
     const { id } = req.params;
-    const { imageId } = req.query;
+    const { imageIds } = req.body;
     try {
+        if (!Array.isArray(imageIds) || imageIds.length === 0) {
+            return res.status(400).json({ success: false, message: "No image IDs provided" });
+        }
+
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        // Find the photo to remove
-        const imageIndex = user.gallery.findIndex(image => image.public_id === imageId);
-        if (imageIndex === -1) {
-            return res.status(404).json({ success: false, message: "image not found" });
+       // Filter out images that are not in the gallery
+       const validImages = imageIds.filter(imageId => 
+        user.gallery.some(image => image.public_id === imageId)
+        );
+
+        if (validImages.length === 0) {
+            return res.status(404).json({ success: false, message: "No valid images found for deletion" });
         }
 
-        // Remove the image from Cloudinary
-        await cloudinary.uploader.destroy(imageId);
+        // Remove images from Cloudinary
+        for (const imageId of validImages) {
+            await cloudinary.uploader.destroy(imageId);
+        }
 
-        // Remove the image from the user's gallery
-        user.gallery.splice(imageIndex, 1);
+        // Remove the images from the user's gallery
+        user.gallery = user.gallery.filter(image => !validImages.includes(image.public_id));
         await user.save();
 
-        await createAuditLog(req.user ? req.user.id : "system", id, "User", "delete", `Image Removed from Gallery`);
+        await createAuditLog(req.user ? req.user.id : "system", id, "User", "delete", `Multiple images removed from gallery`);
 
-        res.status(200).json({ success: true, message: "Image removed from gallery", data: user.gallery });
+        res.status(200).json({ 
+            success: true, 
+            message: `${validImages.length} image(s) removed from gallery`, 
+            data: user.gallery
+        });
+
     } catch (error) {
         console.error("Error removing image from gallery:", error.message);
         return res.status(500).json({ success: false, message: `Server error: ${error.message}` });

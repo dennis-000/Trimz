@@ -32,6 +32,30 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false, // Indicates if the provider is verified
   },
+  achievements: [
+    {
+      title: { type: String, required: true }, // e.g., "Top Barber 2023"
+      description: { type: String },          // Optional details
+      date: { type: Date },                   // When it was earned
+      // proof: { url: String, public_id: String } // Optional image or certificate
+    }
+  ],
+  workingHours: [
+    {
+      day: {
+        type: String,
+        enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        required: true,
+      },
+      timeSlots: [
+        {
+          start: { type: String, required: true }, // Example: "09:00 AM"
+          end: { type: String, required: true },   // Example: "05:00 PM"
+        },
+      ],
+    },
+  ],
+  available: { type: Boolean, default: false }, // New field to store availability status
   // For both customers and providers
   appointments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Appointment" }], // Appointments for both customers and providers
   status: {
