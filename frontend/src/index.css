@@ -75,7 +75,7 @@
         
         @media only screen and (max-width: 768px) {
             .header {
-                @apply h-[60px] leading-[60px] z-[99];
+                @apply h-[60px] leading-[60px] z-[2000];
             }
             .heading {
                 @apply text-[26px] leading-[36px];

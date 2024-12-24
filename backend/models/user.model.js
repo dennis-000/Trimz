@@ -1,27 +1,24 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String },
-  role: {
-    type: String,
-    enum: ["customer", "provider", "admin", "superadmin"], // Added "superadmin"
-    default: "customer",
-  },
-  gender: { type: String, },
-  googleId: { type: String },
-  phone: { type: String },
-  profilePicture: {
-    url: { type: String },
-    public_id: { type: String }
-  },
-  gallery: [
-    {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: {
+        type: String,
+        enum: ["customer", "provider", "admin", "superadmin"], // Added "superadmin"
+        default: "customer",
+    },
+    gender: { type: String, },
+    phone: { type: String },
+    profilePicture: {
+        url: { type: String },
+        public_id: { type: String }
+    },
+    gallery: [{
         url: { type: String },
         public_id: { type: String },
-    },
-  ],
+    }, ],
   // Only for providers
   servicesOffered: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }], // Reference to Service model
   bio: { type: String }, // Provider's bio

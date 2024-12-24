@@ -1,10 +1,14 @@
-import { useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { BASE_URL, token } from '../../config';
+import { toast } from 'react-toastify';
 
-const Profile = () => {
+const Profile = ({barberData}) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    password: '',
     phone: '',
     bio: '',
     gender: '',
@@ -16,27 +20,75 @@ const Profile = () => {
     profilePicture: null,
   });
 
+
+  useEffect(() => {
+    setFormData({
+      name:barberData?.name,
+      email:barberData?.email,
+      phone:barberData?.phone,
+      bio:barberData?.bio,
+      gender:barberData?.gender,
+      specialization:barberData?.specialization,
+      experience:barberData?.experience,
+      achievements:barberData?.achievements,
+      timeSlots:barberData?.timeSlots,
+      about:barberData?.about,
+      profilePicture:barberData?.profilePicture
+
+    });
+  },[barberData]);
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const updateProfileHandler = async (e) => {
+    e.preventDefault();
+    
+    try {
+      // Create a FormData object to handle file upload
+      const updateData = new FormData();
+      
+      // Append all text fields to FormData
+      Object.keys(formData).forEach(key => {
+        if (key !== 'profilePicture') {
+          updateData.append(key, formData[key]);
+        }
+      });
+      
+      // Append the profile picture file if it exists
+      if (formData.profilePicture instanceof File) {
+        updateData.append('profilePicture', formData.profilePicture);
+      }
+  
+      const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
+        method: 'PATCH',
+        headers: {
+          // Remove 'content-type' header to let browser set multipart/form-data
+          Authorization: `Bearer ${token}`
+        },
+        body: updateData
+      });
+      
+  
+      const result = await res.json();
+  
+      if (!res.ok) {
+        throw Error(result.message);
+      }
+  
+      toast.success(result.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+  
+  // Modify handleFileInputChange to store the File object
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData({ ...formData, profilePicture: reader.result });
-      };
-      reader.readAsDataURL(file);
+      setFormData({ ...formData, profilePicture: file });
     }
   };
-// update profile
-  const updateProfileHandler = async (e) => {
-    e.preventDefault();
-    // Implement profile update logic here
-    console.log(formData);
-  };
-
 
   // Reusable function for adding items
   const addItem = (key, item) => {
@@ -136,15 +188,13 @@ const Profile = () => {
             </div>
             <div className="mb-5">
                 <p className="form__label">Email*</p>
-                <input type="email"
-                name='email' 
-                value={formData.email} 
-                onChange={handleInputChange} 
-                placeholder="Email" 
-                className="form__input mt-1 focus:outline-none focus:border-primaryColor"
-                readOnly
-                aria-readonly
-                disabled="true"
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  placeholder="Email"
+                  className="form__input mt-1 focus:outline-none focus:border-primaryColor"
+                  disabled
                 />
             </div>
             <div className="mb-5">
