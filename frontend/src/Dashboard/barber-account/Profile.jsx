@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL, token } from '../../config';
 import { toast } from 'react-toastify';
+import ServiceManagement from './ServiceManagement';
 
 const Profile = ({barberData}) => {
   const [formData, setFormData] = useState({
@@ -22,21 +23,23 @@ const Profile = ({barberData}) => {
 
 
   useEffect(() => {
-    setFormData({
-      name:barberData?.name,
-      email:barberData?.email,
-      phone:barberData?.phone,
-      bio:barberData?.bio,
-      gender:barberData?.gender,
-      specialization:barberData?.specialization,
-      experience:barberData?.experience,
-      achievements:barberData?.achievements,
-      timeSlots:barberData?.timeSlots,
-      about:barberData?.about,
-      profilePicture:barberData?.profilePicture
-
-    });
-  },[barberData]);
+    if (barberData) {
+      setFormData({
+        name: barberData.name || '',
+        email: barberData.email || '',
+        phone: barberData.phone || '',
+        bio: barberData.bio || '',
+        gender: barberData.gender || '',
+        specialization: barberData.specialization || '',
+        experience: barberData.experience || [],
+        achievements: barberData.achievements || [],
+        timeSlots: barberData.timeSlots || [],
+        about: barberData.about || '',
+        profilePicture: barberData.profilePicture || null,
+      });
+    }
+  }, [barberData]);
+  
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -86,17 +89,20 @@ const Profile = ({barberData}) => {
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      const validImageTypes = ['image/jpeg', 'image/png'];
+      if (!validImageTypes.includes(file.type)) {
+        toast.error('Invalid file type. Please upload a JPEG or PNG image.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('File size exceeds 5MB.');
+        return;
+      }
       setFormData({ ...formData, profilePicture: file });
     }
   };
+  
 
-  // Reusable function for adding items
-  const addItem = (key, item) => {
-    setFormData(prevFormData => ({
-      ...prevFormData,
-      [key]: [...prevFormData[key], item]
-    }));
-  };
 
 
   // Reusable function for handling input changes
@@ -124,16 +130,21 @@ const Profile = ({barberData}) => {
   };
 
 
-  // reusable function for removing items
-  const removeItem = (key, index) => {
-    setFormData(prevFormData => {
-      const updatedItems = prevFormData[key].filter((_, i) => i !== index);
-      return {
-        ...prevFormData,
-        [key]: updatedItems
-      };
-    });
+  // reusable function for removing and adding items
+  const addItem = (key, newItem) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [key]: [...(prevFormData[key] || []), newItem],
+    }));
   };
+  
+  const removeItem = (key, index) => {
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [key]: prevFormData[key]?.filter((_, i) => i !== index) || [],
+    }));
+  };
+  
 
   // reusable function for adding more experience
   const addExperience = (e) => {
@@ -154,7 +165,7 @@ const Profile = ({barberData}) => {
       startingTime: '10:00',
       endingTime: '5:00',
     });
-  };
+  };  
 
   // reusable function that updates the 'achievements' field in the form data when a change event occurs
   const handleAchievementsChange = (event, index) => {
@@ -228,7 +239,9 @@ const Profile = ({barberData}) => {
                   <select name="gender" 
                   value={formData.gender} 
                   onChange={handleInputChange}
-                  className="form__input py-3.5">
+                  className="form__input py-3.5"
+                  aria-label="Select Gender"
+                  >
                     <option value="">Select</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
@@ -252,6 +265,9 @@ const Profile = ({barberData}) => {
                   <p>Ticket Price</p>
                 </div> */}
               </div>
+            </div>
+            <div>
+              <ServiceManagement/>
             </div>
 
         {/* Achievements Section */}
@@ -454,11 +470,11 @@ const Profile = ({barberData}) => {
             <div className="mb-5 flex items-center gap-3">
             {formData.profilePicture && (
                   <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid
-                    border-primaryColor flex items-center justify-center'>
+                    border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
                     <img 
                       src={formData.profilePicture} 
-                      alt="" 
-                      className='w-full rounded-full'
+                      alt='profile'
+                      className='w-full object-cover'
                     />
                   </figure>
                 )}

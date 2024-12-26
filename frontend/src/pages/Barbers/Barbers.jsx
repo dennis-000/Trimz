@@ -1,7 +1,40 @@
 import BarberCard from "./../../components/Barbers/BarberCard";
-import { barbers } from "./../../assets/data/barbers";
+// import { barbers } from "./../../assets/data/barbers";
 import Testimonial from "../../components/Testimonial/Testimonial";
+
+import {BASE_URL} from './../../config';
+import useFetchData from './../../hooks/useFetchData'
+import Loader from '../../components/Loading/Loading.jsx'
+import Error from '../../components/Error/Error';
+import { useState, useEffect } from 'react';
+
+
 const Barbers = () => {
+  const [query, setQuery] = useState('');
+
+  useEffect(()=>{
+    const timeout = setTimeout(()=>{
+      setDebounceQuery (query)
+    },700)
+    return () => clearTimeout(timeout)
+
+  },[query])
+
+  const [debounceQuery, setDebounceQuery] = useState('');
+
+  const handleSearch = () => {
+    setQuery(query.trim())
+
+    console.log('Handle Search:', query);
+
+  }
+
+
+  const {
+    data:providers, loading, error
+  } = useFetchData(`${BASE_URL}users/providers?query=${debounceQuery}`);
+  console.log('Providers data:', providers);
+
   return (
     <>
       <section className="bg-[#fff9ea]">
@@ -14,10 +47,12 @@ const Barbers = () => {
             <input type="search"
               className="py-4 pl-4 pr-2 bg-transparent w-full focus:outline-none cursor-pointer
             placeholder:text-textColor"
-              placeholder="Search Barber/Stylists"
+              placeholder="Search Barber/Stylists by name or specialization"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
               {/* ===== Button ======= */}
-            <button className="btn mt-0 rounded-[0px] rounded-r-md">
+            <button className="btn mt-0 rounded-[0px] rounded-r-md" onClick={handleSearch}>
               Search
             </button>
           </div>
@@ -26,14 +61,16 @@ const Barbers = () => {
 
       <section>
         <div className="container">
-          <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'> {/* Grid container for the barber cards */}
-      
+          
+          {loading && <Loader/>}
+          {error && <Error/>}
+          {!loading && !error &&
+            <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'> {/* Grid container for the barber cards */}
             {/* Mapping through the barbers array and rendering a BarberCard for each barber */}
-            {barbers.map((barber) =>
-              <BarberCard key={barber.id} barber={barber} />// Each card needs a unique key
+            {providers.map((provider) =>
+              <BarberCard key={provider.id} barber={provider} />// Each card needs a unique key
             )}
-
-          </div>
+          </div>}
         </div>
       </section>
 

@@ -73,7 +73,9 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo section */}
           <div>
+            <Link to="/home" className="flex items-center gap-2">  
             <img src={logo} alt="Ecutz Logo" style={{ width: '70px', height: '70px' }} />  {/* Logo image with fixed width/height */}
+            </Link>
           </div>
 
           {/* Navigation menu section */}
@@ -121,7 +123,7 @@ const Header = () => {
 ) : (
     <Link to="/login">
         <button className="bg-primaryColor py-6 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
-            Login
+            Login / Register
         </button>
     </Link>
 )}
