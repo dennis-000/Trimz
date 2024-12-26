@@ -59,7 +59,7 @@ export const getSingleUserById = async (req, res) => {
 
 export const createNewUser = async (req, res) => {
     try {
-        let { name, email, password, role, phone, location, verified, status, profilePicture, gender } = req.body
+        let { name, email, password, role, phone, location, verified, status, profilePicture, gender, available } = req.body
         console.log(profilePicture);
 
         const existingUser = await User.findOne({ email })
@@ -95,6 +95,7 @@ export const createNewUser = async (req, res) => {
             location,
             status: role === "provider" ? "inactive" : "active",
             profilePicture: req.file ? profilePicture : null,
+            available: available || false,
         })
 
         const newCreatedUser = await newUser.save()
@@ -144,7 +145,7 @@ export const updateUser = async (req, res) => {
     try{
     const { id } = req.params
 
-    let { name, email, password, gender, role, phone, location, verified, status, profilePicture, bio } = req.body
+    let { name, email, password, gender, role, phone, location, verified, status, profilePicture, bio, workingHours, available, achievements } = req.body
 
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({success:false, message: "Invalid User ID"})
@@ -201,6 +202,9 @@ export const updateUser = async (req, res) => {
         status: status || user.status,
         verified: verified || user.verified,
         profilePicture: req.file ? updatedProfilePic : profilePicture,
+        available: available || user.available,
+        workingHours: workingHours || user.workingHours,
+        achievements: achievements || user.achievements,
     }
 
 
