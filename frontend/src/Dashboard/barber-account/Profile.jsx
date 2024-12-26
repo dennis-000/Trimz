@@ -19,6 +19,7 @@ const Profile = ({barberData}) => {
     timeSlots: [],
     about: '',
     profilePicture: null,
+    service: '',
   });
 
 
@@ -36,6 +37,7 @@ const Profile = ({barberData}) => {
         timeSlots: barberData.timeSlots || [],
         about: barberData.about || '',
         profilePicture: barberData.profilePicture || null,
+        services: barberData.services || [],
       });
     }
   }, [barberData]);
@@ -71,7 +73,8 @@ const Profile = ({barberData}) => {
         },
         body: updateData
       });
-      
+      // console.log('Barber data',barberData._id);
+
   
       const result = await res.json();
   
@@ -136,6 +139,7 @@ const Profile = ({barberData}) => {
       ...prevFormData,
       [key]: [...(prevFormData[key] || []), newItem],
     }));
+    toast.info('Item added');
   };
   
   const removeItem = (key, index) => {
@@ -143,6 +147,7 @@ const Profile = ({barberData}) => {
       ...prevFormData,
       [key]: prevFormData[key]?.filter((_, i) => i !== index) || [],
     }));
+    toast.info('Item removed');
   };
   
 
@@ -181,6 +186,8 @@ const Profile = ({barberData}) => {
   const handleTimeSlotsChange = (event, index) => {
     handleReusableInputChangeFunc('timeSlots', index, event);
   };
+
+  
 
     return (
     <div>
