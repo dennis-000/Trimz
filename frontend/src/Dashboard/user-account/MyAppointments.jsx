@@ -5,12 +5,14 @@ import Loading from "../../components/Loading/Loading";
 import Error from "../../components/Error/Error";
 
 const MyAppointments = () => {
-  const { data: appointments, loading, error } = useFetchData(`${BASE_URL}appointments/user`)
+  const { data: appointments, loading, error } = useFetchData(`${BASE_URL}appointments/all`);
   
   console.log('Appointments Data:', { appointments, loading, error });
 
   // If error is specifically "Appointment not found", treat it as no appointments
-  const isNoAppointments = error === "Appointment not found";
+  const isNoAppointments = 
+  error?.message === "Appointment not found" || 
+  error === "Appointment not found";
 
   return (
     <div>

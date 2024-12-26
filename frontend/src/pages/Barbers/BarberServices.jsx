@@ -12,7 +12,7 @@ const BookingSystem = () => {
   
 
   // Sample data with prices in Ghanaian Cedis
-  const services = [
+  const [services] = useState([
     {
       id: 1,
       name: "Men's Haircut",
@@ -41,7 +41,8 @@ const BookingSystem = () => {
       price: 125,
       image: "/api/placeholder/100/100"
     }
-  ];
+  
+  ]);
   const calculateTotalDuration = () => {
     return selectedServices.reduce((total, service) => {
       const duration = parseInt(service.duration.split(' ')[0], 10); // Extract numeric value
@@ -59,6 +60,8 @@ const BookingSystem = () => {
   const formatPrice = (price) => {
     return `GH₵${price.toFixed(2)}`;
   };
+
+  
 
   const generateTimeSlots = () => {
     const slots = [];
@@ -87,8 +90,7 @@ const BookingSystem = () => {
   };
 
   const handleServiceSelect = (service) => {
-    setSelectedServices(prev => 
-      prev.find(s => s.id === service.id) ? prev : [...prev, service]
+      setSelectedServices((prev) => (prev.find((s) => s.id === service.id) ? prev : [...prev, service])
     );
   };
   
@@ -163,6 +165,11 @@ const BookingSystem = () => {
   );
 
   const ServiceSelection = () => (
+    <div className="max-w-3xl mx-auto p-4">
+    <div className="mt-8">
+      {currentStep === 1 && (
+        <>
+          <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
       {services.map((service) => (
         <div
@@ -170,6 +177,8 @@ const BookingSystem = () => {
           onClick={() => handleServiceSelect(service)}
           className="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all"
         >
+
+          {/* service image */}
           <img src={service.image} alt={service.name} className="w-16 h-16 rounded-lg object-cover" />
           <div className="ml-4 flex-1">
             <h3 className="font-semibold">{service.name}</h3>
@@ -179,7 +188,12 @@ const BookingSystem = () => {
         </div>
       ))}
     </div>
+    </>
+    )}
+    </div>
+    </div>
   );
+
   const PaymentMethodSelection = () => (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-2">
       {["Cash", "Mobile Money", "Card"].map((method) => (

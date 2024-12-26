@@ -13,10 +13,6 @@ const FaqItem = ({ item }) => {
   };
 
 
-
-
-
-
   return (
     <div
       className='p-3 lg:p5 rounded-[12px] border border-solid border-[#D9DCE2] mb-5
