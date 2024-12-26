@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { formatDate } from '../../utils/formateDate'
+import { formateDate } from '../../utils/formateDate'
 
 const BarberAbout = ({name, about, achievements, experience}) => {
   return (
@@ -28,7 +28,7 @@ const BarberAbout = ({name, about, achievements, experience}) => {
                 {achievements?.map((item,index)=>   <li key={index} className='flex flex-col sm:flex-row sm:justify-between sm:items-end md:gap-5 mb-[30px]'>
                       <div>
                           <span className='text-irisBlueColor text-[15px] leading-6 font-semibold'>
-                              {formatDate(item.startingDate)} - {formatDate(item.endingDate)}
+                              {formateDate(item.startingDate)} - {formateDate(item.endingDate)}
                           </span>
                           {/* <p className='text-[16px] leading-6 font-medium text-textColor'>
                           Type Of Achievement
@@ -56,7 +56,7 @@ const BarberAbout = ({name, about, achievements, experience}) => {
 
                 {experience?.map((item,index)=>         <li key={index} className='p-4 rounded bg-[#fff9ea]'>
                       <span className='text-yellowColor text-[15px] leading-6 font-semibold'>
-                        {formatDate(item.startingDate)} - {formatDate(item.endingDate)}
+                        {formateDate(item.startingDate)} - {formateDate(item.endingDate)}
                       </span>
                       <p className='text-[16px] leading-6 font-medium text-textColor'>
                               {item.experience}

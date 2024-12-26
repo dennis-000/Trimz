@@ -1,45 +1,48 @@
-import avatar from '../../assets/images/avatar-icon.png';
-import { formatDate } from '../../utils/formateDate';
+/* eslint-disable react/prop-types */
+import { formateDate } from '../../utils/formateDate';
 import { AiFillStar } from 'react-icons/ai';
 import { useState } from 'react';
 import FeedbackForm from './FeedbackForm';
 
-const Feedback = () => {
+const Feedback = ({reviews, totalRating}) => {
 
     const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   return (
       <div>
           <div className="mb-[50px]">
               <h4 className="text-[20px] leading-[30px] font-bold text-headingColor">
-                  All reviews (272)
+                  All reviews ({totalRating})
               </h4>
 
-              <div className="flex justify-between gap-10 mb-[30px]">
-                  <div className="flex gap-3">
-                      <figure className="w-10 h-10 rounded-full">
-                          <img className="w-full" src={avatar} alt="" />
-                      </figure>
+              { reviews?.map((review, index) => 
+                (<div key={index} className="flex justify-between gap-10 mb-[30px]">
+                <div className="flex gap-3">
+                    <figure className="w-10 h-10 rounded-full">
+                        <img className="w-full" src={review?.user?.profilePicture} alt="" />
+                    </figure>
 
-                      <div>
-                          <h5 className='text-[16px] leading-6 text-primaryColor font-bold'>
-                              Sadiqq Ahmed
-                          </h5>
-                          <p className='text-[14px] leading-6 text-textColor'>
-                              {formatDate('12-04-2010')}
-                          </p>
-                          <p className='text__para mt-3 font-medium text-[15px]'>
-                              Good Services, highly recommended 👌
-                          </p>
-                      </div>
-                  </div>
+                    <div>
+                        <h5 className='text-[16px] leading-6 text-primaryColor font-bold'>
+                            {review?.user?.name}
+                        </h5>
+                        <p className='text-[14px] leading-6 text-textColor'>
+                            {formateDate(review?.createdAt)}
+                        </p>
+                        <p className='text__para mt-3 font-medium text-[15px]'>
+                            {review.reviewText}
+                        </p>
+                    </div>
+                </div>
 
-                    {/* ==== Rating Stars ===== */}
-                  <div className='flex gap-1'>
-                      {[...Array(5).keys()].map((...index) => (
-                          <AiFillStar key={index} color='#0067FF' />
-                      ))}
-                  </div>
-              </div>
+                  {/* ==== Rating Stars ===== */}
+                <div className='flex gap-1'>
+                    {[...Array(review?.rating).keys()].map((...index) => (
+                        <AiFillStar key={index} color='#0067FF' />
+                    ))}
+                </div>
+            </div>
+            )
+              )} 
           </div>
 
             {/* === Give Feedback btn ==== */}

@@ -15,6 +15,8 @@ import ServiceList from '../components/Services/ServiceList';
 import BarberList from '../components/Barbers/BarberList';
 import FaqList from '../components/faq/faqList';
 import Testimonial from'../components/Testimonial/Testimonial';
+import CounterSection from '../components/Counter/CounterSection';
+
 
 const Home = () => {
   return <>
@@ -29,12 +31,11 @@ const Home = () => {
               
 
               <h1 className='text-[24px] leading-[34px] text-headingColor font-[800] md:text-[36px] md:leading-[46px] lg:text-[60px] lg:leading-[70px]'>
-                  Need an Appointment with a Local Barber or Stylist?
+              Looking for Expert Grooming Services Near You?
                 </h1>
 
-              <p className='text_para'>Ecutz is your go-to platform for expert grooming at the University
-                of Ghana. From haircuts to beard grooming for men, and stylish hairdos by professional hair stylists
-                for women, we offer convenient on-campus services with easy online booking.
+              <p className='text_para'>Ecutz and Style offers expert grooming for everyone, with professional barbers and stylists delivering haircuts, 
+                beard grooming, and chic hairstyles. Enjoy convenient online booking for effortless service anywhere.
               </p>
             </div>
             {/* Home btn */}
@@ -88,41 +89,9 @@ const Home = () => {
 
         </div>
 
-
-
-        {/* homecounter */}
-        {/* First Counter */}
-        <div className='mt-[30 px] lg:mt-[70px] flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-[30px]'>
-          <div>
-            <h2 className='text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font-[700]
-             text-headingColor'>30+
-            </h2>
-            <span className='w-[100px] h-2 bg-yellowColor rounded-full block mt-[-14px]'> 
-            </span>
-            <p className='text__para'>Hair Stylists</p>
-          </div>
-
-{/* Second Counter */}
-          <div>
-            <h2 className='text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font-[700]
-             text-headingColor'>500+
-            </h2>
-            <span className='w-[100px] h-2 bg-purpleColor rounded-full block mt-[-14px]'> 
-            </span>
-            <p className='text__para'>Users</p>
-          </div>
-
-{/* Third Counter */}
-          <div>
-            <h2 className='text-[36px] leading-[56px] lg:text-[44px] lg:leading-[54px] font-[700]
-             text-headingColor'>100%
-            </h2>
-            <span className='w-[100px] h-2 bg-irisBlueColor rounded-full block mt-[-14px]'> 
-            </span>
-            <p className='text__para'>User Experience</p>
-          </div>
-          
-        </div>
+          {/* ===== counter section ==== */}
+          <CounterSection/>
+       
       </div>
     </section>
     {/* ==================== Hero Section End =================== */}
@@ -339,7 +308,7 @@ const Home = () => {
             <img src={faqImg} alt="faq Image" />
           </div>
 
-          <div className='w-full md:w-1/2'>
+          <div className='w-full md:w-1/2 '>
             <h2 className='heading'>Most questions by our beloved customers</h2>
             <FaqList/>
 

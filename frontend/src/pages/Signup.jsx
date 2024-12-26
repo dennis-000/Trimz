@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import signupImg from '../assets/images/signup.gif';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -95,11 +96,18 @@ const Signup = () => {
       if (selectedFile) {
         formDataToSend.append('profilePicture', selectedFile);
       }
+      // const token = localStorage.getItem('token');
 
       const res = await fetch(`${BASE_URL}users`, {
         method: 'post',
-        body: formDataToSend
+        headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(formData),
+
       });
+
 
       const { message } = await res.json();
 
@@ -256,11 +264,11 @@ const Signup = () => {
                 {/* Preview selected photo if available */}
                 {selectedFile && (
                   <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid
-                    border-primaryColor flex items-center justify-center'>
+                    border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
                     <img 
                       src={previewURL} 
                       alt="" 
-                      className='w-full rounded-full'
+                      className='w-full h-full object-cover'
                     />
                   </figure>
                 )}

@@ -73,12 +73,11 @@ function About() {
 
                 {/* =========== About Content ============ */}
                 <div className='w-full lg:w-1/2 xl:w-[670px] order-1 lg:order-2'>
-                    <h2 className='heading'>Ecutz: Simplifying Haircuts and Styling for Students on Campus</h2>
+                    <h2 className='heading'>Meet the Visionary Behind Ecutz and Style</h2>
                     <p className='text__para'>
-                        Ecutz is a convenient on-campus grooming app designed for students.
-                        It connects users with skilled hair stylists and barbers, allowing them to easily book personalized grooming services. With features
-                        like profile browsing appointment scheduling, and location finding, Ecutz makes
-                        getting a fresh cut or style effortless and accessible.
+                    Ecutz is the brainchild of Saddiq Ahmed, a forward-thinking entrepreneur passionate about blending 
+                    technology with everyday convenience. Recognizing the challenges students face in accessing quality
+                     grooming services,  Saddiq Ahmed envisioned Ecutz as more than just an app—it’s a lifestyle solution.
                     </p>
                         {/* ========= FOR MORE THEN UNCOMMENT =========== */}
                     {/* <p className='text__para mt-[30px]'>
