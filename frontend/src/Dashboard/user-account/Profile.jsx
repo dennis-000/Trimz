@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 // Import necessary assets and dependencies
 // import avatar from '../assets/images/doctor-img01.png';
@@ -56,6 +55,7 @@ const Profile = ({user}) => {
       
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
+      console.log('File', file);
       // const reader = new FileReader();
   //     reader.onloadend = () => {
   //       setPreviewUrl(reader.result);
@@ -97,21 +97,24 @@ const Profile = ({user}) => {
       if (selectedFile) {
         formDataToSend.append('profilePicture', selectedFile);
       }
-      // const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');
 
       const res = await fetch(`${BASE_URL}users/${user._id}`, {
         method: 'PATCH',
         headers: {
-              "Content-Type": "application/json",
+              // "Content-Type": "application/json",
+              
               Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(formData),
+            body: formDataToSend,
 
       });
+      // console.log('Result',res);
 
       // console.log(token, 'TOKEN')
-      // console.log('bio', formData.bio)
-      // console.log('gender', formData.gender)
+      console.log('Name', formData.name)
+      console.log('File', formData.selectedFile)
+      console.log('FormData', formDataToSend)
   
       const data = await res.json();
   
@@ -283,7 +286,7 @@ const Profile = ({user}) => {
     <figure className='w-[70px] h-[70px] rounded-full border-2 border-solid
         border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
       <img 
-        src={previewUrl || user.profilePicture} 
+        src={previewUrl || user.profilePicture.url} 
         alt="profile" 
         className='w-full h-full object-cover'
       />
