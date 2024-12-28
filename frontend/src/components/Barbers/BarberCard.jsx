@@ -7,15 +7,14 @@ import { BsArrowRight } from 'react-icons/bs'; // Importing the right arrow icon
 // Functional component that receives a barber object as a prop
 const BarberCard = ({ user }) => {
     // Destructuring properties from the barber object
-    
+    console.log('User:', user);
     const {
-        name = '',
-        avgRating = 0,
-        totalRating = 0,
-        specialization = '',
-        experiences = [],
-        profilePicture = '',
-        // totalClients = 0,
+        name ,
+        avgRating ,
+        totalRating ,
+        specialization ,
+        experiences ,
+        profilePicture ,
     } = user || {};
     
 
@@ -59,7 +58,7 @@ const BarberCard = ({ user }) => {
                 </div>
 
                 <Link
-                    to={`/users/${user?._id || 'unknown'}`}
+                    to={`/barbers/${user?._id || 'unknown'}`}
                     className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E]
                     flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
                     

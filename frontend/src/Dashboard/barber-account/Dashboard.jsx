@@ -36,42 +36,33 @@ const Dashboard = () => {
             {console.log('Data:', data)}
             
 
-
+{/* ================ This is not working ============== */}
             {/* ===== Not Approved ======  */}
-              {data?.isApproved === 'pending' && (
-                <div className="flex p-4 mb-4 text-red-800 bg-red-400 rounded-lg">
-                  <svg
-                    aria-hidden="true"
-                    className="flex-shrink-0 w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000
-                      2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                  <span className="sr-only">Info</span>
-                  <div className="ml-3 text-sm font-medium">
-                    To get approval, please complete your profile. We&apos;ll
-                    review and approve within 2 days.
-                  </div>
-                </div>
-              )}
+            
+            {data?.isApproved === 'pending' && (
+              
+              <div className="flex p-4 mb-4 text-red-800 bg-red-400 rounded-lg">
+              <span role="img" aria-label="alert" className="mr-2">
+                ⚠️
+              </span>
+              <div className="text-sm font-medium">
+                To get approval, please complete your profile. We&apos;ll review and approve within 2 days.
+              </div>
+            </div>
+)}
 
-
-              {/* ===== When Approved */}
-              <div className="mt-8">
-                {tab==='overview' && <div>
-                  <div className="flex items-center gap-4 mb-10">
-                    <figure className="max-w-[200px] max-h-[200px]">
-                    <img src={data?.profilePicture?.url} alt="Profile Picture" className="w-full"/>
-                      
-                    </figure>
-
+<div className="mt-8">
+  {tab === 'overview' && (
+    <div>
+      <div className="flex items-center gap-4 mb-10">
+        <figure className="max-w-[200px] max-h-[200px]">
+          <img
+            src={data?.profilePicture?.url || '/placeholder.jpg'}
+            alt="Profile Picture"
+            className="w-full"
+          />
+        </figure>
+       
                     <div>
                       <span className="bg-[#CCF0F3] text-irisBlueColor py-1 px-4 lg:py-2 lg:px-6 rounded text-[12px] leading-4 
                       lg:text-[16px] lg:leading-6 font-semibold">
@@ -108,6 +99,8 @@ const Dashboard = () => {
                   experience={data?.experience}
                   />
                   </div>
+  )
+  
                   }
                   
 
@@ -116,10 +109,12 @@ const Dashboard = () => {
                 {tab==='settings' && <Profile barberData={data}/>}
                 </div>
                 
+                
             </div>
           </div>
         )}
       </div>
+      
       {/* <div>
       <Appointment/>
       </div> */}
