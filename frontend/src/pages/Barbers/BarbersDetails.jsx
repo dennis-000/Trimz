@@ -16,9 +16,9 @@ const BarbersDetails = () => {
   const [tab, setTab] = useState('about');
 
   const {id} = useParams();
-
-  const {data:provider, loading, error} = useFetchData(`${BASE_URL}users/providers/${id}`);
- 
+// console.log('ID:', id);
+  const {data:provider, loading, error} = useFetchData(`${BASE_URL}users/${id}`);
+ console.log('Provider:', provider);
   const { name,
     achievements,
     experience,
@@ -30,7 +30,7 @@ const BarbersDetails = () => {
     totalRating,
     specialization,
     profilePicture,
-  } = provider;
+  } = provider || {};
 
   return (
     <section>

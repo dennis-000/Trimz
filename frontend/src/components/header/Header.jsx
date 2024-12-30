@@ -19,7 +19,7 @@ const navLinks = [
   },
   {
     path: '/barbers',     // Link path to 'Find a Barber' page
-    display: 'Find a Barber'   // Display name for the 'Find a Barber' page link
+    display: 'MarketPlace'   // Display name for the 'Find a Barber' page link
   },
   {
     path: '/services',    // Link path to Services page
@@ -68,7 +68,6 @@ const Header = () => {
 
   return (
     <header className="header flex items-center" ref={headerRef}>  {/* Header with a reference */}
-      
       <div className="container">
         <div className="flex items-center justify-between">
           {/* Logo section */}
@@ -80,7 +79,7 @@ const Header = () => {
 
           {/* Navigation menu section */}
           < div className="navigation" ref={menuRef} onClick={toggleMenu}>
-            <ul className='menu flex items-center gap-[2.7rem]'>  {/* Unordered list of navigation links */}
+          <ul className='menu flex items-center gap-[2.7rem]' ref={menuRef}>  {/* Unordered list of navigation links */}
               {/* Map over navLinks array to create list items for each link */}
               {
                 navLinks.map((link, index) => 

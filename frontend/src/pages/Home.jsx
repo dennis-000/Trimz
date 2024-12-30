@@ -8,7 +8,6 @@ import icon01 from '../assets/images/icon01.png'
 import icon02 from '../assets/images/icon02.png'
 import icon03 from '../assets/images/icon03.png'
 import faqImg from '../assets/images/faq-img1.png';
-import { Link } from 'react-router-dom';
 import { BsArrowRight } from 'react-icons/bs';
 import About from '../components/About/about';
 import ServiceList from '../components/Services/ServiceList';
@@ -17,11 +16,21 @@ import FaqList from '../components/faq/faqList';
 import Testimonial from'../components/Testimonial/Testimonial';
 import CounterSection from '../components/Counter/CounterSection';
 
-
+import { Link } from 'react-scroll';
+import { useEffect } from 'react';
+import 'aos/dist/aos.css'; // Import AOS styles
+import AOS from 'aos'; // Import AOS library
+import ScrollToTop from './ScrollToTop';
 const Home = () => {
+  useEffect(() => {
+    AOS.init({
+      duration: 2000, // Animation duration in milliseconds
+      once: false, // Whether animation should happen only once
+    });
+  }, []);
   return <>
     {/* ====== Hero Section ========== */}
-    <section className='hero__section pt-[60px] 2xl:h-[800px]'>
+    <section data-aos="fade-up" className='hero__section pt-[60px] 2xl:h-[800px]' id="hero">
       <div className="container">
         <div className='flex flex-col lg:flex-row gap-[90px] items-center justify-between'>
 
@@ -39,7 +48,9 @@ const Home = () => {
               </p>
             </div>
             {/* Home btn */}
-            <button className='btn'>Request an Appointment</button>
+            <Link to="services" smooth={true} duration={500}>
+                <button className="btn">Start Free Now</button>
+              </Link>
           </div>
 
           {/* =========== Home Page CONTENTS Image ========== */}
@@ -97,7 +108,8 @@ const Home = () => {
     {/* ==================== Hero Section End =================== */}
 
     {/* =================== New Section Container======================== */}
-    <section>
+    
+    <section data-aos="zoom-in">
       <div className="container">
         <div className='lg:w-[470px] mx-auto'>
           <h2 className='heading text-center'>Providing the Best Hair Styling Services
@@ -188,7 +200,7 @@ const Home = () => {
 
 
     {/* ======== Services Section Start ========== */}
-    <section>
+    <section id="services" data-aos="zoom-in">
       <div className="container">
         <div className='xl:w-[470] mx-auto'>
           <h2 className='heading text-center'>Styling and Babering Services</h2>
@@ -205,7 +217,7 @@ const Home = () => {
 
     
     {/* ======== Feature Section ========= */}
-    <section>
+    <section data-aos="zoom-in">
       <div className='container'>
         <div className='flex items-center justify-between flex-col lg:flex-row'>
 
@@ -283,7 +295,7 @@ const Home = () => {
 
     {/* ============= Feature Section ============== */}
     {/* ============= High Rated OR Recommended Barbers Section START ============== */}
-    <section>
+    <section data-aos="zoom-in">
       <div className="container">
           <div className='xl:w-[470] mx-auto'>
             <h2 className='heading text-center'>Recommended</h2>
@@ -301,7 +313,7 @@ const Home = () => {
 
     
     {/* ================== faqs SECTION START ==================*/}
-    <section>
+    <section data-aos="zoom-in">
       <div className="container">
         <div className='flex justify-between gap-[50px] lg:gap-0'>
           <div className='w-[40%] hidden md:block'>
@@ -322,7 +334,7 @@ const Home = () => {
     {/* ================== faqs SECTION END ==================*/}
 
     {/* ================== Testimonial SECTION Start ==================*/}
-    <section>
+    <section data-aos="fade-up">
       <div className="container">
         <div className='xl:w-[470] mx-auto'>
             <h2 className='heading text-center'>What our clients say</h2>
@@ -334,6 +346,8 @@ const Home = () => {
         <Testimonial/>
       </div>
     </section>
+    <ScrollToTop/>
+
     {/* ================== Testimonial SECTION End ==================*/}
   </>
 }

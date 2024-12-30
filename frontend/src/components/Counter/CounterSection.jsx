@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const Counter = ({ end, duration, title, colorClass }) => {
   const [count, setCount] = useState(0);
@@ -41,19 +41,19 @@ const CounterSection = () => {
       <Counter 
         end={30} 
         duration={2000} 
-        title="Hair Stylists" 
+        title="Barbers"  // Changed from Hair Stylists to Barbers
         colorClass="bg-yellowColor" 
       />
       <Counter 
         end={500} 
         duration={2000} 
-        title="Users" 
+        title="Registered Users"  // Changed Users to Registered Users
         colorClass="bg-purpleColor" 
       />
       <Counter 
         end={100} 
         duration={2000} 
-        title="User Experience" 
+        title="Positive Feedback"  // Changed User Experience to Positive Feedback
         colorClass="bg-irisBlueColor" 
       />
     </div>

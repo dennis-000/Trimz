@@ -1,13 +1,13 @@
 import { Router } from 'express'
-import { 
-    getUserProfile, 
-    createNewUser, 
-    deleteUser, 
-    getAllCustomers, 
-    getAllProviders, 
-    getAllUsers, 
-    getSingleUserById, 
-    updateUser 
+import {
+    getUserProfile,
+    createNewUser,
+    deleteUser,
+    getAllCustomers,
+    getAllProviders,
+    getAllUsers,
+    getSingleUserById,
+    updateUser
 } from '../controllers/user.controller.js'
 import upload from '../config/upload.config.js';
 import { requireAuth, restrict } from '../middlewares/auth.middleware.js';
@@ -17,15 +17,15 @@ const userRouter = Router()
 
 //Users
 userRouter.get("/", getAllUsers)
-userRouter.get("/providers", getAllProviders)//Get all providers
-userRouter.get("/customers", getAllCustomers)//Get all customers
-userRouter.get("/:id", getSingleUserById)//Get a single user
-userRouter.post("/",upload.single("profilePicture"), createNewUser)
+userRouter.get("/providers", getAllProviders) //Get all providers
+userRouter.get("/customers", getAllCustomers) //Get all customers
+userRouter.get("/:id", getSingleUserById) //Get a single user
+userRouter.post("/", upload.single("profilePicture"), createNewUser)
 userRouter.patch("/:id", requireAuth, upload.fields([
-        { name: "profilePicture", maxCount: 1 }, // Single profile picture
-        { name: "gallery", maxCount: 15 }, // Multiple gallery images
-    ]), updateUser)
-userRouter.delete("/:id",requireAuth, deleteUser)
+    { name: "profilePicture", maxCount: 1 }, // Single profile picture
+    { name: "gallery", maxCount: 15 }, // Multiple gallery images
+]), updateUser)
+userRouter.delete("/:id", requireAuth, deleteUser)
 
 //get all appointments on the user dashboard
 userRouter.get("/profile/me", requireAuth, restrict(["user"]), getUserProfile);
