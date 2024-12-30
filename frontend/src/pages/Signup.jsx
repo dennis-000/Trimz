@@ -119,6 +119,14 @@ const Signup = () => {
       setLoading(false);
     }
   };
+  const handleOauth = async () => {
+    try {
+      window.location.href = "http://localhost:5000/api/auth/google";
+      
+    }catch(err){
+      toast.error(err.message)
+    }
+  }
     
   return (
     <section className='px-5 xl:px-0'>
@@ -137,6 +145,10 @@ const Signup = () => {
               Create an
               <span className='text-primaryColor'> Account</span>
             </h3>
+
+            <div className="text-center">
+              <button className="googleOauthBtn bg-primaryColor p-3 rounded-lg text-white" onClick={handleOauth}>Sign in with Google</button>
+            </div>
 
             {/* Sign up form */}
             <form onSubmit={submitHandler}>

@@ -27,10 +27,11 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 const corsOptions = {
-    origin: true, // Allow requests from your frontend
+    origin: 'http://localhost:5173', // Frontend URL
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Include PATCH
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
+    allowedHeaders: ['Content-Type'], // Allow necessary headers
+    // allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
   };
 app.use('*', cors(corsOptions))
 
