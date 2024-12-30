@@ -5,22 +5,24 @@ import { Link } from 'react-router-dom'; // Importing Link for navigation
 import { BsArrowRight } from 'react-icons/bs'; // Importing the right arrow icon from react-icons
 
 // Functional component that receives a barber object as a prop
-const BarberCard = ({ barber }) => {
+const BarberCard = ({ user }) => {
     // Destructuring properties from the barber object
+    
     const {
-        name,
-        avgRating,
-        totalRating,
-        photo,  
-        specialization,
-        totalClients,
-        location
-    } = barber;
+        name = '',
+        avgRating = 0,
+        totalRating = 0,
+        specialization = '',
+        experiences = [],
+        profilePicture = '',
+        // totalClients = 0,
+    } = user || {};
+    
 
     return (
         <div className='p-3 lg:p-5'> {/* Main card container with padding */}
             <div>
-                <img src={photo} className='w-full' alt="" /> {/* Barber's photo */}
+                <img src={profilePicture} className='w-full' alt="" /> {/* Barber's photo */}
             </div>
 
             <h2 className='text-[18px] leading-[30px] lg:text-[26px] lg:leading-9 text-headingColor 
@@ -45,17 +47,19 @@ const BarberCard = ({ barber }) => {
 
             <div className='mt-[18px] lg:mt-5 flex items-center justify-between'> {/* Flex container for clients and location */}
                 <div>
-                    <h3 className='text-[16px] leading-7 lg:text-[18px] lg:leading-[30px] font-semibold 
+                    {/* <h3 className='text-[16px] leading-7 lg:text-[18px] lg:leading-[30px] font-semibold 
                     text-headingColor'>
-                        +{totalClients} Clients {/* Displaying the total number of clients */}
-                    </h3>
+
+                        +{totalClients} Clients 
+                    </h3> */}
                     <p className='text-[14px] leading-6 font-[400] text-textColor'>
-                        At {location} {/* Displaying the location */}
-                    </p>
+                        {/* Might change */}
+                        {experiences?.length > 0 ? `At ${experiences[0]?.experience}` : 'Experience details not available'}
+                        </p>
                 </div>
 
                 <Link
-                    to={barber.id} // Link to navigate to the barbers page
+                    to={`/users/${user?._id || 'unknown'}`}
                     className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E]
                     flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
                     

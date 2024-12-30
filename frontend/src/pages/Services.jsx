@@ -93,7 +93,22 @@ const Services = () => {
 
 
       <div>
+        {/* CTA Section */}
+      <div className="bg-yellow-50 text-white">
+        <div className="max-w-6xl mx-auto px-4 py-16 text-center">
+          <h2 className="text-yellow-600 text-3xl font-bold mb-6">Ready to Get Started?</h2>
+          <div className="flex gap-4 justify-center">
+            <button className="bg-primaryColor text-white-600 px-8 py-3 rounded-lg hover:bg-irisBlueColor transition-colors">
+              List Your Business
+            </button>
+            <button className="bg-irisBlueColor px-8 py-3 rounded-lg hover:bg-primaryColor transition-colors">
+              Find Services
+            </button>
+          </div>
+        </div>
+      </div>
         <BottomCTA/>
+        
       </div>
     </section>
   );

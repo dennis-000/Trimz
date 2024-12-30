@@ -36,7 +36,7 @@ const Testimonial = () => {
                             <img src={patientAvatar} alt="" />
                             <div>
                                 <h4 className='text-[18px] leading-[30px] font-semibold text-headingColor'>
-                                    — Issah, University of Ghana
+                                    — Issah
                                 </h4>
 
                                 <div className='flex items-center gap-[2px]'>
@@ -52,7 +52,7 @@ const Testimonial = () => {
                             "Convenient and Reliable"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Ecutz makes booking haircuts easy, and getting styled on campus is so
+                            "Ecutz and style makes booking haircuts easy, and getting styled on campus is so
                             convenient!"
                         </p>
                     </div>
@@ -65,7 +65,7 @@ const Testimonial = () => {
                             <img src={patientAvatar} alt="" />
                             <div>
                                 <h4 className='text-[18px] leading-[30px] font-semibold text-headingColor'>
-                                    — Saddiq Ahmed, Main Campus
+                                    — Saddiq Ahmed
                                 </h4>
 
                                 <div className='flex items-center gap-[2px]'>
@@ -81,7 +81,7 @@ const Testimonial = () => {
                             "Great Service"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Every barber I've tried on Ecutz is professional and friendly. Always a
+                            "Every barber and stylist I've tried on Ecutz and Style is professional and friendly. Always a
                             great experience!"
                         </p>
                     </div>
@@ -94,7 +94,7 @@ const Testimonial = () => {
                             <img src={patientAvatar} alt="" />
                             <div>
                                 <h4 className='text-[18px] leading-[30px] font-semibold text-headingColor'>
-                                    — Larmar, City Campus 
+                                    — Larmar 
                                 </h4>
 
                                 <div className='flex items-center gap-[2px]'>
@@ -110,8 +110,8 @@ const Testimonial = () => {
                             "Perfect for Students"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Ecutz saves me time with quality on-campus haircuts, no need to
-                            leave school."
+                            "Ecutz and style saves me time with quality on-campus haircuts, no need to
+                            leave your hostel."
                         </p>
                     </div>
                 </SwiperSlide>
@@ -123,7 +123,7 @@ const Testimonial = () => {
                             <img src={patientAvatar} alt="" />
                             <div>
                                 <h4 className='text-[18px] leading-[30px] font-semibold text-headingColor'>
-                                    — Benjamin, Main Campus
+                                    — Benjamin
                                 </h4>
 
                                 <div className='flex items-center gap-[2px]'>
@@ -139,7 +139,7 @@ const Testimonial = () => {
                             "Highly Recommended"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Skilled barbers, fast service, and flexible booking make Ecutz a must!"
+                            "Skilled workers, fast service, and flexible booking make Ecutz and style a must!"
                         </p>
                     </div>
                 </SwiperSlide>
@@ -151,7 +151,7 @@ const Testimonial = () => {
                             <img src={patientAvatar} alt="" />
                             <div>
                                 <h4 className='text-[18px] leading-[30px] font-semibold text-headingColor'>
-                                    — Stephen, Main Campus
+                                    — Stephen
                                 </h4>
 
                                 <div className='flex items-center gap-[2px]'>
@@ -167,7 +167,7 @@ const Testimonial = () => {
                             "Exceptional Experience"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Ecutz provides top-notch grooming with great customer service. I’ve never
+                            "Ecutz and Style provides top-notch grooming with great customer service. I’ve never
                             been disappointed!"
                         </p>
                     </div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable react/prop-types */
 // Import necessary assets and dependencies
 // import avatar from '../assets/images/doctor-img01.png';
@@ -11,6 +12,8 @@ const Profile = ({user}) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(null);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -19,7 +22,7 @@ const Profile = ({user}) => {
     profilePicture: null,
     gender: '',
     phone: '',
-    bio: '',  // Added bio field
+    bio: '',  
   });
 
   // Hook for programmatic navigation
@@ -38,7 +41,7 @@ const Profile = ({user}) => {
 
   // Generic input handler for form fields
   const handleInputChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // Separate handler for confirm password
@@ -47,14 +50,19 @@ const Profile = ({user}) => {
   };
   
   // Handler for file input changes (profile photo upload)
-  const handleFileInputChange = (event) => {
-    const file = event.target.files[0];
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {};
-      reader.readAsDataURL(file);
+      
       setSelectedFile(file);
-    }
+      setPreviewUrl(URL.createObjectURL(file));
+      // const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setPreviewUrl(reader.result);
+  //   };
+  //   reader.readAsDataURL(file);
+
+  }
   };
 
   const submitHandler = async (event) => {
@@ -89,38 +97,54 @@ const Profile = ({user}) => {
       if (selectedFile) {
         formDataToSend.append('profilePicture', selectedFile);
       }
-      const token = localStorage.getItem('token');
-  
-      // const res = await fetch(`${BASE_URL}users/${user._id}`, {
-      //   method: 'PATCH',
-      //   // headers: {
-      //   //   // "Content-Type": "application/json",
-      //   //   // Authorization: `Bearer ${token}`,
-      //   // },
-      //   body: formDataToSend,
-      // });
+      // const token = localStorage.getItem('token');
 
       const res = await fetch(`${BASE_URL}users/${user._id}`, {
         method: 'PATCH',
         headers: {
-              // "Content-Type": "application/json",
+              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-        body: formDataToSend
+            body: JSON.stringify(formData),
+
       });
 
-      console.log(token, 'TOKEN')
-      console.log('bio', formData.bio)
-      console.log('gender', formData.gender)
+      // console.log(token, 'TOKEN')
+      // console.log('bio', formData.bio)
+      // console.log('gender', formData.gender)
   
-      const { message } = await res.json();
+      const data = await res.json();
   
       if (!res.ok) {
-        throw new Error(message);
+        throw new Error(data.message);
       }
+      
   
+
+      // Update the user data in parent component
+      // onUpdateUser({
+      //   ...user,
+      //   name: formData.name,
+      //   gender: formData.gender,
+      //   phone: formData.phone,
+      //   bio: formData.bio,
+      //   profilePicture: previewUrl || user.profilePicture
+      // });
+
+      // setLoading(false);
+      // toast.success(onUpdateUser.message);
+
       setLoading(false);
-      toast.success(message);
+      toast.success('Profile updated successfully!');
+
+      // Update the parent `user` state with the new data
+      
+
+
+      // Update user data in parent component or global state
+      // if(onUserUpdate){
+      //   onUserUpdate(updateUser);
+      // }
   
       // Optional: Clear password fields after successful update
       setFormData((prev) => ({
@@ -128,6 +152,8 @@ const Profile = ({user}) => {
         newPassword: '',
       }));
       setConfirmPassword('');
+
+      // Optional: navigate only if specified
       navigate('/users/profile/me');
     } catch (err) {
       toast.error(err.message);
@@ -251,44 +277,42 @@ const Profile = ({user}) => {
                 </label>
               </div>  
 
-              {/* Photo upload section */}
-              <div className='mb-5 flex items-center gap-3'>
-                {/* Preview selected photo if available */}
-                {formData.profilePicture && (
-                  <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid
-                    border-primaryColor flex items-center justify-center'>
-                    <img 
-                      src={formData.profilePicture} 
-                      alt="" 
-                      className='w-full rounded-full'
-                    />
-                  </figure>
-                )}
+           {/* Photo upload section */}
+<div className='mb-5 flex items-center gap-3'>
+  {selectedFile && (
+    <figure className='w-[70px] h-[70px] rounded-full border-2 border-solid
+        border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
+      <img 
+        src={previewUrl || user.profilePicture} 
+        alt="profile" 
+        className='w-full h-full object-cover'
+      />
+    </figure>
+  )}
 
-                {/* Photo upload input */}
-                <div className='relative w-[130px] h-[50px]'>
-                  <input 
-                    type="file"
-                    name='profilePicture'
-                    id='customFile'
-                    onChange={handleFileInputChange}
-                    accept='.jpg, .jpeg, .png'
-                    className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer'
-                  />
+  {/* Photo upload input */}
+  <div className='relative w-[130px] h-[50px]'>
+    <input 
+      type="file"
+      name='profilePicture'
+      id='customFile'
+      onChange={handleFileInputChange}
+      accept='.jpg, .jpeg, .png'
+      className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10'
+    />
 
-
-                  {/* Custom styled upload button */}
-                  <label 
-                    htmlFor="customFile" 
-                    className='absolute top-0 left-0 w-full h-full flex
-                      items-center px-[0.75rem] py-[0.375rem] text-[15px] leading-6 overflow-hidden bg-[#0066ff46]
-                      text-headingColor font-semibold rounded-lg truncate cursor-pointer'
-                  >
-                    Upload Photo
-                  </label>
-                </div>
-
-              </div>
+    <label 
+      htmlFor="customFile" 
+      className='absolute top-0 left-0 w-full h-full flex
+        items-center px-4 py-2 text-[15px] leading-6 
+        bg-[#0066ff46] hover:bg-[#0066ff61] transition-all
+        text-headingColor font-semibold rounded-lg
+        cursor-pointer truncate shadow-sm'
+    >
+      Upload Photo
+    </label>
+  </div>
+</div>
 
 
               {/* Submit button with loading state */}
@@ -307,6 +331,7 @@ const Profile = ({user}) => {
             </form>
     </div>
   )
+
 };
 
-export default Profile
+export default Profile;

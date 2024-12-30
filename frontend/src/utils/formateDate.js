@@ -1,4 +1,4 @@
-export const formatDate = (date, config) => {
+export const formateDate = (date, config) => {
     const defaultOptions = { day: 'numeric', month: 'short', year: 'numeric' }
     const options = config ? config : defaultOptions
 

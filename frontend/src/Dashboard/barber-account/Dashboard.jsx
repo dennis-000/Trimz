@@ -10,6 +10,7 @@ import Profile from "./Profile";
 import starIcon from '../../assets/images/star.png'
 import { AuthContext } from "../../context/AuthContext";
 
+import Appointments  from "./Appointments";
 const Dashboard = () => {
     const {user} = useContext(AuthContext)
   const { data,
@@ -110,7 +111,8 @@ const Dashboard = () => {
                   }
                   
 
-                {tab==='appointments' && <div>appointments</div>}
+                {tab==='appointments' && 
+                <Appointments appointments={data.appointments}/>}
                 {tab==='settings' && <Profile barberData={data}/>}
                 </div>
                 
