@@ -17,8 +17,11 @@ const Tabs = ({ tab, setTab }) => {
   return (
     <div>
       {/* Menu Icon for small screens */}
+      {/* Work on this */}
       <span className='lg:hidden'>
+
         <BiMenu className='w-6 h-6 cursor-pointer' />
+
       </span>
 
       {/* Tab container for large screens */}
@@ -57,6 +60,17 @@ const Tabs = ({ tab, setTab }) => {
           } w-full btn mt-0 rounded-md`}
         >
           Profile
+        </button>
+
+        <button
+          onClick={() => setTab('services')}
+          className={`${
+            tab === 'services'
+              ? 'bg-indigo-100 text-primaryColor'
+              : 'bg-transparent text-headingColor'
+          } w-full btn mt-0 rounded-md`}
+        >
+          Add Service
         </button>
 
         <div className="mt-[100px] w-full">
