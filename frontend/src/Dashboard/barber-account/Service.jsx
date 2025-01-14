@@ -41,11 +41,13 @@ const Service = () => {
     toast.info('Service removed.');
   };
 
+  const userInfo = JSON.parse(localStorage.getItem('user'));
   // Handles the creation of a new service with default values
   const handleAddService = () => {
     const newService = {
       id: Date.now(), // Unique ID
-      createdAt: new Date().toISOString(), // Timestamp
+      provider: userInfo._id,
+      service: '',
       name: '',
       description: '',
       duration: '',
@@ -103,6 +105,8 @@ const Service = () => {
     const user = JSON.parse(localStorage.getItem('user')); // Ensure it’s parsed into an object
     const providerId = user?._id;
 
+    console.log(providerId);
+
     if (!providerId) {
       toast.error('Provider ID not found in localStorage.');
       return;
@@ -118,29 +122,18 @@ const Service = () => {
     }
   
     try {
+      console.log(selectedFile)
       const formDataToSend = new FormData();
-      formData.services.forEach((service, index) => {
-        formDataToSend.append(`services[${index}][name]`, service.name);
-        formDataToSend.append(`services[${index}][description]`, service.description);
-        formDataToSend.append(`services[${index}][duration]`, service.duration);
-        formDataToSend.append(`services[${index}][price]`, service.price);
-        formDataToSend.append(`services[${index}][availability]`, service.availability);
-        formDataToSend.append(`services[${index}][provider]`, providerId);
-        if (service.image) {
-          formDataToSend.append(`services[${index}][image]`, selectedFile);
-        }
-      });
+      formDataToSend.append('services', JSON.stringify(formData.services));
+      formDataToSend.append('provider', providerId);
+      formDataToSend.append('providerServiceImage[${index}]', selectedFile);
+
   
-      // formDataToSend.append('providersDescription', formData.providersDescription);
-      console.log('FormData Contents:');
-      formDataToSend.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
-  
+      const jwt = localStorage.getItem('token');
       const res = await fetch(`${BASE_URL}provider-services`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwt}`,
           // 'Content-Type': 'multipart/form-data',
         },
         body: formDataToSend,
@@ -235,7 +228,7 @@ const Service = () => {
               <input
                 type="file"
                 accept="image/*"
-                name="image"
+                name="providerServiceImage"
                 onChange={(e) => handleImageUpload(index, e.target.files[0])}
                 className="block w-full text-sm text-gray-500
                   file:mr-4 file:py-2 file:px-4

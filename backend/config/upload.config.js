@@ -48,7 +48,8 @@ const storage = multer.diskStorage({
             cb(null, profilePictureDir); // Profile picture folder
         } else if (file.fieldname === "galleryImages") {
             cb(null, galleryDir); // Gallery folder
-        } else if (file.fieldname === "image") {
+        } else if (file.fieldname === "providerServiceImage") {
+            console.log("Fieldname",file.fieldname)
             cb(null, serviceDir); // Gallery folder
         } else {
             cb(new Error("Invalid field name"), null);
