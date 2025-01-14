@@ -30,6 +30,6 @@
     "passport-google-oauth2": "^0.2.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.6"
+    "nodemon": "^3.1.9"
   }
 }
