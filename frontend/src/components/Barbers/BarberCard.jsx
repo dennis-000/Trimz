@@ -22,10 +22,15 @@ const BarberCard = ({ user }) => {
 
     return (
         <div className='p-3 lg:p-5'> {/* Main card container with padding */}
-            <div>
-                {user && user.profilePicture && user.profilePicture.url && (<img src={user?.profilePicture?.url} className='w-full' alt="" />)} {/* Barber's photo */}
+            <div className='w-full h-[280px] overflow-hidden rounded-2xl'>
+            {user && user.profilePicture && user.profilePicture.url && (<img src={user?.profilePicture?.url} 
+            className='w-full h-full object-cover' 
+            alt={`${name}'s profile`} />)} {/* Barber's photo */}
                 {/*  Optional: Display a placeholder if no image is available */}
-                {!user || !user?.profilePicture || !user?.profilePicture?.url && (<img src={placeholder} alt="Placeholder" /> )}
+                {!user || !user?.profilePicture || !user?.profilePicture?.url && 
+                (<img src={placeholder} 
+                className='w-full h-full object-cover' 
+                alt="Placeholder" /> )}
             </div>
 
             <h2 className='text-[18px] leading-[30px] lg:text-[26px] lg:leading-9 text-headingColor 

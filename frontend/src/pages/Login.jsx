@@ -4,7 +4,7 @@ import { BASE_URL } from '../config';
 import { toast } from 'react-toastify';
 import {AuthContext} from '../context/AuthContext.jsx'
 import HashLoader from 'react-spinners/BeatLoader';
-
+import logo from '../assets/images/ecutz.png'
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -80,8 +80,18 @@ const Login = () => {
 
 
   return (
-    <section className='px-5 lg:px-0'>
-      <div className='w-full max-w-[570px] mx-auto rounded-lg shadow-md md:p-10'>
+    <section className='px-5 lg:px-0 min-h-screen flex items-center justify-center'>
+      <div className='w-full max-w-[500px] mx-auto bg-white/90 rounded-lg shadow-[0_5px_20px_rgba(0,0,0,0.1)] md:p-10 p-6 backdrop-blur-sm my-8'>    {/* Added Logo Section */}
+        <div className="flex justify-center mb-8">
+          <Link to="/">
+            <img 
+              src={logo} 
+              alt="Ecutz Logo" 
+              className="h-20 w-auto cursor-pointer"
+            />
+          </Link>
+        </div>
+
         <h3 className='text-headingColor text-center text-[22px] leading-9 font-bold mb-10'>
           Hello!  <span className='text-primaryColor'>Welcome</span>  Back 🎉
         </h3>
@@ -122,13 +132,15 @@ const Login = () => {
           </div>
 
           <p className='mt-5 text-textColor text-center'>
-            Don&apos;t have an account?
+            {/* Don&apos;t have an account? */}
+            New to Ecutz? 
             <Link to='/register' className='text-primaryColor font-medium mt-1'>
-              Register
+               Register
             </Link>
           </p>
         </form>
       </div>
+      
     </section>
   );
 }

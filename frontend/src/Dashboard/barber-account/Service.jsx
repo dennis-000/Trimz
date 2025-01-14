@@ -32,14 +32,33 @@ const Service = () => {
     toast.success('Service added successfully!');
   };
 
-  // Removes a service from the services array
-  const removeService = (serviceId) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      services: prevFormData.services.filter((service) => service.id !== serviceId),
-    }));
-    toast.info('Service removed.');
+  // delete a service from the services array
+  const deleteService = async (serviceId) => {
+    try {
+      const jwt = localStorage.getItem('token');
+      // API TO DELETE SERVICES
+      const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+  
+      if (response.ok) {
+        toast.success('Service deleted successfully!');
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          services: prevFormData.services.filter((service) => service.id !== serviceId),
+        }));
+      } else {
+        const errorData = await response.json();
+        toast.error(`Error deleting service: ${errorData.message}`);
+      }
+    } catch (error) {
+      toast.error(`An error occurred: ${error.message}`);
+    }
   };
+  
 
   const userInfo = JSON.parse(localStorage.getItem('user'));
   // Handles the creation of a new service with default values
@@ -60,14 +79,55 @@ const Service = () => {
   };
 
   // Updates service details in the services array
-  const handleServiceChange = (index, event) => {
+  const handleServiceChange = async (index, event) => {
     const { name, value } = event.target;
+  
     setFormData((prevFormData) => {
       const updatedServices = [...prevFormData.services];
       updatedServices[index] = { ...updatedServices[index], [name]: value };
       return { ...prevFormData, services: updatedServices };
     });
+  
+    const serviceId = formData.services[index].id; // Assuming service has an `id`
+    const updatedService = { ...formData.services[index], [name]: value };
+  
+    // Call updateService
+    await updateService(serviceId, updatedService);
   };
+  
+
+  // =================
+  const updateService = async (serviceId, updatedData) => {
+    try {
+      const jwt = localStorage.getItem('token');
+      const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+  
+      if (response.ok) {
+        const updatedService = await response.json();
+        toast.success('Service updated successfully!');
+        setFormData((prevFormData) => {
+          const updatedServices = prevFormData.services.map((service) =>
+            service.id === serviceId ? { ...service, ...updatedData } : service
+          );
+          return { ...prevFormData, services: updatedServices };
+        });
+      } else {
+        const errorData = await response.json();
+        toast.error(`Error updating service: ${errorData.message}`);
+      }
+    } catch (error) {
+      toast.error(`An error occurred: ${error.message}`);
+    }
+  };
+  // ================
+
 
   // Handles image upload for a specific service
   const handleImageUpload = (index, file) => {
@@ -79,7 +139,6 @@ const Service = () => {
 
     // Create a preview URL for the image
     const previewURL = URL.createObjectURL(file);
-
     setFormData((prevFormData) => {
       const updatedServices = [...prevFormData.services];
       updatedServices[index].image = file;
@@ -89,7 +148,7 @@ const Service = () => {
     });
   };
 
-  
+  // VALIDATION OF SERVICES
   const validateServices = () => {
     for (const service of formData.services) {
       if (!service.name || !service.description || !service.price || !service.duration) {
@@ -99,7 +158,8 @@ const Service = () => {
     }
     return true;
   };
-  // Submits all services to the backend API
+
+  // Submits all services to the backend 
   const submitServices = async () => {
      // Retrieve the provider's ID from localStorage
     const user = JSON.parse(localStorage.getItem('user')); // Ensure it’s parsed into an object
@@ -130,6 +190,7 @@ const Service = () => {
 
   
       const jwt = localStorage.getItem('token');
+      // ========= POSTING ALL SERVICES API===============
       const res = await fetch(`${BASE_URL}provider-services`, {
         method: 'POST',
         headers: {
@@ -253,12 +314,13 @@ const Service = () => {
 
           {/* Remove Service Button */}
           <button
-            type='button'
-            onClick={() => removeService(service.id)}
-            className='bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer'
+            type="button"
+            onClick={() => deleteService(service.id)}
+            className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
           >
             <AiOutlineDelete />
           </button>
+
         </div>
       ))}
 
