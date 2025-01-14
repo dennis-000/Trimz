@@ -81,7 +81,7 @@
                 /* Full screen width */
                 height: 100%;
                 /* Full screen height */
-                position: fixed;
+                position: relative;
                 /* Fixing the navigation to the viewport */
                 top: 0;
                 /* Aligning to the top */
@@ -119,9 +119,21 @@
             .show__menu {
                 display: flex;
                 z-index: 9999;
+                animation: slideDown 0.3s ease forwards;
+
                 /* backdrop-filter: blur(0px); */
             }
             .navigation.show__menu{
                 /* backdrop-filter: blur(3px) */
+            }
+            @keyframes slideDown {
+                from {
+                  opacity: 0;
+                  transform: translateY(-10px);
+                }
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
             }
         }
