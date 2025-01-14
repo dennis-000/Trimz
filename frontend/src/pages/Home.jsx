@@ -30,7 +30,7 @@ const Home = () => {
   }, []);
   return <>
     {/* ====== Hero Section ========== */}
-    <section data-aos="fade-up" className='hero__section pt-[60px] 2xl:h-[800px]' id="hero">
+    <section className='hero__section pt-[60px] 2xl:h-[800px]' id="hero">
       <div className="container">
         <div className='flex flex-col lg:flex-row gap-[90px] items-center justify-between'>
 
