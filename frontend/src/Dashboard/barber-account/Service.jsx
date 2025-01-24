@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { toast } from 'react-toastify';
-import { BASE_URL, token } from '../../config';
-import GalleryUpload from './GalleryUpload';
+import { useState } from "react";
+import { AiOutlineDelete } from "react-icons/ai";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../config";
+import GalleryUpload from "./GalleryUpload";
 
 /**
  * Service Component
@@ -10,17 +10,17 @@ import GalleryUpload from './GalleryUpload';
  * Handles image uploads and submits all services to the server.
  */
 const Service = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-   const [formData, setFormData] = useState({
-    name: '',
-    provider: '',
+  const [selectedFiles, setSelectedFiles] = useState([]); // To handle multiple files
+  const [formData, setFormData] = useState({
+    name: "",
+    provider: "",
     services: [], // Array to store all services
-    price: '',
-    duration: '',
-    availability: '',
-    averageRating: '',
-    images: '',
-    providersDescription: '',
+    price: "",
+    duration: "",
+    availability: "",
+    averageRating: "",
+    images: "",
+    providersDescription: "",
   });
 
   // Adds a new service to the services array
@@ -29,29 +29,32 @@ const Service = () => {
       ...prevFormData,
       services: [...prevFormData.services, newService],
     }));
-    toast.success('Service added successfully!');
+    toast.success("Service added successfully!");
   };
 
   // Removes a service from the services array
   const removeService = (serviceId) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      services: prevFormData.services.filter((service) => service.id !== serviceId),
+      services: prevFormData.services.filter(
+        (service) => service.id !== serviceId
+      ),
     }));
-    toast.info('Service removed.');
+    toast.info("Service removed.");
   };
 
-  const userInfo = JSON.parse(localStorage.getItem('user'));
+  const userInfo = JSON.parse(localStorage.getItem("user"));
+
   // Handles the creation of a new service with default values
   const handleAddService = () => {
     const newService = {
       id: Date.now(), // Unique ID
       provider: userInfo._id,
-      service: '',
-      name: '',
-      description: '',
-      duration: '',
-      price: '',
+      service: "",
+      name: "",
+      description: "",
+      duration: "",
+      price: "",
       image: null,
       imagePreview: null, // Added imagePreview for preview functionality
       availability: true, // Default availability
@@ -71,9 +74,9 @@ const Service = () => {
 
   // Handles image upload for a specific service
   const handleImageUpload = (index, file) => {
-    const validImageTypes = ['image/jpeg', 'image/png'];
+    const validImageTypes = ["image/jpeg", "image/png"];
     if (!validImageTypes.includes(file.type)) {
-      toast.error('Invalid file type. Please upload a JPEG or PNG image.');
+      toast.error("Invalid file type. Please upload a JPEG or PNG image.");
       return;
     }
 
@@ -83,81 +86,90 @@ const Service = () => {
     setFormData((prevFormData) => {
       const updatedServices = [...prevFormData.services];
       updatedServices[index].image = file;
-      setSelectedFile(file);
       updatedServices[index].imagePreview = previewURL; // Set the preview URL
       return { ...prevFormData, services: updatedServices };
     });
+
+    setSelectedFiles((prevFiles) => [...prevFiles, file]); // Add the file to selectedFiles
   };
 
-  
   const validateServices = () => {
     for (const service of formData.services) {
-      if (!service.name || !service.description || !service.price || !service.duration) {
-        toast.error('All fields are required for each service.');
+      if (
+        !service.name ||
+        !service.description ||
+        !service.price ||
+        !service.duration
+      ) {
+        toast.error("All fields are required for each service.");
         return false;
       }
     }
     return true;
   };
+
   // Submits all services to the backend API
   const submitServices = async () => {
-     // Retrieve the provider's ID from localStorage
-    const user = JSON.parse(localStorage.getItem('user')); // Ensure it’s parsed into an object
+    // Retrieve the provider's ID from localStorage
+    const user = JSON.parse(localStorage.getItem("user")); // Ensure it’s parsed into an object
     const providerId = user?._id;
 
-    console.log(providerId);
-
     if (!providerId) {
-      toast.error('Provider ID not found in localStorage.');
+      toast.error("Provider ID not found in localStorage.");
       return;
     }
 
     if (formData.services.length === 0) {
-      toast.error('Please add at least one service before submitting.');
+      toast.error("Please add at least one service before submitting.");
       return;
     }
-  
+
     if (!validateServices()) {
       return;
     }
-  
-    try {
-      console.log(selectedFile)
-      const formDataToSend = new FormData();
-      formDataToSend.append('services', JSON.stringify(formData.services));
-      formDataToSend.append('provider', providerId);
-      formDataToSend.append('providerServiceImage[${index}]', selectedFile);
 
-  
-      const jwt = localStorage.getItem('token');
-      const res = await fetch(`${BASE_URL}provider-services`, {
-        method: 'POST',
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append("services", JSON.stringify(formData.services));
+      formDataToSend.append("provider", providerId);
+
+      // Append each selected file under the same key
+      selectedFiles.forEach((file) => {
+        formDataToSend.append("providerServiceImage", file);
+      });
+
+      const jwt = localStorage.getItem("token");
+      const response = await fetch(`${BASE_URL}provider-services`, {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${jwt}`,
-          // 'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${jwt}`, // No Content-Type header for multipart/form-data
         },
         body: formDataToSend,
       });
-  
-      if (res.ok) {
-        toast.success('Services submitted successfully!');
+
+      if (response.ok) {
+        toast.success("Services submitted successfully!");
       } else {
-        const errorData = await res.json();
+        const errorData = await response.json();
         toast.error(`Error: ${errorData.message}`);
       }
     } catch (error) {
-      toast.error('An error occurred while submitting services.' + error.message);
+      toast.error(
+        "An error occurred while submitting services: " + error.message
+      );
       console.error(error);
     }
   };
-  
 
   return (
-    <div className='mb-5'>
-      <p className='form__label'>Manage Services</p>
+    <div className="mb-5">
+      <p className="form__label">Manage Services</p>
 
       {formData.services.map((service, index) => (
-        <div key={service.id} className="p-6 bg-white rounded-lg shadow-md mb-6">
+        <div
+          key={service.id}
+          className="p-6 bg-white rounded-lg shadow-md mb-6"
+        >
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
             Service {index + 1}
           </h3>
@@ -215,7 +227,7 @@ const Service = () => {
                 checked={service.availability}
                 onChange={(e) =>
                   handleServiceChange(index, {
-                    target: { name: 'availability', value: e.target.checked },
+                    target: { name: "availability", value: e.target.checked },
                   })
                 }
                 className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
@@ -253,9 +265,9 @@ const Service = () => {
 
           {/* Remove Service Button */}
           <button
-            type='button'
+            type="button"
             onClick={() => removeService(service.id)}
-            className='bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer'
+            className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
           >
             <AiOutlineDelete />
           </button>
@@ -264,9 +276,9 @@ const Service = () => {
 
       {/* Add New Service Button */}
       <button
-        type='button'
+        type="button"
         onClick={handleAddService}
-        className='bg-[#000] py-2 px-5 h-fit text-white cursor-pointer btn mt-0 rounded-[0px] rounded-r-md'
+        className="bg-[#000] py-2 px-5 h-fit text-white cursor-pointer btn mt-0 rounded-[0px] rounded-r-md"
       >
         Add New Service
       </button>
@@ -274,15 +286,15 @@ const Service = () => {
       {/* Submit All Services Button */}
       {formData.services.length > 0 && (
         <button
-          type='button'
+          type="button"
           onClick={submitServices}
-          className='bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md'
+          className="bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md"
         >
           Submit All Services
         </button>
       )}
       <div>
-        <GalleryUpload/>
+        <GalleryUpload />
       </div>
     </div>
   );
