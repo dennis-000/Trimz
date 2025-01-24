@@ -128,7 +128,7 @@ export const createNewProviderService = async (req, res) => {
     }
     await createAuditLog(
       req.user ? req.user.id : "system",
-      id,
+      providerId,
       "ProviderService",
       "create",
       `New provider Service created`
