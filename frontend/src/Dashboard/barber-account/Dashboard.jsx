@@ -11,9 +11,11 @@ import starIcon from '../../assets/images/star.png'
 import { AuthContext } from "../../context/AuthContext";
 
 import Appointments  from "./Appointments";
+import Service from "./Service";
 const Dashboard = () => {
     const {user} = useContext(AuthContext)
   const { data,
+    
      loading, 
      error } = useGetProfile(`${BASE_URL}users/${user._id}`);
      
@@ -107,6 +109,7 @@ const Dashboard = () => {
                 {tab==='appointments' && 
                 <Appointments appointments={data.appointments}/>}
                 {tab==='settings' && <Profile barberData={data}/>}
+                {tab==='services' && <Service barberData={data}/>}
                 </div>
                 
                 

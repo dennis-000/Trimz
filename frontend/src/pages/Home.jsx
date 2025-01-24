@@ -21,6 +21,8 @@ import { useEffect } from 'react';
 import 'aos/dist/aos.css'; // Import AOS styles
 import AOS from 'aos'; // Import AOS library
 import ScrollToTop from './ScrollToTop';
+import RecomBarbers from '../components/Barbers/RecomBarbers';
+
 const Home = () => {
   useEffect(() => {
     AOS.init({
@@ -30,7 +32,7 @@ const Home = () => {
   }, []);
   return <>
     {/* ====== Hero Section ========== */}
-    <section data-aos="fade-up" className='hero__section pt-[60px] 2xl:h-[800px]' id="hero">
+    <section className='hero__section pt-[60px] 2xl:h-[800px]' id="hero">
       <div className="container">
         <div className='flex flex-col lg:flex-row gap-[90px] items-center justify-between'>
 
@@ -49,7 +51,7 @@ const Home = () => {
             </div>
             {/* Home btn */}
             <Link to="services" smooth={true} duration={500}>
-                <button className="btn">Start Free Now</button>
+                <button className="btn">Our Services</button>
               </Link>
           </div>
 
@@ -239,7 +241,7 @@ const Home = () => {
               </li> 
             </ul>
 
-            <Link to='/'>
+            <Link to='/aboutus'>
               <button className='btn'>Learn More</button>
             </Link>
           </div>
@@ -295,19 +297,9 @@ const Home = () => {
 
     {/* ============= Feature Section ============== */}
     {/* ============= High Rated OR Recommended Barbers Section START ============== */}
-    <section data-aos="zoom-in">
-      <div className="container">
-          <div className='xl:w-[470] mx-auto'>
-            <h2 className='heading text-center'>Recommended</h2>
-            <p className='text__para text-center'>
-              Discover top-rated barbers on campus for expert haircuts, trims, and beard grooming.
-              Book now for quality service tailored to your style.
-            </p> 
-        </div>
-
-        <BarberList/>
+    <div>
+        <RecomBarbers/>
       </div>
-    </section>
     {/* ============= High Rated OR Recommended Barbers Section END ============== */}
 
 
@@ -345,10 +337,12 @@ const Home = () => {
         </div>
         <Testimonial/>
       </div>
+      {/* <Footer/> */}
     </section>
     <ScrollToTop/>
 
     {/* ================== Testimonial SECTION End ==================*/}
+
   </>
 }
 

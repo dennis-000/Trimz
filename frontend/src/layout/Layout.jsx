@@ -4,7 +4,7 @@ import Header from '../components/header/Header';  // Importing the Header compo
 import Footer from '../components/footer/Footer';  // Importing the Footer component
 import Routers from '../routes/Routers';           // Importing the Routers component to handle page routing
 import {jwtDecode} from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 
 
@@ -12,6 +12,10 @@ import { useEffect } from 'react';
 const Layout = () => {
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // check if you are on this location
+  const isAuthPage = ['/login', '/register'].includes(location.pathname)
 
   useEffect(() => {
     const checkTokenExpiry = () => {
@@ -38,7 +42,8 @@ const Layout = () => {
   return (
     <>
       {/* Rendering the Header component */}
-      <Header />
+      {/* Only show header if not on Auth Pages */}
+      {!isAuthPage && <Header />}
 
       {/* Main content area where the current route's page will be displayed */}
       <main>
@@ -46,7 +51,8 @@ const Layout = () => {
       </main>
 
       {/* Rendering the Footer component */}
-      <Footer />
+      {/* Only show footer if not on Auth PAges */}
+      {!isAuthPage && <Footer />}
     </>
   );
 };
