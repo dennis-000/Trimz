@@ -1,8 +1,9 @@
-import { useState } from 'react';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { toast } from 'react-toastify';
-import { BASE_URL } from '../../config';
-import GalleryUpload from './GalleryUpload';
+import { useState } from "react";
+import { AiOutlineDelete } from "react-icons/ai";
+import { toast } from "react-toastify";
+import { BASE_URL } from "../../config";
+import GalleryUpload from "./GalleryUpload";
+
 
 /**
  * Service Component
@@ -10,32 +11,51 @@ import GalleryUpload from './GalleryUpload';
  * Handles image uploads and submits all services to the server.
  */
 const Service = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-   const [formData, setFormData] = useState({
-    name: '',
-    provider: '',
+  const [selectedFiles, setSelectedFiles] = useState([]); // To handle multiple files
+  const [formData, setFormData] = useState({
+    name: "",
+    provider: "",
     services: [], // Array to store all services
-    price: '',
-    duration: '',
-    availability: '',
-    averageRating: '',
-    images: '',
-    providersDescription: '',
+    price: "",
+    duration: "",
+    availability: "",
+    averageRating: "",
+    images: "",
+    providersDescription: "",
   });
 
-  const userInfo = JSON.parse(localStorage.getItem('user')); // Retrieve user info from localStorage
-  const jwt = localStorage.getItem('token'); // Retrieve token from localStorage
+  // Adds a new service to the services array
+  const addService = (newService) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      services: [...prevFormData.services, newService],
+    }));
+    toast.success("Service added successfully!");
+  };
 
+  // Removes a service from the services array
+  const removeService = (serviceId) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      services: prevFormData.services.filter(
+        (service) => service.id !== serviceId
+      ),
+    }));
+    toast.info("Service removed.");
+  };
 
-  // Add a new service
-  const addService = () => {
+  const userInfo = JSON.parse(localStorage.getItem("user"));
+
+  // Handles the creation of a new service with default values
+  const handleAddService = () => {
     const newService = {
-      id: Date.now(), // Generate unique ID
-      provider: userInfo?._id || '', // Default to current user's ID
-      name: '',
-      description: '',
-      duration: '',
-      price: '',
+      id: Date.now(), // Unique ID
+      provider: userInfo._id,
+      service: "",
+      name: "",
+      description: "",
+      duration: "",
+      price: "",
       image: null,
       imagePreview: null,
       availability: true, // Default to available
@@ -89,97 +109,102 @@ const Service = () => {
 
   // Handles image upload for a specific service
   const handleImageUpload = (index, file) => {
-    const validImageTypes = ['image/jpeg', 'image/png'];
+    const validImageTypes = ["image/jpeg", "image/png"];
     if (!validImageTypes.includes(file.type)) {
-      toast.error('Invalid file type. Please upload a JPEG or PNG image.');
+      toast.error("Invalid file type. Please upload a JPEG or PNG image.");
       return;
     }
 
     // Create a preview URL for the image
     const previewURL = URL.createObjectURL(file);
-    setFormData((prev) => {
-      const updatedServices = [...prev.services];
-      updatedServices[index] = { ...updatedServices[index], image: file, imagePreview: previewURL };
-      return { ...prev, services: updatedServices };
+
+    setFormData((prevFormData) => {
+      const updatedServices = [...prevFormData.services];
+      updatedServices[index].image = file;
+      updatedServices[index].imagePreview = previewURL; // Set the preview URL
+      return { ...prevFormData, services: updatedServices };
     });
-    setSelectedFile(file);
+
+    setSelectedFiles((prevFiles) => [...prevFiles, file]); // Add the file to selectedFiles
   };
 
-  // VALIDATION OF SERVICES
   const validateServices = () => {
     for (const service of formData.services) {
-      if (!service.name || !service.description || !service.price || !service.duration || !service.image) {
-        toast.error('All fields are required for each service.');
+      if (
+        !service.name ||
+        !service.description ||
+        !service.price ||
+        !service.duration
+      ) {
+        toast.error("All fields are required for each service.");
         return false;
       }
     }
     return true;
   };
 
-  // Submits all services to the backend 
+  // Submits all services to the backend API
   const submitServices = async () => {
-    if (!validateServices()) return;
+    // Retrieve the provider's ID from localStorage
+    const user = JSON.parse(localStorage.getItem("user")); // Ensure it’s parsed into an object
+    const providerId = user?._id;
 
-    const providerId = userInfo?._id;
     if (!providerId) {
-      toast.error('Provider ID not found.');
+      toast.error("Provider ID not found in localStorage.");
       return;
     }
 
-    const formDataToSend = new FormData();
-    formDataToSend.append('services', JSON.stringify(formData.services));
-    formDataToSend.append('provider', providerId);
-    if (selectedFile) formDataToSend.append('image', selectedFile);
+    if (formData.services.length === 0) {
+      toast.error("Please add at least one service before submitting.");
+      return;
+    }
+
+    if (!validateServices()) {
+      return;
+    }
 
     try {
-       // Create a FormData instance for each service
-    const promises = formData.services.map(async (service) => {
-      const serviceFormData = new FormData();
-      serviceFormData.append('name', service.name);
-      serviceFormData.append('description', service.description);
-      serviceFormData.append('duration', service.duration);
-      serviceFormData.append('price', service.price);
-      serviceFormData.append('availability', service.availability);
-      serviceFormData.append('provider', providerId);
-      
-      if (service.image) {
-        serviceFormData.append('image', service.image);
-      }
+      const formDataToSend = new FormData();
+      formDataToSend.append("services", JSON.stringify(formData.services));
+      formDataToSend.append("provider", providerId);
 
+      // Append each selected file under the same key
+      selectedFiles.forEach((file) => {
+        formDataToSend.append("providerServiceImage", file);
+      });
+
+      const jwt = localStorage.getItem("token");
       const response = await fetch(`${BASE_URL}provider-services`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${jwt}` ,
-      },
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${jwt}`, // No Content-Type header for multipart/form-data
+        },
         body: formDataToSend,
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to submit service: ${service.name}`);
+      if (response.ok) {
+        toast.success("Services submitted successfully!");
+      } else {
+        const errorData = await response.json();
+        toast.error(`Error: ${errorData.message}`);
       }
-
-      return response.json();
-    });
-
-    await Promise.all(promises);
-    toast.success('All services submitted successfully.');
-    
-    // Clear the form after successful submission
-    setFormData(prev => ({
-      ...prev,
-      services: []
-    }));
-    
-  } catch (error) {
-    toast.error(`An error occurred: ${error.message}`);
-  }
-};
+    } catch (error) {
+      toast.error(
+        "An error occurred while submitting services: " + error.message
+      );
+      console.error(error);
+    }
+  };
 
   return (
-    <div className='mb-5'>
-      <p className='form__label'>Manage Services</p>
+    <div className="mb-5">
+      <p className="form__label">Manage Services</p>
 
       {formData.services.map((service, index) => (
-        <div key={service.id} className="p-6 bg-white rounded-lg shadow-md mb-6">
+        <div
+          key={service.id}
+          className="p-6 bg-white rounded-lg shadow-md mb-6"
+        >
           <h3 className="text-xl font-semibold mb-4 text-gray-800">
             Service {index + 1}
           </h3>
@@ -237,7 +262,7 @@ const Service = () => {
                 checked={service.availability}
                 onChange={(e) =>
                   handleServiceChange(index, {
-                    target: { name: 'availability', value: e.target.checked },
+                    target: { name: "availability", value: e.target.checked },
                   })
                 }
                 className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
@@ -276,21 +301,19 @@ const Service = () => {
           {/* Remove Service Button */}
           <button
             type="button"
-            onClick={() => deleteService(service.id)}
+            onClick={() => removeService(service.id)}
             className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
           >
             <AiOutlineDelete />
           </button>
-
         </div>
       ))}
 
       {/* Add New Service Button */}
       <button
-        type='button'
-        onClick={addService}
-        className='bg-[#000] py-2 px-5 h-fit text-white cursor-pointer 
-        btn mt-4 mr-4 rounded-[0px] rounded-r-md'
+        type="button"
+        onClick={handleAddService}
+        className="bg-[#000] py-2 px-5 h-fit text-white cursor-pointer btn mt-0 rounded-[0px] rounded-r-md"
       >
         Add New Service
       </button>
@@ -298,15 +321,15 @@ const Service = () => {
       {/* Submit All Services Button */}
       {formData.services.length > 0 && (
         <button
-          type='button'
+          type="button"
           onClick={submitServices}
-          className='bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md'
+          className="bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md"
         >
           Submit All Services
         </button>
       )}
       <div>
-        <GalleryUpload/>
+        <GalleryUpload />
       </div>
     </div>
   );
