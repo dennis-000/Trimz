@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
@@ -12,6 +12,7 @@ import GalleryUpload from "./GalleryUpload";
  */
 const Service = () => {
   const [selectedFiles, setSelectedFiles] = useState([]); // To handle multiple files
+  const [existingServices, setExistingServices] = useState([]); // New state for existing services
   const [formData, setFormData] = useState({
     name: "",
     provider: "",
@@ -24,14 +25,114 @@ const Service = () => {
     providersDescription: "",
   });
 
-  // Adds a new service to the services array
-  const addService = (newService) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      services: [...prevFormData.services, newService],
-    }));
-    toast.success("Service added successfully!");
+
+
+
+  // Fetch existing services when component mounts
+  useEffect(() => {
+    fetchExistingServices();
+  }, []);
+
+  // Fetch existing services for the provider
+  const fetchExistingServices = async () => {
+    try {
+      const jwt = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      if (!jwt || !user?._id) {
+        toast.error("Authentication required");
+        return;
+      }
+      // GET THE REQUEST FROM THE SERVICE THE PROVIDER POST
+      const response = await fetch(`${BASE_URL}services/${user._id}`, {
+        method: 'GET',
+        headers: { 
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (response.ok) {
+        const services = await response.json();
+        setExistingServices(services);
+      } else {
+        const errorData = await response.json();
+        toast.error(`Error fetching services: ${errorData.message}`);
+      }
+    } catch (error) {
+      toast.error(`An error occurred: ${error.message}`);
+    }
   };
+
+  // Update existing service
+  const updateExistingService = async (serviceId, updatedData) => {
+    try {
+      const jwt = localStorage.getItem("token");
+      const formDataToSend = new FormData();
+      
+      // Append updated service data
+      Object.keys(updatedData).forEach(key => {
+        formDataToSend.append(key, updatedData[key]);
+      });
+
+// ====== UPDATE =====
+      const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+        method: 'PATCH',
+        headers: { 
+          'Authorization': `Bearer ${jwt}`
+        },
+        body: formDataToSend
+      });
+
+      if (response.ok) {
+        toast.success("Service updated successfully!");
+        fetchExistingServices(); // Refresh the services list
+      } else {
+        const errorData = await response.json();
+        toast.error(`Error updating service: ${errorData.message}`);
+      }
+    } catch (error) {
+      toast.error(`An error occurred: ${error.message}`);
+    }
+  };
+
+  // Delete existing service
+  const deleteExistingService = async (serviceId) => {
+    try {
+      const jwt = localStorage.getItem("token");
+      const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+        method: 'DELETE',
+        headers: { 
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        },
+      });
+
+      if (response.ok) {
+        toast.success("Service deleted successfully!");
+        fetchExistingServices(); // Refresh the services list
+      } else {
+        const errorData = await response.json();
+        toast.error(`Error deleting service: ${errorData.message}`);
+      }
+    } catch (error) {
+      toast.error(`An error occurred: ${error.message}`);
+    }
+  };
+
+
+
+
+
+
+  // Adds a new service to the services array
+  // const addService = (newService) => {
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     services: [...prevFormData.services, newService],
+  //   }));
+  //   toast.success("Service added successfully!");
+  // };
 
   // Removes a service from the services array
   const removeService = (serviceId) => {
@@ -69,27 +170,27 @@ const Service = () => {
 
 
  // Delete a service
- const deleteService = async (serviceId) => {
-  try {
-    const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${jwt}` },
-    });
+//  const deleteService = async (serviceId) => {
+//   try {
+//     const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+//       method: 'DELETE',
+//       headers: { Authorization: `Bearer ${jwt}` },
+//     });
 
-    if (response.ok) {
-      setFormData((prev) => ({
-        ...prev,
-        services: prev.services.filter((service) => service.id !== serviceId),
-      }));
-      toast.success('Service deleted successfully.');
-    } else {
-      const errorData = await response.json();
-      toast.error(`Error deleting service: ${errorData.message}`);
-    }
-  } catch (error) {
-    toast.error(`An error occurred: ${error.message}`);
-  }
-};
+//     if (response.ok) {
+//       setFormData((prev) => ({
+//         ...prev,
+//         services: prev.services.filter((service) => service.id !== serviceId),
+//       }));
+//       toast.success('Service deleted successfully.');
+//     } else {
+//       const errorData = await response.json();
+//       toast.error(`Error deleting service: ${errorData.message}`);
+//     }
+//   } catch (error) {
+//     toast.error(`An error occurred: ${error.message}`);
+//   }
+// };
 
   
 
@@ -144,9 +245,9 @@ const Service = () => {
   };
 
   // Submits all services to the backend API
+ // Modified submitServices to refresh existing services after submission
   const submitServices = async () => {
-    // Retrieve the provider's ID from localStorage
-    const user = JSON.parse(localStorage.getItem("user")); // Ensure it’s parsed into an object
+    const user = JSON.parse(localStorage.getItem("user"));
     const providerId = user?._id;
 
     if (!providerId) {
@@ -159,16 +260,12 @@ const Service = () => {
       return;
     }
 
-    if (!validateServices()) {
-      return;
-    }
-
     try {
       const formDataToSend = new FormData();
       formDataToSend.append("services", JSON.stringify(formData.services));
       formDataToSend.append("provider", providerId);
 
-      // Append each selected file under the same key
+      // Append each selected file
       selectedFiles.forEach((file) => {
         formDataToSend.append("providerServiceImage", file);
       });
@@ -177,13 +274,17 @@ const Service = () => {
       const response = await fetch(`${BASE_URL}provider-services`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${jwt}`, // No Content-Type header for multipart/form-data
+          Authorization: `Bearer ${jwt}`,
         },
         body: formDataToSend,
       });
 
       if (response.ok) {
         toast.success("Services submitted successfully!");
+        fetchExistingServices(); // Refresh the existing services
+        // Reset the form after successful submission
+        setFormData(prev => ({ ...prev, services: [] }));
+        setSelectedFiles([]);
       } else {
         const errorData = await response.json();
         toast.error(`Error: ${errorData.message}`);
@@ -196,10 +297,58 @@ const Service = () => {
     }
   };
 
+  
   return (
-    <div className="mb-5">
-      <p className="form__label">Manage Services</p>
 
+    <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-4">All Services</h3>
+              {existingServices.length === 0 ? (
+              <p className="text-gray-600">No services found. Add some services!</p>
+            ) : (
+              existingServices.map((service) => (
+                <div 
+                  key={service._id} 
+                  className="bg-white rounded-lg shadow-md p-6 mb-4"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-lg font-semibold">{service.name}</h4>
+                    <div className="flex space-x-2">
+                      <button 
+                        onClick={() => updateExistingService(service._id)}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <AiOutlineEdit />
+                      </button>
+                      <button 
+                        onClick={() => deleteExistingService(service._id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <AiOutlineDelete />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <p><strong>Description:</strong> {service.description}</p>
+                    <p><strong>Price:</strong> {service.price} Cedis</p>
+                    <p><strong>Duration:</strong> {service.duration}</p>
+                    <p>
+                      <strong>Status:</strong> 
+                      {service.availability ? 'Available' : 'Unavailable'}
+                    </p>
+                  </div>
+                  {service.image && (
+                    <img 
+                      src={service.image} 
+                      alt={service.name} 
+                      className="mt-4 w-32 h-32 object-cover rounded-md"
+                    />
+                  )}
+                </div>
+              ))
+            )}
+
+
+      <p className="form__label">Manage Services</p>
       {formData.services.map((service, index) => (
         <div
           key={service.id}
@@ -333,6 +482,6 @@ const Service = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Service;
