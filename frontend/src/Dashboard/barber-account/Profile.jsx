@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL, token } from '../../config';
 import { toast } from 'react-toastify';
-import ServiceManagement from './ServiceManagement';
+// import ServiceManagement from './ServiceManagement';
 
 const Profile = ({barberData}) => {
   const [formData, setFormData] = useState({
+    // State to store the profile form data
     name: '',
     email: '',
     password: '',
@@ -19,9 +20,10 @@ const Profile = ({barberData}) => {
     timeSlots: [],
     about: '',
     profilePicture: null,
-    service: '',
+    // service: '',
   });
 
+  // Populate the form data when barberData changes
 
   useEffect(() => {
     if (barberData) {
@@ -42,17 +44,20 @@ const Profile = ({barberData}) => {
     }
   }, [barberData]);
   
+    // Handle form input changes for text fields
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+
+  // Submit the updated profile data
   const updateProfileHandler = async (e) => {
     e.preventDefault();
     
     try {
       // Create a FormData object to handle file upload
       const updateData = new FormData();
-      
+      // Append all form data fields except profilePicture to FormData
       // Append all text fields to FormData
       Object.keys(formData).forEach(key => {
         if (key !== 'profilePicture') {
@@ -64,11 +69,10 @@ const Profile = ({barberData}) => {
       if (formData.profilePicture instanceof File) {
         updateData.append('profilePicture', formData.profilePicture);
       }
-  
+      // Send the updated data to the server
       const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
         method: 'PATCH',
         headers: {
-          // Remove 'content-type' header to let browser set multipart/form-data
           Authorization: `Bearer ${token}`
         },
         body: updateData
@@ -88,6 +92,7 @@ const Profile = ({barberData}) => {
     }
   };
   
+    // Handle file input change for profile picture
   // Modify handleFileInputChange to store the File object
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -107,7 +112,7 @@ const Profile = ({barberData}) => {
   
 
 
-
+  // Handle dynamic changes for reusable inputs like timeSlots
   // Reusable function for handling input changes
   const handleReusableInputChangeFunc = (key, index, event) => {
     const { name, value } = event.target;
@@ -162,15 +167,6 @@ const Profile = ({barberData}) => {
     });
   };
 
-  // reusable function for adding more time slots
-  const addTimeSlot = (e) => {
-    e.preventDefault();
-    addItem('timeSlots', {
-      day: 'Sunday',
-      startingTime: '10:00',
-      endingTime: '5:00',
-    });
-  };  
 
   // reusable function that updates the 'achievements' field in the form data when a change event occurs
   const handleAchievementsChange = (event, index) => {
@@ -181,6 +177,17 @@ const Profile = ({barberData}) => {
   const handleExperienceChange = (event, index) => {
     handleReusableInputChangeFunc('experience', index, event);
   };
+
+   // reusable function for adding more time slots
+   const addTimeSlot = (e) => {
+    e.preventDefault();
+    addItem('timeSlots', {
+      day: 'Sunday',
+      startingTime: '10:00',
+      endingTime: '5:00',
+    });
+  };  
+    // Handle changes to specific time slots
 
   // reusable function that updates the 'timeSlots' field in the form data when a change event occurs
   const handleTimeSlotsChange = (event, index) => {
@@ -274,7 +281,7 @@ const Profile = ({barberData}) => {
               </div>
             </div>
             <div>
-              <ServiceManagement/>
+              {/* <ServiceManagement/> */}
             </div>
 
         {/* Achievements Section */}
@@ -429,7 +436,6 @@ const Profile = ({barberData}) => {
                     value={item.startingTime}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleTimeSlotsChange(e, index)}
-                    
                   />
                 </div>
                 <div>
@@ -442,26 +448,27 @@ const Profile = ({barberData}) => {
                     onChange={(e) => handleTimeSlotsChange(e, index)}
                   />
                 </div>
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    onClick={() => removeItem('timeSlots', index)}
-                    className='bg-red-600 p-2 rounded-full text-white text-[18px] mt-6 cursor-pointer'
-                  >
-                    <AiOutlineDelete />
-                  </button>
-                </div>
               </div>
+              <button
+                type="button"
+                onClick={() => removeItem('timeSlots', index)}
+                className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
+              >
+                <AiOutlineDelete />
+              </button>
             </div>
           ))}
           <button
             type="button"
             onClick={addTimeSlot}
-            className='bg-[#000] py-2 px-5 h-fit text-white cursor-pointer btn mt-0 rounded-[0px] rounded-r-md'
+            className="bg-[#000] py-2 px-5 h-fit text-white cursor-pointer btn mt-0 rounded-[0px] rounded-r-md"
           >
             Add Time Slot
           </button>
         </div>
+
+
+        
 {/* ================= About ===============*/}
             <div className="mb-5">
               <p className="form__label">About*</p>

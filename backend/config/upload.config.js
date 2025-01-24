@@ -13,6 +13,7 @@
 //     },
 // });
 
+
 // const upload = multer({
 //     storage: storage,
 //     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
@@ -29,10 +30,14 @@ const createDirectory = (dir) => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
 };
 
 const profilePictureDir = "uploads/profilePictures";
 const galleryDir = "uploads/gallery";
+const serviceDir = "uploads/service";
 const serviceDir = "uploads/service";
 
 createDirectory(profilePictureDir);
@@ -70,10 +75,19 @@ const fileFilter = (req, file, cb) => {
     } else {
         cb(new Error("Unsupported file type. Only JPEG, PNG, and JPG are allowed."));
     }
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error("Unsupported file type. Only JPEG, PNG, and JPG are allowed."));
+    }
 };
 
 // Configure upload instance
 const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max per file
     storage: storage,
     fileFilter: fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max per file

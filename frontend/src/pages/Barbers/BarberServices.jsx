@@ -1,7 +1,8 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useState, useEffect } from 'react';
 import { Calendar, ShoppingCart, X } from 'lucide-react';
-import service1 from '../../assets/images/classicFade.jpg';
+import { toast } from 'react-toastify';
+import { BASE_URL } from '../../config';
 
 const BookingSystem = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -9,49 +10,53 @@ const BookingSystem = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-  
+  const [providerServices, setProviderServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample data with prices in Ghanaian Cedis
-  const [services] = useState([
-    {
-      id: 1,
-      name: "Men's Haircut",
-      duration: "30 min",
-      price: 150,
-      image: service1,
-    },
-    {
-      id: 2,
-      name: "Beard Trim",
-      duration: "20 min",
-      price: 100,
-      image: "/api/placeholder/100/100"
-    },
-    {
-      id: 3,
-      name: "Hair & Beard Combo",
-      duration: "45 min",
-      price: 225,
-      image: "/api/placeholder/100/100"
-    },
-    {
-      id: 4,
-      name: "Kids Haircut",
-      duration: "20 min",
-      price: 125,
-      image: "/api/placeholder/100/100"
-    }
-  
-  ]);
+  // Fetch provider services when component mounts
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}provider-services/${barberData._id}`, {
+          method: 'GET', 
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+                if (!res.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        const data = await res.json();
+        // Transform the data to match our required format
+        const formattedServices = data.services.map(service => ({
+          id: service.id,
+          name: service.name,
+          duration: service.duration,
+          price: parseFloat(service.price),
+          image: service.image || "/api/placeholder/100/100", // Fallback image if none provided
+          description: service.description,
+          availability: service.availability
+        }));
+        setProviderServices(formattedServices.filter(service => service.availability));
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to load services. Please try again later.');
+        setLoading(false);
+        toast.error('Error loading services');
+      }
+    };
+
+    fetchServices();
+  }, []);
+
+  // Rest of your existing functions
   const calculateTotalDuration = () => {
     return selectedServices.reduce((total, service) => {
-      const duration = parseInt(service.duration.split(' ')[0], 10); // Extract numeric value
+      const duration = parseInt(service.duration.split(' ')[0], 10);
       return total + (isNaN(duration) ? 0 : duration);
     }, 0);
   };
-  
- 
-  
 
   const calculateTotalPrice = () => {
     return selectedServices.reduce((total, service) => total + service.price, 0);
@@ -60,8 +65,6 @@ const BookingSystem = () => {
   const formatPrice = (price) => {
     return `GH₵${price.toFixed(2)}`;
   };
-
-  
 
   const generateTimeSlots = () => {
     const slots = [];
@@ -72,6 +75,53 @@ const BookingSystem = () => {
     }
     return slots;
   };
+
+  // Modified ServiceSelection component to use provider services
+  const ServiceSelection = () => (
+    <div className="max-w-3xl mx-auto p-4">
+      {loading ? (
+        <div className="text-center py-8">Loading services...</div>
+      ) : error ? (
+        <div className="text-center text-red-500 py-8">{error}</div>
+      ) : (
+        <div className="mt-8">
+          {currentStep === 1 && (
+            <>
+              <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
+                {providerServices.map((service) => (
+                  <div
+                    key={service.id}
+                    onClick={() => handleServiceSelect(service)}
+                    className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all
+                      ${selectedServices.find(s => s.id === service.id) 
+                        ? 'border-blue-500 bg-blue-50' 
+                        : 'hover:border-blue-500'}`}
+                  >
+                    <img 
+                      src={service.image} 
+                      alt={service.name} 
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                    <div className="ml-4 flex-1">
+                      <h3 className="font-semibold">{service.name}</h3>
+                      <p className="text-sm text-gray-500">{service.duration}</p>
+                      {service.description && (
+                        <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                      )}
+                      <p className="text-blue-600 font-semibold mt-1">
+                        {formatPrice(service.price)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   const timeSlots = generateTimeSlots();
 
@@ -164,35 +214,7 @@ const BookingSystem = () => {
     </div>
   );
 
-  const ServiceSelection = () => (
-    <div className="max-w-3xl mx-auto p-4">
-    <div className="mt-8">
-      {currentStep === 1 && (
-        <>
-          <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
-      {services.map((service) => (
-        <div
-          key={service.id}
-          onClick={() => handleServiceSelect(service)}
-          className="flex items-center p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all"
-        >
 
-          {/* service image */}
-          <img src={service.image} alt={service.name} className="w-16 h-16 rounded-lg object-cover" />
-          <div className="ml-4 flex-1">
-            <h3 className="font-semibold">{service.name}</h3>
-            <p className="text-sm text-gray-500">{service.duration}</p>
-            <p className="text-blue-600 font-semibold">{formatPrice(service.price)}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-    </>
-    )}
-    </div>
-    </div>
-  );
 
   const PaymentMethodSelection = () => (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-2">
@@ -216,7 +238,6 @@ const BookingSystem = () => {
         { num: 2, text: "Payment Method" },
         { num: 3, text: "Date & Time" },
         { num: 4, text: "Confirm" }
-      // eslint-disable-next-line no-unused-vars
       ].map((step, index) => (
         <div key={step.num} className="flex items-center">
           <div className={`flex items-center ${currentStep >= step.num ? 'text-blue-600' : 'text-gray-400'}`}>
@@ -290,6 +311,9 @@ const BookingSystem = () => {
     </div>
   );
 
+
+
+  // =========== DISPLAY CONFIRMATION ===========
   const Confirmation = () => (
     <div className="space-y-6 px-2">
       <div className="bg-blue-50 p-4 rounded-lg">
