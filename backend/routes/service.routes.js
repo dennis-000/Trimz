@@ -6,9 +6,9 @@ const serviceRouter = Router()
 
 //Service
 serviceRouter.get("/", getAllServices)
-serviceRouter.get("/:id", getSingleService)//Get a single service
+serviceRouter.get("/:id", getSingleService) //Get a single service
 serviceRouter.post("/", requireAuth, createNewService)
-serviceRouter.patch("/:id",requireAuth, updateService)
-serviceRouter.delete("/:id",requireAuth, deleteService)
+serviceRouter.patch("/:id", requireAuth, updateService)
+serviceRouter.delete("/:id", requireAuth, deleteService)
 
 export default serviceRouter
