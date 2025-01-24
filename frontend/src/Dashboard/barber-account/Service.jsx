@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
 import GalleryUpload from "./GalleryUpload";
 
+
 /**
  * Service Component
  * Allows the management of barber services, including adding, editing, and removing services.
@@ -56,21 +57,55 @@ const Service = () => {
       duration: "",
       price: "",
       image: null,
-      imagePreview: null, // Added imagePreview for preview functionality
-      availability: true, // Default availability
+      imagePreview: null,
+      availability: true, // Default to available
     };
-    addService(newService);
+    setFormData((prev) => ({
+      ...prev,
+      services: [...prev.services, newService],
+    }));
+    toast.success('New service added.');
   };
 
-  // Updates service details in the services array
-  const handleServiceChange = (index, event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => {
-      const updatedServices = [...prevFormData.services];
-      updatedServices[index] = { ...updatedServices[index], [name]: value };
-      return { ...prevFormData, services: updatedServices };
+
+ // Delete a service
+ const deleteService = async (serviceId) => {
+  try {
+    const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${jwt}` },
     });
-  };
+
+    if (response.ok) {
+      setFormData((prev) => ({
+        ...prev,
+        services: prev.services.filter((service) => service.id !== serviceId),
+      }));
+      toast.success('Service deleted successfully.');
+    } else {
+      const errorData = await response.json();
+      toast.error(`Error deleting service: ${errorData.message}`);
+    }
+  } catch (error) {
+    toast.error(`An error occurred: ${error.message}`);
+  }
+};
+
+  
+
+  
+    // Update service details
+    const handleServiceChange = (index, event) => {
+      const { name, value } = event.target;
+  
+      setFormData((prev) => {
+        const updatedServices = [...prev.services];
+        updatedServices[index] = { ...updatedServices[index], [name]: value };
+        return { ...prev, services: updatedServices };
+      });
+    };
+
+
 
   // Handles image upload for a specific service
   const handleImageUpload = (index, file) => {
@@ -271,6 +306,15 @@ const Service = () => {
           >
             <AiOutlineDelete />
           </button>
+//           <button
+//             type="button"
+//             onClick={() => removeService(service.id)}
+//             onClick={() => deleteService(service.id)}
+//             className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
+//           >
+            <AiOutlineDelete />
+          </button>
+
         </div>
       ))}
 

@@ -11,6 +11,8 @@ import { useState, useEffect } from 'react';
 
 const Barbers = () => {
   const [query, setQuery] = useState('');
+  const [debounceQuery, setDebounceQuery] = useState('');
+
 
   useEffect(()=>{
     const timeout = setTimeout(()=>{
@@ -20,7 +22,6 @@ const Barbers = () => {
 
   },[query])
 
-  const [debounceQuery, setDebounceQuery] = useState('');
 
   const handleSearch = () => {
     setQuery(query.trim())
@@ -29,7 +30,7 @@ const Barbers = () => {
 
   }
 
-
+// Search from the Backend (Users Table)
   const {
     data:
     providers,
@@ -73,9 +74,9 @@ const Barbers = () => {
           {loading && <Loader/>}
           {error && <Error/>}
           {!loading && !error &&
-            <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'> {/* Grid container for the barber cards */}
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5'> {/* Grid container for the barber cards */}
             {/* Mapping through the barbers array and rendering a BarberCard for each barber */}
-            {providers.map((provider) =>
+            {providers?.map((provider) =>
               <BarberCard key={provider.id} user={provider} />// Each card needs a unique key
             )}
           </div>}
