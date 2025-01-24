@@ -306,15 +306,6 @@ const Service = () => {
           >
             <AiOutlineDelete />
           </button>
-//           <button
-//             type="button"
-//             onClick={() => removeService(service.id)}
-//             onClick={() => deleteService(service.id)}
-//             className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
-//           >
-            <AiOutlineDelete />
-          </button>
-
         </div>
       ))}
 
