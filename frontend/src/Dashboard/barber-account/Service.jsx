@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
 import GalleryUpload from "./GalleryUpload";
@@ -44,7 +44,7 @@ const Service = () => {
         return;
       }
       // GET THE REQUEST FROM THE SERVICE THE PROVIDER POST
-      const response = await fetch(`${BASE_URL}services/${user._id}`, {
+      const response = await fetch(`${BASE_URL}provider-services/provider/${user._id}`, {
         method: 'GET',
         headers: { 
           'Authorization': `Bearer ${jwt}`,
@@ -54,7 +54,8 @@ const Service = () => {
 
       if (response.ok) {
         const services = await response.json();
-        setExistingServices(services);
+        console.log(services);
+        setExistingServices(services.data);
       } else {
         const errorData = await response.json();
         toast.error(`Error fetching services: ${errorData.message}`);
@@ -338,7 +339,7 @@ const Service = () => {
                   </div>
                   {service.image && (
                     <img 
-                      src={service.image} 
+                      src={service.image.url} 
                       alt={service.name} 
                       className="mt-4 w-32 h-32 object-cover rounded-md"
                     />
