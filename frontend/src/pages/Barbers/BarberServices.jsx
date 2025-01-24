@@ -4,7 +4,7 @@ import { Calendar, ShoppingCart, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
 
-const BookingSystem = () => {
+const BookingSystem = ({barberData}) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -14,19 +14,28 @@ const BookingSystem = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch provider services when component mounts
+  // Fetch provider services
   useEffect(() => {
     const fetchServices = async () => {
+      if (!barberData?._id) {
+        setError('Barber information not available');
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch(`${BASE_URL}provider-services/${barberData._id}`, {
-          method: 'GET', 
+          method: 'GET',
           headers: {
             'Content-Type': 'application/json',
           },
         });
-                if (!res.ok) {
+
+        if (!res.ok) {
           throw new Error('Failed to fetch services');
         }
+
+
         const data = await res.json();
         // Transform the data to match our required format
         const formattedServices = data.services.map(service => ({
@@ -48,9 +57,9 @@ const BookingSystem = () => {
     };
 
     fetchServices();
-  }, []);
+  }, [barberData]);
 
-  // Rest of your existing functions
+  // Calculate Total Duration per services
   const calculateTotalDuration = () => {
     return selectedServices.reduce((total, service) => {
       const duration = parseInt(service.duration.split(' ')[0], 10);
@@ -76,7 +85,7 @@ const BookingSystem = () => {
     return slots;
   };
 
-  // Modified ServiceSelection component to use provider services
+  // ServiceSelection component to use provider services
   const ServiceSelection = () => (
     <div className="max-w-3xl mx-auto p-4">
       {loading ? (

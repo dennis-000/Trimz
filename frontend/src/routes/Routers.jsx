@@ -12,6 +12,8 @@ import ProtectedRoute from './ProtectedRoute';
 import MyAccount from '../Dashboard/user-account/MyAccount';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
+import ResetPassword from '../pages/ResetPassword';
+
 
 const Routers = () => {
   return (
@@ -25,6 +27,7 @@ const Routers = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/services" element={<Services />} />
       <Route path="/aboutus" element={<Aboutus />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route
         path="/users/profile/me"
         element={

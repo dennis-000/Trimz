@@ -11,6 +11,7 @@ const Login = () => {
     email: '',
     password: '',
   });
+  
 
   // Loading State
   const [loading, setLoading] = useState(false);
@@ -47,13 +48,15 @@ const Login = () => {
         throw new Error(result.message);
       }
 
+      const userRole = result.data.role;
+
       // After successful login
       dispatch({
         type: 'LOGIN_SUCCESS',
         payload: {
           user: result.data,
           token: result.token,
-          role: result.data.role,
+          role: userRole,
         },
       });
 
@@ -61,22 +64,60 @@ const Login = () => {
       console.log("User Role:", result.data.role);
 
       // Dynamically navigate based on role
-      if (result.data.role === 'user') {
-        navigate('/users/profile/me'); // Redirect to user dashboard
-      } else if (result.data.role === 'barber') {
-        navigate('/barber/profile/me'); // Redirect to barber dashboard
+      if (userRole === 'user') {
+        navigate('/users/profile/me', {replace: true}); // Redirect to user dashboard
+      } else if (userRole === 'barber') {
+        navigate('/barber/profile/me', {replace: true}); // Redirect to barber dashboard
       } else {
-        navigate('/home'); // Fallback navigation
+        navigate('/home', {replace: true}); // Fallback navigation
       }
 
-      setLoading(false); // Stop loading state
       toast.success(result.message); // Show success message
+      setLoading(false); // Stop loading state
     } catch (err) {
       // Handle login errors
-      toast.error(err.message); // Show error message
+      toast.success(err.message); // Show error message
       setLoading(false); // Stop loading state
     }
+    
   };
+  
+  //Add forgotPassword handler
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    
+    if(!formData.email){
+      toast.error('Please enter your email');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${BASE_URL}auth/reset-password/`, {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const result = await res.json();
+
+      if(!res.ok){
+        throw new Error(result.message);
+      }
+
+      toast.success('Password reset link sent to your email. Please check your inbox.');
+      setLoading(false);
+
+    } catch(err) {
+      toast.error(err.message);
+      setLoading(false);
+    }
+  };
+
+
 
 
   return (
@@ -123,6 +164,15 @@ const Login = () => {
             placeholder:text-textColor
             rounded-md cursor-pointer'
               required />
+          </div>
+
+          {/* Forgot Password */}
+          <div className='text-right mb-4'>
+            <button 
+            onClick={handleForgotPassword}
+            className='text-primaryColor text-[16px] leading-7 text-headingColor hover:underline'>
+              Forgot Password?
+            </button>
           </div>
 
           <div className='mt-7 flex justify-center'>
