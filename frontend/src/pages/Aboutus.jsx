@@ -1,6 +1,7 @@
 import { Users,Award, Star, Store, TrendingUp } from 'lucide-react';
 import About from '../components/About/about';
 import ecutzImg from '../assets/images/ecutz.png';
+import Footer from '../components/footer/Footer';
 
 const Aboutus = () => {
   return (
@@ -128,12 +129,12 @@ const Aboutus = () => {
               </div>
             ))}
           </div>
+          
         </div>
       </div>
-
-
-      
+        
     </section>
+    
   );
 };
 

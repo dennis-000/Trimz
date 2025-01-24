@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { toast } from 'react-toastify';
-import { BASE_URL, token } from '../../config';
+import { BASE_URL } from '../../config';
 import GalleryUpload from './GalleryUpload';
 
 /**
@@ -23,49 +23,69 @@ const Service = () => {
     providersDescription: '',
   });
 
-  // Adds a new service to the services array
-  const addService = (newService) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      services: [...prevFormData.services, newService],
-    }));
-    toast.success('Service added successfully!');
-  };
+  const userInfo = JSON.parse(localStorage.getItem('user')); // Retrieve user info from localStorage
+  const jwt = localStorage.getItem('token'); // Retrieve token from localStorage
 
-  // Removes a service from the services array
-  const removeService = (serviceId) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      services: prevFormData.services.filter((service) => service.id !== serviceId),
-    }));
-    toast.info('Service removed.');
-  };
 
-  // Handles the creation of a new service with default values
-  const handleAddService = () => {
+  // Add a new service
+  const addService = () => {
     const newService = {
-      id: Date.now(), // Unique ID
-      createdAt: new Date().toISOString(), // Timestamp
+      id: Date.now(), // Generate unique ID
+      provider: userInfo?._id || '', // Default to current user's ID
       name: '',
       description: '',
       duration: '',
       price: '',
       image: null,
-      imagePreview: null, // Added imagePreview for preview functionality
-      availability: true, // Default availability
+      imagePreview: null,
+      availability: true, // Default to available
     };
-    addService(newService);
+    setFormData((prev) => ({
+      ...prev,
+      services: [...prev.services, newService],
+    }));
+    toast.success('New service added.');
   };
 
-  // Updates service details in the services array
-  const handleServiceChange = (index, event) => {
-    const { name, value } = event.target;
-    setFormData((prevFormData) => {
-      const updatedServices = [...prevFormData.services];
-      updatedServices[index] = { ...updatedServices[index], [name]: value };
-      return { ...prevFormData, services: updatedServices };
+
+ // Delete a service
+ const deleteService = async (serviceId) => {
+  try {
+    const response = await fetch(`${BASE_URL}provider-services/${serviceId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${jwt}` },
     });
-  };
+
+    if (response.ok) {
+      setFormData((prev) => ({
+        ...prev,
+        services: prev.services.filter((service) => service.id !== serviceId),
+      }));
+      toast.success('Service deleted successfully.');
+    } else {
+      const errorData = await response.json();
+      toast.error(`Error deleting service: ${errorData.message}`);
+    }
+  } catch (error) {
+    toast.error(`An error occurred: ${error.message}`);
+  }
+};
+
+  
+
+  
+    // Update service details
+    const handleServiceChange = (index, event) => {
+      const { name, value } = event.target;
+  
+      setFormData((prev) => {
+        const updatedServices = [...prev.services];
+        updatedServices[index] = { ...updatedServices[index], [name]: value };
+        return { ...prev, services: updatedServices };
+      });
+    };
+
+
 
   // Handles image upload for a specific service
   const handleImageUpload = (index, file) => {
@@ -77,87 +97,82 @@ const Service = () => {
 
     // Create a preview URL for the image
     const previewURL = URL.createObjectURL(file);
-
-    setFormData((prevFormData) => {
-      const updatedServices = [...prevFormData.services];
-      updatedServices[index].image = file;
-      setSelectedFile(file);
-      updatedServices[index].imagePreview = previewURL; // Set the preview URL
-      return { ...prevFormData, services: updatedServices };
+    setFormData((prev) => {
+      const updatedServices = [...prev.services];
+      updatedServices[index] = { ...updatedServices[index], image: file, imagePreview: previewURL };
+      return { ...prev, services: updatedServices };
     });
+    setSelectedFile(file);
   };
 
-  
+  // VALIDATION OF SERVICES
   const validateServices = () => {
     for (const service of formData.services) {
-      if (!service.name || !service.description || !service.price || !service.duration) {
+      if (!service.name || !service.description || !service.price || !service.duration || !service.image) {
         toast.error('All fields are required for each service.');
         return false;
       }
     }
     return true;
   };
-  // Submits all services to the backend API
+
+  // Submits all services to the backend 
   const submitServices = async () => {
-     // Retrieve the provider's ID from localStorage
-    const user = JSON.parse(localStorage.getItem('user')); // Ensure it’s parsed into an object
-    const providerId = user?._id;
+    if (!validateServices()) return;
 
+    const providerId = userInfo?._id;
     if (!providerId) {
-      toast.error('Provider ID not found in localStorage.');
+      toast.error('Provider ID not found.');
       return;
     }
 
-    if (formData.services.length === 0) {
-      toast.error('Please add at least one service before submitting.');
-      return;
-    }
-  
-    if (!validateServices()) {
-      return;
-    }
-  
+    const formDataToSend = new FormData();
+    formDataToSend.append('services', JSON.stringify(formData.services));
+    formDataToSend.append('provider', providerId);
+    if (selectedFile) formDataToSend.append('image', selectedFile);
+
     try {
-      const formDataToSend = new FormData();
-      formData.services.forEach((service, index) => {
-        formDataToSend.append(`services[${index}][name]`, service.name);
-        formDataToSend.append(`services[${index}][description]`, service.description);
-        formDataToSend.append(`services[${index}][duration]`, service.duration);
-        formDataToSend.append(`services[${index}][price]`, service.price);
-        formDataToSend.append(`services[${index}][availability]`, service.availability);
-        formDataToSend.append(`services[${index}][provider]`, providerId);
-        if (service.image) {
-          formDataToSend.append(`services[${index}][image]`, selectedFile);
-        }
-      });
-  
-      // formDataToSend.append('providersDescription', formData.providersDescription);
-      console.log('FormData Contents:');
-      formDataToSend.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
-  
-      const res = await fetch(`${BASE_URL}provider-services`, {
+       // Create a FormData instance for each service
+    const promises = formData.services.map(async (service) => {
+      const serviceFormData = new FormData();
+      serviceFormData.append('name', service.name);
+      serviceFormData.append('description', service.description);
+      serviceFormData.append('duration', service.duration);
+      serviceFormData.append('price', service.price);
+      serviceFormData.append('availability', service.availability);
+      serviceFormData.append('provider', providerId);
+      
+      if (service.image) {
+        serviceFormData.append('image', service.image);
+      }
+
+      const response = await fetch(`${BASE_URL}provider-services`, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // 'Content-Type': 'multipart/form-data',
-        },
+        headers: { Authorization: `Bearer ${jwt}` ,
+      },
         body: formDataToSend,
       });
-  
-      if (res.ok) {
-        toast.success('Services submitted successfully!');
-      } else {
-        const errorData = await res.json();
-        toast.error(`Error: ${errorData.message}`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to submit service: ${service.name}`);
       }
-    } catch (error) {
-      toast.error('An error occurred while submitting services.' + error.message);
-      console.error(error);
-    }
-  };
-  
+
+      return response.json();
+    });
+
+    await Promise.all(promises);
+    toast.success('All services submitted successfully.');
+    
+    // Clear the form after successful submission
+    setFormData(prev => ({
+      ...prev,
+      services: []
+    }));
+    
+  } catch (error) {
+    toast.error(`An error occurred: ${error.message}`);
+  }
+};
 
   return (
     <div className='mb-5'>
@@ -235,7 +250,7 @@ const Service = () => {
               <input
                 type="file"
                 accept="image/*"
-                name="image"
+                name="providerServiceImage"
                 onChange={(e) => handleImageUpload(index, e.target.files[0])}
                 className="block w-full text-sm text-gray-500
                   file:mr-4 file:py-2 file:px-4
@@ -260,20 +275,22 @@ const Service = () => {
 
           {/* Remove Service Button */}
           <button
-            type='button'
-            onClick={() => removeService(service.id)}
-            className='bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer'
+            type="button"
+            onClick={() => deleteService(service.id)}
+            className="bg-red-600 p-2 rounded-full text-white text-[18px] mt-2 mb-[30px] cursor-pointer"
           >
             <AiOutlineDelete />
           </button>
+
         </div>
       ))}
 
       {/* Add New Service Button */}
       <button
         type='button'
-        onClick={handleAddService}
-        className='bg-[#000] py-2 px-5 h-fit text-white cursor-pointer btn mt-0 rounded-[0px] rounded-r-md'
+        onClick={addService}
+        className='bg-[#000] py-2 px-5 h-fit text-white cursor-pointer 
+        btn mt-4 mr-4 rounded-[0px] rounded-r-md'
       >
         Add New Service
       </button>

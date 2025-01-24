@@ -8,7 +8,7 @@ const providerServiceRouter = Router()
 //Provider Service
 providerServiceRouter.get("/", getAllProviderService)
 providerServiceRouter.get("/:id", getSingleProviderService) //Get a single provider service
-providerServiceRouter.post("/", requireAuth, upload.single('image'), createNewProviderService)
+providerServiceRouter.post("/", requireAuth, upload.fields([{ name: 'providerServiceImage', maxCount: 10 }]), createNewProviderService)
 providerServiceRouter.patch("/:id", requireAuth, updateProviderService)
 providerServiceRouter.delete("/:id", requireAuth, deleteProviderService)
 
