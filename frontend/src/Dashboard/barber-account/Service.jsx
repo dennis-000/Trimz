@@ -5,6 +5,7 @@ import { BASE_URL } from "../../config";
 import GalleryUpload from "./GalleryUpload";
 
 
+
 /**
  * Service Component
  * Allows the management of barber services, including adding, editing, and removing services.
@@ -301,52 +302,90 @@ const Service = () => {
   
   return (
 
-    <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">All Services</h3>
-              {existingServices.length === 0 ? (
-              <p className="text-gray-600">No services found. Add some services!</p>
-            ) : (
-              existingServices.map((service) => (
-                <div 
-                  key={service._id} 
-                  className="bg-white rounded-lg shadow-md p-6 mb-4"
-                >
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-lg font-semibold">{service.name}</h4>
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => updateExistingService(service._id)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <AiOutlineEdit />
-                      </button>
-                      <button 
-                        onClick={() => deleteExistingService(service._id)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <AiOutlineDelete />
-                      </button>
-                    </div>
+    <div className="container mx-auto px-4 py-8">
+        <h3 className="text-2xl font-bold text-gray-800 border-b-2 border-blue-500 pb-2 mb-6">
+        All Services
+        </h3>
+
+        {existingServices.length === 0 ? (
+        <div className="text-center py-8 bg-gray-50 rounded-lg">
+          <p className="text-gray-500 text-lg">
+            No services found. Start by adding some services!
+          </p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {existingServices.map((service) => (
+            <div 
+              key={service._id} 
+              className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 ease-in-out overflow-hidden"
+            >
+              <div className="flex justify-between items-center p-4 border-b">
+                <h4 className="text-xl font-semibold text-gray-800">
+                  {service.name}
+                </h4>
+                <div className="flex space-x-2">
+                  <button 
+                    onClick={() => updateExistingService(service._id)}
+                    className="text-blue-500 hover:text-blue-700 transition-colors"
+                    aria-label="Edit Service"
+                  >
+                    <AiOutlineEdit size={20} />
+                  </button>
+                  <button 
+                    onClick={() => deleteExistingService(service._id)}
+                    className="text-red-500 hover:text-red-700 transition-colors"
+                    aria-label="Delete Service"
+                  >
+                    <AiOutlineDelete size={20} />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-gray-600 font-medium">Description</p>
+                    <p className="text-gray-800">{service.description}</p>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <p><strong>Description:</strong> {service.description}</p>
-                    <p><strong>Price:</strong> {service.price} Cedis</p>
-                    <p><strong>Duration:</strong> {service.duration}</p>
-                    <p>
-                      <strong>Status:</strong> 
-                      {service.availability ? 'Available' : 'Unavailable'}
+                  <div>
+                    <p className="text-gray-600 font-medium">Price</p>
+                    <p className="text-gray-800">
+                      {service.price} <span className="text-sm text-gray-500">Cedis</span>
                     </p>
                   </div>
-                  {service.image && (
+                  <div>
+                    <p className="text-gray-600 font-medium">Duration</p>
+                    <p className="text-gray-800">{service.duration}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 font-medium">Status</p>
+                    <span 
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        service.availability 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}
+                    >
+                      {service.availability ? 'Available' : 'Unavailable'}
+                    </span>
+                  </div>
+                </div>
+                
+                {service.image && (
+                  <div className="mt-4">
                     <img 
                       src={service.image.url} 
                       alt={service.name} 
-                      className="mt-4 w-32 h-32 object-cover rounded-md"
+                      className="w-full h-48 object-cover rounded-lg shadow-md"
                     />
-                  )}
-                </div>
-              ))
-            )}
+                  </div>
+                )}
+              </div>
+            </div>
+             ))}
+          </div>
+          )}
 
 
       <p className="form__label">Manage Services</p>
