@@ -22,6 +22,33 @@ export const getAllProviderService = async (req, res) => {
       .json({ success: false, message: `Server Error: ${error.message}` });
   }
 };
+export const getAllProviderServicesByProviderId = async (req, res) => {
+  const { providerId } = req.params;
+
+  
+
+  //Check if id is a valid mongoose valid
+  if (!mongoose.Types.ObjectId.isValid(providerId)) {
+    return res
+      .status(404)
+      .json({ success: false, message: "Invalid provider id" });
+  }
+  try {
+    const providerServices = await ProviderService.find({ provider: providerId });
+    res
+      .status(200)
+      .json({
+        success: true,
+        data: providerServices,
+        message: "Provider's Services retrieved successfully",
+      });
+  } catch (error) {
+    console.log("Error in fetching services: ", error.message);
+    return res
+      .status(500)
+      .json({ success: false, message: `An error occured while retrieving services`, error: error.message });
+  }
+};
 
 export const getSingleProviderService = async (req, res) => {
   const { id } = req.params;
@@ -54,7 +81,7 @@ export const getSingleProviderService = async (req, res) => {
     );
     return res
       .status(500)
-      .json({ success: false, message: `Server Error: ${error.message}` });
+      .json({ success: false, message: `An error occure while retrieving service`, error: error.message });
   }
 };
 
