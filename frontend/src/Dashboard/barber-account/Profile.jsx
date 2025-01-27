@@ -39,7 +39,7 @@ const Profile = ({barberData}) => {
         achievements: barberData.achievements || [],
         timeSlots: barberData.timeSlots || [],
         about: barberData.about || '',
-        profilePicture: barberData.profilePicture || null,
+        profilePicture: barberData.profilePicture || "/api/placeholder/100/100",
         services: barberData.services || [],
       });
     }
