@@ -10,7 +10,7 @@ providerServiceRouter.get("/", getAllProviderService)
 providerServiceRouter.get("/:id", getSingleProviderService) //Get a single provider service
 providerServiceRouter.get("/provider/:providerId", getAllProviderServicesByProviderId) //Get a single provider service
 providerServiceRouter.post("/", requireAuth, upload.fields([{ name: 'providerServiceImage', maxCount: 10 }]), createNewProviderService)
-providerServiceRouter.patch("/:id", requireAuth, upload.fields([{ name: 'providerServiceImage', maxCount: 10 }]), updateProviderService)
+providerServiceRouter.patch("/:id", requireAuth, upload.single('providerServiceImage'), updateProviderService)
 providerServiceRouter.delete("/:id", requireAuth, deleteProviderService)
 
 providerServiceRouter.get("/profile/me", requireAuth, restrict(['providers']), getProviderProfile);

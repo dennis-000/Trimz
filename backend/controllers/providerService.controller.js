@@ -178,8 +178,8 @@ export const createNewProviderService = async (req, res) => {
 
 export const updateProviderService = async (req, res) => {
   const { id } = req.params;
-  const updatedData = JSON.parse(req.body.providerService);
-  const files = req.files;
+  const updatedData = req.body;
+  const file = req.file;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res
@@ -198,16 +198,13 @@ export const updateProviderService = async (req, res) => {
 
     let imageData = existingService.image;
 
-    // If a new image is uploaded, replace the existing one
-    if (files && files.providerServiceImage && files.providerServiceImage[0]) {
-      const file = files.providerServiceImage[0];
-
+    // Handle new image upload if provided
+    if (file) {
       try {
-        // Delete the old image from Cloudinary
+        // Delete the old image from Cloudinary if it exists
         if (imageData && imageData.public_id) {
-          await deleteFromCloudinary(imageData.public_id);
+          await cloudinary.uploader.destroy(imageData.public_id);
         }
-
         // Upload the new image to Cloudinary
         const uploadResult = await cloudinary.uploader.upload(file.path, {
           folder: "ecutz/provider-services",
@@ -219,7 +216,9 @@ export const updateProviderService = async (req, res) => {
         };
 
         await deleteFile(file.path);
+        
       } catch (error) {
+        console.log('Cloudinary', error);
         return res.status(500).json({
           success: false,
           message: "Error uploading image to Cloudinary",
