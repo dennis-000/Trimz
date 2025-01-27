@@ -24,7 +24,8 @@ const BookingSystem = ({barberData}) => {
   const fetchServices = async () => {
     try {
       const jwt = localStorage.getItem("token");
-      const user = JSON.parse(localStorage.getItem("user"));
+      // const user = JSON.parse(localStorage.getItem("user"));
+      const user = barberData;
       
       if (!jwt || !user?._id) {
         toast.error("Authentication required");

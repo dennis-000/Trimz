@@ -113,7 +113,7 @@ const BarbersDetails = () => {
                 <Feedback reviews={reviews} totalRating={totalRating} />)}
 
               {/* === Will be added later == Dynamic Services */}
-              {tab === 'services' && <BarberServices />}
+              {tab === 'services' && <BarberServices barberData={provider} />}
             </div>
           </div>
 
