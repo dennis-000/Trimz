@@ -69,16 +69,97 @@ export const forgotPasswordController = async (req, res) => {
         await user.save();
 
         // Create a reset URL
-        const resetUrl = `${req.protocol}://${req.get('origin')}/reset-password/${resetToken}`;
+        const resetUrl = `${req.get('origin')}/reset-password/${resetToken}`;
 
+        let message = `You recently requested to reset your password. Click the link below to reset it:\n\n${resetUrl}`;
+        let html = `<!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              color: #333;
+              padding: 20px;
+            }
+            .email-container {
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #ffffff;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              padding: 20px;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+            .header {
+              font-size: 24px;
+              font-weight: bold;
+              color: #0066ff;
+              margin-bottom: 20px;
+              text-align: center;
+            }
+            .content {
+              font-size: 16px;
+              line-height: 1.6;
+            }
+            .button {
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #0066ff;
+              color: #ffffff;
+              text-decoration: none;
+              font-size: 16px;
+              font-weight: bold;
+              border-radius: 4px;
+              margin-top: 20px;
+            }
+            .footer {
+              margin-top: 30px;
+              font-size: 14px;
+              color: #666;
+              text-align: center;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="email-container">
+            <div class="header">Password Reset Request</div>
+            <div class="content">
+              <p>Hello ${user.name},</p>
+              <p>You recently requested to reset your password. Click the button below to reset it:</p>
+              <a href="${resetUrl}" class="button">Reset Password</a>
+              <p>If you did not request this, please ignore this email or contact support if you have concerns.</p>
+              <p>For your security, this link will expire in <em><b>15 minutes.</b></em></p>
+            </div>
+            <div class="footer">
+              <p>&copy; ${new Date().getFullYear()} Ecutz. All rights reserved.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
         // Send email
         const emailResult = await sendEmail({
-            receipients: [user.email],
+            receipient: user.email,
             subject: 'Password Reset Request',
-            message: `You requested a password reset. Use this link: ${resetUrl}`
+            message,
+            html
         });
 
-        res.status(200).json({ success: true, message: "Password reset link sent to email.", emailResult, resetUrl });
+        // Check emailResult for success
+        if (emailResult.accepted && emailResult.accepted.includes(user.email)) {
+            res.status(200).json({
+                success: true,
+                message: "Password reset link sent to email.",
+                resetUrl
+            });
+        } else {
+            res.status(500).json({
+                success: false,
+                message: "Failed to send email. Please try again later.",
+                error: emailResult.response || "Unknown error",
+            });
+        }
     } catch (error) {
         res.status(500).json({ success: false, message: `Server Error: ${error.message}` });
     }

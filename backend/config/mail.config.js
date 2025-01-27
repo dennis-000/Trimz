@@ -12,13 +12,13 @@ const transport = nodemailer.createTransport({
     }
 });
 
-const sendEmail = async({ receipients, subject, message }) => {
+const sendEmail = async({receipient, subject, message,html}) => {
     return await transport.sendMail({
-        from: 'no-reply@example.com',
-        to: receipients,
+        from: `Ecutz <${process.env.MAIL_USER}>`,
+        to: receipient,
         subject,
         text: message,
-        html: message,
+        html,
     })
 }
 
