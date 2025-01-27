@@ -9,7 +9,7 @@ const loginRouter = Router()
 loginRouter.post("/login", login)
 loginRouter.get("/logout", logout)
 loginRouter.post("/auth/forgot-password", forgotPasswordController)
-loginRouter.post("/auth/forgot-password/:token", resetPasswordController)
+loginRouter.post("/auth/reset-password/:token", resetPasswordController)
 // Google OAuth2 login
 loginRouter.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account consent' }));
 // Google OAuth2 callback

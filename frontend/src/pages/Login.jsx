@@ -94,7 +94,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}auth/reset-password/`, {
+      const res = await fetch(`${BASE_URL}auth/forgot-password`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -168,7 +168,8 @@ const Login = () => {
 
           {/* Forgot Password */}
           <div className='text-right mb-4'>
-            <button 
+            <button
+            type='button'
             onClick={handleForgotPassword}
             className='text-primaryColor text-[16px] leading-7 text-headingColor hover:underline'>
               Forgot Password?

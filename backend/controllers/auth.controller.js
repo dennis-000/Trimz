@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import { createAuditLog } from "./audit.controller.js";
 import sendEmail from "../config/mail.config.js";
-
+import { hashPassword } from "../server.js";
 
 
 //Generate jwt
@@ -86,7 +86,7 @@ export const forgotPasswordController = async (req, res) => {
 
 export const resetPasswordController = async (req, res) => {
     const { token } = req.params;
-    const { newPassword } = req.body;
+    const { password } = req.body;
 
     try {
         // Hash the received token to match stored hash
@@ -102,8 +102,8 @@ export const resetPasswordController = async (req, res) => {
             return res.status(400).json({ success: false, message: "Invalid or expired token." });
         }
 
-        // Update the user's password
-        user.password = await bcrypt.hash(newPassword, 10);
+        // Update the user's password   
+        user.password = await hashPassword(password);
         user.resetPasswordToken = undefined; // Clear the reset token
         user.resetPasswordExpires = undefined;
         await user.save();

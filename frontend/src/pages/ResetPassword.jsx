@@ -21,13 +21,15 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${BASE_URL}/auth/reset-password/${token}`, {
+      const res = await fetch(`${BASE_URL}auth/reset-password/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ password }),
       });
+
+      console.log(password);
 
       const data = await res.json();
 
