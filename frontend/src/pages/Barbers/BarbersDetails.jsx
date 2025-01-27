@@ -44,7 +44,7 @@ const BarbersDetails = () => {
           <div className='md:col-span-2'>
             <div className='flex items-center gap-5'>
               <figure className="max-w-[200px] max-h-[200px]">
-                <img src={profilePicture} alt="" className='w-full' />
+                <img src={profilePicture.url} alt="" className='w-full' />
               </figure>
 
               <div>

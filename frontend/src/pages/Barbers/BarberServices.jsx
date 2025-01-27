@@ -51,8 +51,8 @@ const BookingSystem = ({barberData}) => {
       console.log("API Response", data);
 
         // Transform the data to match our required format
-      const formattedServices = (data.services || []).map(service => ({
-          id: service.id,
+      const formattedServices = (data.data || []).map(service => ({
+          id: service._id,
           name: service.name,
           duration: service.duration,
           price: parseFloat(service.price),
@@ -123,7 +123,7 @@ const BookingSystem = ({barberData}) => {
                         : 'hover:border-blue-500'}`}
                   >
                     <img 
-                      src={service.image} 
+                      src={service.image.url} 
                       alt={service.name} 
                       className="w-16 h-16 rounded-lg object-cover"
                     />
