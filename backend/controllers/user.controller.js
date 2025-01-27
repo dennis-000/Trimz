@@ -168,6 +168,7 @@ export const updateUser = async (req, res) => {
      // Update profile picture if provided and delete the old one
      let updatedProfilePic = user.profilePicture
      if (req.file) {
+        console.log(req.file);
         // Delete old profile picture from cloudinary if it exists
         if (user.profilePicture && user.profilePicture.public_id) {
             await cloudinary.uploader.destroy(user.profilePicture.public_id);

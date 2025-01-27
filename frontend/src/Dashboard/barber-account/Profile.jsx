@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
-import { BASE_URL, token } from '../../config';
+import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
 // import ServiceManagement from './ServiceManagement';
 
 const Profile = ({barberData}) => {
+  const [previewURL, setPreviewURL] = useState('');
   const [formData, setFormData] = useState({
     // State to store the profile form data
     name: '',
@@ -42,7 +43,22 @@ const Profile = ({barberData}) => {
         services: barberData.services || [],
       });
     }
+    if (barberData.profilePicture?.url) {
+      setPreviewURL(barberData.profilePicture.url);
+    }
+    else{
+      setPreviewURL(barberData.profilePicture)
+    }
   }, [barberData]);
+
+  // Cleanup preview URL on component unmount or new upload
+  useEffect(() => {
+    return () => {
+      if (previewURL.startsWith('blob:')) {
+        URL.revokeObjectURL(previewURL);
+      }
+    };
+  }, [previewURL]);
   
     // Handle form input changes for text fields
   const handleInputChange = (e) => {
@@ -69,6 +85,10 @@ const Profile = ({barberData}) => {
       if (formData.profilePicture instanceof File) {
         updateData.append('profilePicture', formData.profilePicture);
       }
+      for (let [key, value] of updateData.entries()) {
+        console.log(key, value);
+      }      
+      const token = localStorage.getItem('token');
       // Send the updated data to the server
       const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
         method: 'PATCH',
@@ -85,8 +105,12 @@ const Profile = ({barberData}) => {
       if (!res.ok) {
         throw Error(result.message);
       }
+      localStorage.setItem('user', JSON.stringify(result.data));
+      localStorage.setItem('role', result.data.role);
+      localStorage.setItem('token', token);
   
       toast.success(result.message);
+      window.location.reload();
     } catch (error) {
       toast.error(error.message);
     }
@@ -97,6 +121,7 @@ const Profile = ({barberData}) => {
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      console.log("File", file);
       const validImageTypes = ['image/jpeg', 'image/png'];
       if (!validImageTypes.includes(file.type)) {
         toast.error('Invalid file type. Please upload a JPEG or PNG image.');
@@ -106,6 +131,9 @@ const Profile = ({barberData}) => {
         toast.error('File size exceeds 5MB.');
         return;
       }
+      // Generate a preview URL for the image
+      const objectURL = URL.createObjectURL(file);
+      setPreviewURL(objectURL);
       setFormData({ ...formData, profilePicture: file });
     }
   };
@@ -486,7 +514,7 @@ const Profile = ({barberData}) => {
                   <figure className='w-[60px] h-[60px] rounded-full border-2 border-solid
                     border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
                     <img 
-                      src={formData.profilePicture} 
+                      src={previewURL} 
                       alt='profile'
                       className='w-full object-cover'
                     />
