@@ -16,29 +16,42 @@ const BookingSystem = ({barberData}) => {
 
   // Fetch provider services
   useEffect(() => {
-    const fetchServices = async () => {
-      if (!barberData?._id) {
-        setError('Barber information not available');
-        setLoading(false);
+    fetchServices();
+  }, []);
+
+  
+  // Fetch existing services for the provider
+  const fetchServices = async () => {
+    try {
+      const jwt = localStorage.getItem("token");
+      const user = JSON.parse(localStorage.getItem("user"));
+      
+      if (!jwt || !user?._id) {
+        toast.error("Authentication required");
         return;
       }
-
-      try {
-        const res = await fetch(`${BASE_URL}provider-services/${barberData._id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (!res.ok) {
-          throw new Error('Failed to fetch services');
-        }
+      // GET THE REQUEST FROM THE SERVICE THE PROVIDER POST
+      const res = await fetch(`${BASE_URL}provider-services/provider/${user._id}`, {
+        method: 'GET',
+        headers: { 
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        },
+      });
 
 
-        const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch services');
+      }
+
+      const data = await res.json();
+
+      // Henry
+      // This works
+      console.log("API Response", data);
+
         // Transform the data to match our required format
-        const formattedServices = data.services.map(service => ({
+      const formattedServices = (data.services || []).map(service => ({
           id: service.id,
           name: service.name,
           duration: service.duration,
@@ -47,6 +60,7 @@ const BookingSystem = ({barberData}) => {
           description: service.description,
           availability: service.availability
         }));
+        
         setProviderServices(formattedServices.filter(service => service.availability));
         setLoading(false);
       } catch (err) {
@@ -55,10 +69,11 @@ const BookingSystem = ({barberData}) => {
         toast.error('Error loading services');
       }
     };
-
-    fetchServices();
-  }, [barberData]);
-
+    // Henry
+    // But this doesn't work, getting an empty array
+    console.log("Rendering services:", providerServices);
+  
+   
   // Calculate Total Duration per services
   const calculateTotalDuration = () => {
     return selectedServices.reduce((total, service) => {
@@ -96,7 +111,7 @@ const BookingSystem = ({barberData}) => {
         <div className="mt-8">
           {currentStep === 1 && (
             <>
-              <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
+              <h2 className="text-2xl font-bold mb-6 px-2">My Services</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
                 {providerServices.map((service) => (
                   <div
