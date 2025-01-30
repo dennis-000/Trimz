@@ -3,7 +3,7 @@ import starIcon from '../../assets/images/Star.png';
 import BarberAbout from './BarberAbout';
 import Feedback from './Feedback';
 import SidePanel from './SidePanel';
-import BarberServices from './BarberServices';
+import BarberServices from './BarberServices/BarberServices.jsx';
 import BarberGallery from './BarberGallery';
 
 import {BASE_URL} from './../../config';
@@ -96,7 +96,7 @@ const BarbersDetails = () => {
                 className={`${tab === 'services' && 'border-b border-solid border-primaryColor'} py-2 px-3 mr-5 
                   text-[16px] leading-7 text-headingColor font-semibold`}
               >
-                Service
+                Services
               </button>
             </div>
 
