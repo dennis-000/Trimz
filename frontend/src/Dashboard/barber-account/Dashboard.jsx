@@ -93,7 +93,7 @@ const Dashboard = () => {
                           </p>
                     </div>
                     
-                  </div>
+              </div>
                   <BarberAbout 
                   name={data?.name} 
                   about={data?.about}

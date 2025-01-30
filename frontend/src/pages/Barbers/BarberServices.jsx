@@ -1,96 +1,73 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { Calendar, ShoppingCart, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../config';
 
-const BookingSystem = ({barberData}) => {
+const BarberServices = ({ barberData }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
   const [providerServices, setProviderServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Fetch provider services
   useEffect(() => {
-    fetchServices();
-  }, []);
+    if (barberData?._id) {
+      fetchServices();
+    }
+  }, [barberData]);
 
-  
-  // Fetch existing services for the provider
+  // Fetch services for the provider
   const fetchServices = async () => {
     try {
-      const jwt = localStorage.getItem("token");
-      // const user = JSON.parse(localStorage.getItem("user"));
-      const user = barberData;
-      
-      if (!jwt || !user?._id) {
-        toast.error("Authentication required");
+      const jwt = localStorage.getItem('token');
+      if (!jwt || !barberData?._id) {
+        toast.error('Authentication required');
         return;
       }
-      // GET THE REQUEST FROM THE SERVICE THE PROVIDER POST
-      const res = await fetch(`${BASE_URL}provider-services/provider/${user._id}`, {
+
+      const res = await fetch(`${BASE_URL}provider-services/provider/${barberData._id}`, {
         method: 'GET',
-        headers: { 
-          'Authorization': `Bearer ${jwt}`,
-          'Content-Type': 'application/json'
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+          'Content-Type': 'application/json',
         },
       });
-
 
       if (!res.ok) {
         throw new Error('Failed to fetch services');
       }
 
       const data = await res.json();
+      const formattedServices = (data.data || []).map((service) => ({
+        id: service._id,
+        name: service.name,
+        duration: Number(service.duration) || 0,
+        price: parseFloat(service.price),
+        image: service.image?.url || '/api/placeholder/100/100', // Fallback image
+        description: service.description,
+        availability: service.availability,
+      }));
 
-      // Henry
-      // This works
-      console.log("API Response", data);
-
-        // Transform the data to match our required format
-      const formattedServices = (data.data || []).map(service => ({
-          id: service._id,
-          name: service.name,
-          duration: service.duration,
-          price: parseFloat(service.price),
-          image: service.image || "/api/placeholder/100/100", // Fallback image if none provided
-          description: service.description,
-          availability: service.availability
-        }));
-        
-        setProviderServices(formattedServices.filter(service => service.availability));
-        setLoading(false);
-      } catch (err) {
-        setError('Failed to load services. Please try again later.');
-        setLoading(false);
-        toast.error('Error loading services');
-      }
-    };
-    // Henry
-    // But this doesn't work, getting an empty array
-    console.log("Rendering services:", providerServices);
-  
-   
-  // Calculate Total Duration per services
-  const calculateTotalDuration = () => {
-    return selectedServices.reduce((total, service) => {
-      const duration = parseInt(service.duration.split(' ')[0], 10);
-      return total + (isNaN(duration) ? 0 : duration);
-    }, 0);
+      setProviderServices(formattedServices.filter((service) => service.availability));
+      setLoading(false);
+    } catch (err) {
+      console.error('Service fetch error:', err);
+      setError('Failed to load services. Please try again later.');
+      setLoading(false);
+      toast.error('Error loading services');
+    }
   };
 
-  const calculateTotalPrice = () => {
-    return selectedServices.reduce((total, service) => total + service.price, 0);
-  };
+  // Calculate total duration and price
+  const calculateTotalDuration = () => selectedServices.reduce((total, service) => total + (service.duration || 0), 0);
+  const calculateTotalPrice = () => selectedServices.reduce((total, service) => total + service.price, 0);
+  const formatPrice = (price) => `GH₵${price.toFixed(2)}`;
 
-  const formatPrice = (price) => {
-    return `GH₵${price.toFixed(2)}`;
-  };
-
+  // Generate time slots
   const generateTimeSlots = () => {
     const slots = [];
     for (let hour = 9; hour <= 19; hour++) {
@@ -101,55 +78,68 @@ const BookingSystem = ({barberData}) => {
     return slots;
   };
 
-  // ServiceSelection component to use provider services
-  const ServiceSelection = () => (
-    <div className="max-w-3xl mx-auto p-4">
-      {loading ? (
-        <div className="text-center py-8">Loading services...</div>
-      ) : error ? (
-        <div className="text-center text-red-500 py-8">{error}</div>
-      ) : (
-        <div className="mt-8">
-          {currentStep === 1 && (
-            <>
-              <h2 className="text-2xl font-bold mb-6 px-2">My Services</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
-                {providerServices.map((service) => (
-                  <div
-                    key={service.id}
-                    onClick={() => handleServiceSelect(service)}
-                    className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all
-                      ${selectedServices.find(s => s.id === service.id) 
-                        ? 'border-blue-500 bg-blue-50' 
-                        : 'hover:border-blue-500'}`}
-                  >
-                    <img 
-                      src={service.image.url} 
-                      alt={service.name} 
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                    <div className="ml-4 flex-1">
-                      <h3 className="font-semibold">{service.name}</h3>
-                      <p className="text-sm text-gray-500">{service.duration}</p>
-                      {service.description && (
-                        <p className="text-sm text-gray-600 mt-1">{service.description}</p>
-                      )}
-                      <p className="text-blue-600 font-semibold mt-1">
-                        {formatPrice(service.price)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
+  // Handle service selection
+  const handleServiceSelect = (service) => {
+    setSelectedServices((prev) => {
+      const isSelected = prev.some((s) => s.id === service.id);
+      return isSelected ? prev.filter((s) => s.id !== service.id) : [...prev, service];
+    });
+  };
 
-  const timeSlots = generateTimeSlots();
+  // Handle service removal
+  const handleRemoveService = (serviceId) => {
+    setSelectedServices((prev) => prev.filter((service) => service.id !== serviceId));
+  };
 
+  // Handle date selection
+  const handleDateSelect = (date) => {
+    setSelectedDate(date);
+  };
+
+  // Handle time selection
+  const handleTimeSelect = (time) => {
+    setSelectedTime(time);
+  };
+
+  // Handle booking confirmation
+  const handleConfirmBooking = async () => {
+    if (!selectedDate || !selectedTime || selectedServices.length === 0) {
+      toast.error('Please complete all steps before confirming.');
+      return;
+    }
+
+    try {
+      const bookingData = {
+        barberId: barberData._id,
+        services: selectedServices.map((service) => service.id),
+        date: selectedDate,
+        time: selectedTime,
+        totalPrice: calculateTotalPrice(),
+      };
+
+      // Mock API call for booking confirmation
+      const res = await fetch(`${BASE_URL}bookings`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!res.ok) {
+        throw new Error('Booking failed. Please try again.');
+      }
+
+      toast.success('Booking confirmed!');
+      setCurrentStep(3); // Show confirmation step
+    } catch (err) {
+      console.error('Booking error:', err);
+      toast.error('Error confirming booking. Please try again.');
+    }
+  };
+
+  // Get the next 7 days for date selection
   const getNextSevenDays = () => {
     const days = [];
     for (let i = 0; i < 7; i++) {
@@ -158,42 +148,54 @@ const BookingSystem = ({barberData}) => {
       days.push({
         full: date.toISOString().split('T')[0],
         day: date.toLocaleDateString('en-US', { weekday: 'short' }),
-        date: date.getDate()
+        date: date.getDate(),
       });
     }
     return days;
   };
 
-  const handleServiceSelect = (service) => {
-      setSelectedServices((prev) => (prev.find((s) => s.id === service.id) ? prev : [...prev, service])
-    );
-  };
-  
+  // Service Selection Component
+  const ServiceSelection = () => (
+    <div className="mt-8">
+      <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
+      <ServiceCart />
+      {loading ? (
+        <div className="text-center py-8">Loading services...</div>
+      ) : error ? (
+        <div className="text-center text-red-500 py-8">{error}</div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 px-2">
+          {providerServices.map((service) => (
+            <div
+              key={service.id}
+              onClick={() => handleServiceSelect(service)}
+              className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all ${
+                selectedServices.some((s) => s.id === service.id)
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'hover:border-blue-500'
+              }`}
+            >
+              <img
+                src={service.image}
+                alt={service.name}
+                className="w-16 h-16 rounded-lg object-cover"
+              />
+              <div className="ml-4 flex-1">
+                <h3 className="font-semibold">{service.name}</h3>
+                <p className="text-sm text-gray-500">{service.duration} mins</p>
+                {service.description && (
+                  <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                )}
+                <p className="text-blue-600 font-semibold mt-1">{formatPrice(service.price)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
-  const handleRemoveService = (serviceId) => {
-    setSelectedServices(prev => prev.filter(service => service.id !== serviceId));
-  };
-
-  const handleProceedToStaff = () => {
-    if (selectedServices.length > 0) {
-      setCurrentStep(2);
-    }
-  };
-
-  const handlePaymentMethodSelect = (method) => {
-    setSelectedPaymentMethod(method);
-    setCurrentStep(3);
-  };
-
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleTimeSelect = (time) => {
-    setSelectedTime(time);
-    setCurrentStep(4);
-  };
-
+  // Service Cart Component
   const ServiceCart = () => (
     <div className="bg-gray-50 p-4 rounded-lg mb-6">
       <div className="flex items-center justify-between mb-4">
@@ -202,7 +204,7 @@ const BookingSystem = ({barberData}) => {
           Selected Services
         </h3>
         <span className="text-sm text-gray-500">
-          Total Duration: {calculateTotalDuration()} min
+          Total Duration: {calculateTotalDuration()} mins
         </span>
       </div>
       {selectedServices.length > 0 ? (
@@ -221,16 +223,15 @@ const BookingSystem = ({barberData}) => {
               </button>
             </div>
           ))}
-
           <div className="flex justify-between pt-3 border-t mt-3">
             <span className="font-semibold">Total:</span>
             <span className="font-bold">{formatPrice(calculateTotalPrice())}</span>
           </div>
           <button
-            onClick={handleProceedToStaff}
+            onClick={() => setCurrentStep(2)}
             className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition-colors"
           >
-            Proceed to Payment Method
+            Proceed to Date & Time
           </button>
         </div>
       ) : (
@@ -239,69 +240,25 @@ const BookingSystem = ({barberData}) => {
     </div>
   );
 
-
-// ====== PAYMENTS ==========
-  const PaymentMethodSelection = () => (
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 px-2">
-      {["Cash", "Mobile Money", "Card"].map((method) => (
-        <div
-          key={method}
-          onClick={() => handlePaymentMethodSelect(method)}
-          className={`p-4 border rounded-lg cursor-pointer hover:border-blue-500 transition-all
-            ${selectedPaymentMethod === method ? 'border-blue-500' : 'border-gray-300'}`}
-        >
-          <h3 className="font-semibold">{method}</h3>
-        </div>
-      ))}
-    </div>
-  );
-
-
-  // ====== BOOKING STEPS
-  const BookingSteps = () => (
-    <div className="flex flex-wrap items-center justify-center mb-8 text-sm gap-4 px-2">
-      {[
-        { num: 1, text: "Services" },
-        { num: 2, text: "Payment Method" },
-        { num: 3, text: "Date & Time" },
-        { num: 4, text: "Confirm" }
-      ].map((step, index) => (
-        <div key={step.num} className="flex items-center">
-          <div className={`flex items-center ${currentStep >= step.num ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 
-              ${currentStep >= step.num ? 'border-blue-600 bg-blue-50' : 'border-gray-300'}`}>
-              {step.num}
-            </div>
-            <span className="ml-2 hidden sm:inline">{step.text}</span>
-          </div>
-          {step.num < 4 && (
-            <div className={`w-8 sm:w-12 h-0.5 mx-2 ${currentStep > step.num ? 'bg-blue-600' : 'bg-gray-300'}`} />
-          )}
-        </div>
-      ))}
-    </div>
-  );
-
- 
-
+  // Date & Time Selection Component
   const DateTimeSelection = () => (
-    <div className="space-y-6">
-      <div className="space-y-4">
-        <h3 className="font-semibold flex items-center px-4">
-          <Calendar className="w-5 h-5 mr-2" />
-          Select Date
-        </h3>
-        <div className="relative">
+    <div className="mt-8">
+      <h2 className="text-2xl font-bold mb-6 px-2">Select Date & Time</h2>
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <h3 className="font-semibold flex items-center px-4">
+            <Calendar className="w-5 h-5 mr-2" />
+            Select Date
+          </h3>
           <div className="flex overflow-x-auto scrollbar-hide pb-2 px-4 -mx-4 scroll-smooth">
             <div className="flex space-x-2">
               {getNextSevenDays().map((date) => (
                 <button
                   key={date.full}
                   onClick={() => handleDateSelect(date.full)}
-                  className={`flex flex-col items-center justify-center p-2 rounded-lg w-16 h-20
-                    ${selectedDate === date.full 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-gray-100 hover:bg-gray-200'}`}
+                  className={`flex flex-col items-center justify-center p-2 rounded-lg w-16 h-20 ${
+                    selectedDate === date.full ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
                 >
                   <span className="text-xs font-medium">{date.day}</span>
                   <span className="text-lg font-bold mt-1">{date.date}</span>
@@ -309,142 +266,123 @@ const BookingSystem = ({barberData}) => {
               ))}
             </div>
           </div>
-          <div className="hidden sm:block absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white pointer-events-none" />
         </div>
-      </div>
 
-      {selectedDate && (
-        <div className="space-y-4 px-4">
-          <h3 className="font-semibold">Select Time</h3>
-          <div className="relative">
-            <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-6 gap-2 max-h-[280px] overflow-y-auto pr-2">
-              {timeSlots.map((time) => (
+        {selectedDate && (
+          <div className="space-y-4 px-4">
+            <h3 className="font-semibold">Select Time</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 max-h-[280px] overflow-y-auto pr-2">
+              {generateTimeSlots().map((time) => (
                 <button
                   key={time}
                   onClick={() => handleTimeSelect(time)}
-                  className={`p-3 rounded text-sm font-medium transition-colors
-                    ${selectedTime === time 
-                      ? 'bg-blue-500 text-white' 
-                      : 'bg-gray-100 hover:bg-gray-200'}`}
+                  className={`p-3 rounded text-sm font-medium transition-colors ${
+                    selectedTime === time ? 'bg-blue-500 text-white' : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
                 >
                   {time}
                 </button>
               ))}
             </div>
-            <div className="absolute bottom-0 left-0 right-2 h-8 bg-gradient-to-t from-white pointer-events-none" />
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
-
-
-  // =========== DISPLAY CONFIRMATION ===========
+  // Confirmation Component
   const Confirmation = () => (
-    <div className="space-y-6 px-2">
+    <div className="mt-8">
+      <h2 className="text-2xl font-bold mb-6 px-2">Confirm Booking</h2>
       <div className="bg-blue-50 p-4 rounded-lg">
         <h3 className="font-semibold mb-4">Booking Summary</h3>
         <div className="space-y-3">
-
-          {/* ===== Display name of Service selected even multiple with their prices ====== */}
           <div>
             <span className="text-gray-600">Services:</span>
             <div className="mt-2 space-y-2">
-              {selectedServices.map(service => (
+              {selectedServices.map((service) => (
                 <div key={service.id} className="flex justify-between text-sm font-semibold">
                   <span>{service.name}</span>
-                  <span className="font-semibold">{formatPrice(service.price)}</span>
+                  <span>{formatPrice(service.price)}</span>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* ==== Display Payment Method ===== */}
-          <div className='flex flex-col sm:flex-row sm:justify-between gap-1'>
-            <span className="text-gray-600">Payment Method:</span>
-            <span className="font-semibold">{selectedPaymentMethod}</span>
-          </div>
-
-          {/* ===== Display Time and Date */}
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+          <div className="flex justify-between">
             <span className="text-gray-600">Date:</span>
             <span className="font-semibold">
-              {new Date(selectedDate).toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              {new Date(selectedDate).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
               })}
             </span>
           </div>
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+          <div className="flex justify-between">
             <span className="text-gray-600">Time:</span>
             <span className="font-semibold">{selectedTime}</span>
           </div>
-          {/* ===== Display Duration ======== */}
-          <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+          <div className="flex justify-between">
             <span className="text-gray-600">Total Duration:</span>
-            <span className="font-semibold">{calculateTotalDuration()} min</span>
+            <span className="font-semibold">{calculateTotalDuration()} mins</span>
           </div>
-
-          {/* ===== Display Total Prices of services ======= */}
           <div className="flex justify-between pt-3 border-t">
             <span className="text-gray-600">Total Price:</span>
             <span className="font-bold text-lg">{formatPrice(calculateTotalPrice())}</span>
           </div>
         </div>
       </div>
-      
-              {/* === confirm Booking ===== */}
-              {/* ====== Later the Booking Button will lead to Payment Gateway */}
-              {/* ==== for now just gives an alert */}
       <button
-        onClick={() => alert('Booking confirmed!')}
-        className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors"
+        onClick={handleConfirmBooking}
+        className="w-full mt-6 bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors"
       >
         Confirm Booking
       </button>
     </div>
   );
 
+  // Booking Steps Component
+  const BookingSteps = () => (
+    <div className="flex flex-wrap items-center justify-center mb-8 text-sm gap-4 px-2">
+      {[
+        { num: 1, text: 'Services' },
+        { num: 2, text: 'Date & Time' },
+        { num: 3, text: 'Confirm' },
+      ].map((step) => (
+        <div key={step.num} className="flex items-center">
+          <div
+            className={`flex items-center ${
+              currentStep >= step.num ? 'text-blue-600' : 'text-gray-400'
+            }`}
+          >
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${
+                currentStep >= step.num ? 'border-blue-600 bg-blue-50' : 'border-gray-300'
+              }`}
+            >
+              {step.num}
+            </div>
+            <span className="ml-2 hidden sm:inline">{step.text}</span>
+          </div>
+          {step.num < 3 && (
+            <div
+              className={`w-8 sm:w-12 h-0.5 mx-2 ${
+                currentStep > step.num ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
 
-  // ========= DISPLAYED 
   return (
     <div className="max-w-3xl mx-auto p-4">
       <BookingSteps />
-      
-      <div className="mt-8">
-        {currentStep === 1 && (
-          <>
-            <h2 className="text-2xl font-bold mb-6 px-2">Select Services</h2>
-            <ServiceCart />
-            <ServiceSelection />
-          </>
-        )}
-
-        {currentStep === 2 && (
-          <>
-            <h2 className="text-2xl font-bold mb-6 px-2">Payment Method</h2>
-            <PaymentMethodSelection />
-          </>
-        )}
-
-        {currentStep === 3 && (
-          <>
-            <h2 className="text-2xl font-bold mb-6 px-2">Select Date & Time</h2>
-            <DateTimeSelection />
-          </>
-        )}
-
-        {currentStep === 4 && (
-          <>
-            <h2 className="text-2xl font-bold mb-6 px-2">Confirm Booking</h2>
-            <Confirmation />
-          </>
-        )}
-      </div>
-
+      {currentStep === 1 && <ServiceSelection />}
+      {currentStep === 2 && <DateTimeSelection />}
+      {currentStep === 3 && <Confirmation />}
       {currentStep > 1 && (
         <button
           onClick={() => setCurrentStep(currentStep - 1)}
@@ -454,9 +392,7 @@ const BookingSystem = ({barberData}) => {
         </button>
       )}
     </div>
-  
   );
-
 };
 
-export default BookingSystem;
+export default BarberServices;
