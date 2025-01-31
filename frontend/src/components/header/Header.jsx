@@ -1,7 +1,7 @@
 import { useEffect, useRef, useContext, useState } from "react";
 import logo from "../../assets/images/ecutz.png";
 import { NavLink, Link } from "react-router-dom";
-import { BiMenu, BiX, BiHomeAlt, BiStore, BiCog, BiEnvelope, BiInfoCircle } from "react-icons/bi";
+import { BiMenu, BiX, BiStore, BiCog, BiEnvelope, BiInfoCircle } from "react-icons/bi";
 import { FaHome } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
 
@@ -93,10 +93,10 @@ const Header = () => {
             {token && user ? (
               <div>
                 <Link to={`${role === "provider" ? "/barbers/profile/me" : "/users/profile/me"}`}>
-                  <figure className="w-[35px] rounded-full cursor-pointer">
+                  <figure className="w-[40px] h-[40px] rounded-full cursor-pointer">
                     <img
                       src={user.profilePicture?.url}
-                      className="w-full rounded-full"
+                      className="w-full h-full rounded-full object-cover block"
                       alt="User"
                     />
                   </figure>
