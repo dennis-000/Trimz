@@ -180,7 +180,7 @@ const Login = () => {
             <button
             type='button'
             onClick={handleForgotPassword}
-            className='text-primaryColor text-[16px] leading-7 text-headingColor hover:underline'>
+            className='text-primaryClor text-[16px] leading-7 text-headingColor hover:underline'>
               Forgot Password?
             </button>
           </div>

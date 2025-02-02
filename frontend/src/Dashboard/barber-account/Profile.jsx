@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
+import TimeSlotSection from './TimeSlotSection';
 // import ServiceManagement from './ServiceManagement';
 
 const Profile = ({barberData}) => {
@@ -204,22 +205,6 @@ const Profile = ({barberData}) => {
   // reusable function that updates the 'experience' field in the form data when a change event occurs
   const handleExperienceChange = (event, index) => {
     handleReusableInputChangeFunc('experience', index, event);
-  };
-
-   // reusable function for adding more time slots
-   const addTimeSlot = (e) => {
-    e.preventDefault();
-    addItem('timeSlots', {
-      day: 'Sunday',
-      startingTime: '10:00',
-      endingTime: '5:00',
-    });
-  };  
-    // Handle changes to specific time slots
-
-  // reusable function that updates the 'timeSlots' field in the form data when a change event occurs
-  const handleTimeSlotsChange = (event, index) => {
-    handleReusableInputChangeFunc('timeSlots', index, event);
   };
 
   
@@ -432,8 +417,10 @@ const Profile = ({barberData}) => {
           </button>
         </div>
 
+        <TimeSlotSection formData={formData} setFormData={setFormData} />
+        
         {/* Time Slots Section */}
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <p className="form__label">Time Slots</p>
           {formData.timeSlots?.map((item, index) => (
             <div key={index}>
@@ -493,7 +480,7 @@ const Profile = ({barberData}) => {
           >
             Add Time Slot
           </button>
-        </div>
+        </div> */}
 
 
         
