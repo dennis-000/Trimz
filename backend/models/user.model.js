@@ -22,12 +22,16 @@ const UserSchema = new mongoose.Schema({
   // Only for providers
   servicesOffered: [{ type: mongoose.Schema.Types.ObjectId, ref: "Service" }], // Reference to Service model
   bio: { type: String }, // Provider's bio
+  about: { type: String }, // About User
   location: { type: String }, // Provider's working location
   averageRating: { type: Number, default: 0 }, // Average rating for provider
   totalRating: { type: Number, default: 0 }, // Total rating for provider
   verified: {
     type: Boolean,
     default: true, // Indicates if the provider is verified
+  },
+  specialization: {
+    title: { type: String }
   },
   achievements: [
     {
@@ -37,20 +41,25 @@ const UserSchema = new mongoose.Schema({
       // proof: { url: String, public_id: String } // Optional image or certificate
     }
   ],
+  experience: [
+    {
+        workplace: { type: String, required: true },
+        role: { type: String, required: true },
+        startingDate: { type: Date }, // Example: "2 years", "Jan 2020 - Dec 2021", etc.
+        endingDate: { type: Date }, // Example: "2 years", "Jan 2020 - Dec 2021", etc.
+        description: { type: String }
+    }
+  ],
   workingHours: [
     {
-      day: {
-        type: String,
-        enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        required: true,
-      },
-      timeSlots: [
-        {
-          start: { type: String, required: true }, // Example: "09:00 AM"
-          end: { type: String, required: true },   // Example: "05:00 PM"
+        day: {
+            type: String,
+            enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            required: true,
         },
-      ],
-    },
+        startingTime: { type: String, required: true }, // Format: "HH:MM" (e.g., "09:00")
+        endingTime: { type: String, required: true }    // Format: "HH:MM" (e.g., "17:00")
+    }
   ],
   available: { type: Boolean, default: false }, // New field to store availability status
   // For both customers and providers

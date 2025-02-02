@@ -6,7 +6,7 @@ const BarberAbout = ({name, about, achievements, experience}) => {
       <div>
           <div>
               <h3 className='text-[20px] leading-[30px] text-headingColor font-semibold
-              flex items-center gap-2'>About of
+              flex items-center gap-2'>About
                   <span className='text-irisBlueColor font-bold text-[20px] leading-9'>
                       {name}
                   </span>
@@ -28,14 +28,14 @@ const BarberAbout = ({name, about, achievements, experience}) => {
                 {achievements?.map((item,index)=>   <li key={index} className='flex flex-col sm:flex-row sm:justify-between sm:items-end md:gap-5 mb-[30px]'>
                       <div>
                           <span className='text-irisBlueColor text-[15px] leading-6 font-semibold'>
-                              {formateDate(item.startingDate)} - {formateDate(item.endingDate)}
+                              {formateDate(item.date)}
                           </span>
                           {/* <p className='text-[16px] leading-6 font-medium text-textColor'>
                           Type Of Achievement
                           </p> */}
                       </div>
                       <p className='text-[14px] leading-5 font-medium text-textColor'>
-                      {item.achievement}
+                      {item.title}
                           </p>
                   </li>
 )}
@@ -59,10 +59,13 @@ const BarberAbout = ({name, about, achievements, experience}) => {
                         {formateDate(item.startingDate)} - {formateDate(item.endingDate)}
                       </span>
                       <p className='text-[16px] leading-6 font-medium text-textColor'>
-                              {item.experience}
+                              {item.role}
                       </p>
                       <p className='text-[14px] leading-5 font-medium text-textColor'>
-                              {item.experience}
+                              {item.workplace}
+                        </p>
+                      <p className='text-[14px] leading-5 font-medium text-textColor'>
+                              {item.description}
                         </p>
                   </li>)}
                     {/* ===== 1st ======== */}

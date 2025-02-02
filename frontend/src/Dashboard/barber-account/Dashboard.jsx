@@ -97,7 +97,7 @@ const Dashboard = () => {
                   <BarberAbout 
                   name={data?.name} 
                   about={data?.about}
-                  qualification={data?.qualification} 
+                  achievements={data?.achievements} 
                   experience={data?.experience}
                   />
                   </div>
