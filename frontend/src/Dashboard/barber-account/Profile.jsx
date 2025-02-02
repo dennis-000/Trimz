@@ -26,7 +26,6 @@ const Profile = ({barberData}) => {
   });
 
   // Populate the form data when barberData changes
-
   useEffect(() => {
     if (barberData) {
       setFormData({
@@ -40,17 +39,15 @@ const Profile = ({barberData}) => {
         achievements: barberData.achievements || [],
         timeSlots: barberData.timeSlots || [],
         about: barberData.about || '',
-        profilePicture: barberData.profilePicture || "/api/placeholder/100/100",
+        profilePicture: barberData.profilePicture?.url || barberData.profilePicture || "/api/placeholder/100/100",
         services: barberData.services || [],
       });
-    }
-    if (barberData.profilePicture?.url) {
-      setPreviewURL(barberData.profilePicture.url);
-    }
-    else{
-      setPreviewURL(barberData.profilePicture)
+  
+      // Ensure previewURL is always a string URL
+      setPreviewURL(barberData.profilePicture?.url || barberData.profilePicture || "/api/placeholder/100/100");
     }
   }, [barberData]);
+  
 
   // Cleanup preview URL on component unmount or new upload
   useEffect(() => {
@@ -72,25 +69,22 @@ const Profile = ({barberData}) => {
     e.preventDefault();
     
     try {
-      // Create a FormData object to handle file upload
       const updateData = new FormData();
-      // Append all form data fields except profilePicture to FormData
-      // Append all text fields to FormData
+      
+      // Append all text fields
       Object.keys(formData).forEach(key => {
         if (key !== 'profilePicture') {
           updateData.append(key, formData[key]);
         }
       });
-      
-      // Append the profile picture file if it exists
-      if (formData.profilePicture instanceof File) {
+  
+      // Ensure correct file handling
+      if (formData.profilePicture && formData.profilePicture instanceof File) {
         updateData.append('profilePicture', formData.profilePicture);
       }
-      for (let [key, value] of updateData.entries()) {
-        console.log(key, value);
-      }      
+  
       const token = localStorage.getItem('token');
-      // Send the updated data to the server
+  
       const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
         method: 'PATCH',
         headers: {
@@ -98,14 +92,13 @@ const Profile = ({barberData}) => {
         },
         body: updateData
       });
-      // console.log('Barber data',barberData._id);
-
   
       const result = await res.json();
   
       if (!res.ok) {
         throw Error(result.message);
       }
+  
       localStorage.setItem('user', JSON.stringify(result.data));
       localStorage.setItem('role', result.data.role);
       localStorage.setItem('token', token);
@@ -117,12 +110,12 @@ const Profile = ({barberData}) => {
     }
   };
   
+  
     // Handle file input change for profile picture
   // Modify handleFileInputChange to store the File object
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("File", file);
       const validImageTypes = ['image/jpeg', 'image/png'];
       if (!validImageTypes.includes(file.type)) {
         toast.error('Invalid file type. Please upload a JPEG or PNG image.');
@@ -132,7 +125,6 @@ const Profile = ({barberData}) => {
         toast.error('File size exceeds 5MB.');
         return;
       }
-      // Generate a preview URL for the image
       const objectURL = URL.createObjectURL(file);
       setPreviewURL(objectURL);
       setFormData({ ...formData, profilePicture: file });
