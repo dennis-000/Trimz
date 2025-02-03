@@ -7,7 +7,7 @@ const reviewRouter = Router()
 //Review
 reviewRouter.get("/", getAllReviews)
 reviewRouter.get("/user/:id", getSingleUserReviews)//Get all reviews of a particular user
-reviewRouter.post("/", requireAuth, createNewReview)
+reviewRouter.post("/:id", requireAuth, createNewReview)
 reviewRouter.patch("/:id",requireAuth, updateReview)
 reviewRouter.delete("/:id",requireAuth, deleteReview)
 
