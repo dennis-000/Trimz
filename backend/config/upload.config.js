@@ -13,6 +13,7 @@
 //     },
 // });
 
+
 // const upload = multer({
 //     storage: storage,
 //     limits: { fileSize: 1024 * 1024 * 5 }, // Limit file size to 5MB
@@ -26,6 +27,9 @@ import path from 'path';
 
 // Create directories for uploads if they don't exist
 const createDirectory = (dir) => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
@@ -49,7 +53,7 @@ const storage = multer.diskStorage({
         } else if (file.fieldname === "galleryImages") {
             cb(null, galleryDir); // Gallery folder
         } else if (file.fieldname === "providerServiceImage") {
-            console.log("Fieldname",file.fieldname)
+            console.log("Fieldname", file.fieldname)
             cb(null, serviceDir); // Gallery folder
         } else {
             cb(new Error("Invalid field name"), null);
@@ -74,6 +78,9 @@ const fileFilter = (req, file, cb) => {
 
 // Configure upload instance
 const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max per file
     storage: storage,
     fileFilter: fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max per file
