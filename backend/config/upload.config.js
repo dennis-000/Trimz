@@ -38,7 +38,6 @@ const createDirectory = (dir) => {
 const profilePictureDir = "uploads/profilePictures";
 const galleryDir = "uploads/gallery";
 const serviceDir = "uploads/service";
-const serviceDir = "uploads/service";
 
 createDirectory(profilePictureDir);
 createDirectory(galleryDir);
@@ -54,7 +53,7 @@ const storage = multer.diskStorage({
         } else if (file.fieldname === "galleryImages") {
             cb(null, galleryDir); // Gallery folder
         } else if (file.fieldname === "providerServiceImage") {
-            console.log("Fieldname",file.fieldname)
+            console.log("Fieldname", file.fieldname)
             cb(null, serviceDir); // Gallery folder
         } else {
             cb(new Error("Invalid field name"), null);
@@ -69,12 +68,6 @@ const storage = multer.diskStorage({
 
 // File type validation
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error("Unsupported file type. Only JPEG, PNG, and JPG are allowed."));
-    }
     const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
