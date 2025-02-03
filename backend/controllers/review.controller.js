@@ -19,11 +19,13 @@ export const getSingleUserReviews = async (req, res) => {
     }
 
     try {
-        const reviews = await Review.find({ provider: id })
+        const reviews = await Review.find({ provider: id }).populate('customer')
 
         if (reviews.length === 0) {
             return res.status(404).json({ success: false, message: "No reviews found for this user" });
         }
+
+        console.log(reviews);
 
         res.status(200).json({success: true, data: reviews, message: "Reviews retrieved successfully"})
     } catch (error) {
@@ -33,11 +35,16 @@ export const getSingleUserReviews = async (req, res) => {
 }
 
 export const createNewReview = async (req, res) => {
-    const request = req.body
+    const { id } = req.params
+    const { rating, reviewText } = req.body
     
-    const newReview = new Review(request)
-
     try {
+        const newReview = new Review({
+            customer: req.user.id,
+            provider: id,
+            rating,
+            comment: reviewText
+        })
         await newReview.save()
 
         await createAuditLog(req.user ? req.user.id : "system", newReview._id, "Review", "create", "Review created");

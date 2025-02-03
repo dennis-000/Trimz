@@ -58,8 +58,8 @@ const FeedbackForm = () => {
 
                 {/* ========= For stars Ratings ========= */}
                 <div>
-                    {[...Array(5).keys()].map((...index) => {
-                        index += 1
+                    {[...Array(5).keys()].map((_,i) => {
+                        let index = i + 1
                       
                         return (
                             <button
@@ -69,7 +69,10 @@ const FeedbackForm = () => {
                                     ? 'text-yellowColor'
                                     : 'text-gray-400'
                                 } bg-transparent border-none outline-none text-[22px] cursor-pointer`}
-                                onClick={() => setRating(index)}
+                                onClick={() => {
+                                    setRating(index)
+                                    console.log("Index: ",index);
+                                }}
                                 onMouseEnter={() => setHover(index)}
                                 onMouseLeave={() => setHover(rating)}
                                 onDoubleClick={() => {

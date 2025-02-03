@@ -54,7 +54,7 @@ const storage = multer.diskStorage({
         } else if (file.fieldname === "galleryImages") {
             cb(null, galleryDir); // Gallery folder
         } else if (file.fieldname === "providerServiceImage") {
-            console.log("Fieldname",file.fieldname)
+            console.log("Fieldname", file.fieldname)
             cb(null, serviceDir); // Gallery folder
         } else {
             cb(new Error("Invalid field name"), null);

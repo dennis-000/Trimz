@@ -34,6 +34,11 @@ const authReducer = (state, action) => {
                 role: null,
                 token: null,
             };
+        case 'UPDATE_USER':
+            return {
+                ...state,
+                user: action.payload,
+            };
         default:
             return state;
     }
@@ -47,12 +52,20 @@ export const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         if (state.user) {
             localStorage.setItem('user', JSON.stringify(state.user));
+        } else {
+            localStorage.removeItem('user');
         }
+
         if (state.role) {
             localStorage.setItem('role', state.role);
+        } else {
+            localStorage.removeItem('role');
         }
+
         if (state.token) {
             localStorage.setItem('token', state.token);
+        } else {
+            localStorage.removeItem('token');
         }
     }, [state.user, state.role, state.token]);
 
