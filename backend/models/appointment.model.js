@@ -2,7 +2,7 @@ import moment from "moment";
 import mongoose from "mongoose";
 
 const AppointmentSchema = new mongoose.Schema({
-  service: { type: mongoose.Schema.Types.ObjectId, ref: "Service", required: true },
+  service: { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
   customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   provider: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   providerService: { type: mongoose.Schema.Types.ObjectId, ref: "ProviderService", required: true },
@@ -18,8 +18,8 @@ const AppointmentSchema = new mongoose.Schema({
   rating: {
     score: {
       type: Number,
-      min: 1,
-      max: 5, // Rating must be between 1 and 5
+      min: 0,
+      max: 5, // Rating must be between 0 and 5
       default: null,
     },
     comment: { type: String, default: "" } // Optional field for user feedback

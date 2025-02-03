@@ -57,11 +57,11 @@ const Dashboard = () => {
   {tab === 'overview' && (
     <div>
       <div className="flex items-center gap-4 mb-10">
-        <figure className="max-w-[200px] max-h-[200px]">
+        <figure className="w-[200px] h-[200px]">
           <img
             src={data?.profilePicture?.url || '/placeholder.jpg'}
             alt="Profile Picture"
-            className="w-full"
+            className="w-full h-full object-cover rounded-full"
           />
         </figure>
        
@@ -93,11 +93,11 @@ const Dashboard = () => {
                           </p>
                     </div>
                     
-                  </div>
+              </div>
                   <BarberAbout 
                   name={data?.name} 
                   about={data?.about}
-                  qualification={data?.qualification} 
+                  achievements={data?.achievements} 
                   experience={data?.experience}
                   />
                   </div>

@@ -142,11 +142,11 @@ export const getUserProfile = async(req, res)=>{
    
 
 export const updateUser = async (req, res) => {
-    try{
     const { id } = req.params
+    try{
 
-    let { name, email, password, gender, role, phone, location, verified, status, profilePicture, bio, workingHours, available, achievements } = req.body
-
+    let { name, email, password, gender, role, phone, location, verified, status, profilePicture, bio, about, workingHours, available, achievements, experience, specialization,timeSlots } = req.body
+    console.log(req.body)
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({success:false, message: "Invalid User ID"})
     }
@@ -157,17 +157,41 @@ export const updateUser = async (req, res) => {
         return res.status(404).json({ success: false, message: "User not found" });
     }
 
-     // Check if email is being updated and if it's unique
-     if (email && email !== user.email) {
+    // Check if email is being updated and if it's unique
+    if (email && email !== user.email) {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ success: false, message: "Email already in use" });
         }
     }
 
+    // Process achievements and workingHours if they are strings
+    if (typeof achievements === "string") {
+        try {
+          achievements = JSON.parse(achievements);
+        } catch (error) {
+          console.error("Error parsing achievements:", error.message);
+        }
+      }
+    if (typeof timeSlots === "string") {
+        try {
+          timeSlots = JSON.parse(timeSlots);
+        } catch (error) {
+          console.error("Error parsing timeSlots:", error.message);
+        }
+    }
+    if (typeof experience === "string") {
+        try {
+          experience = JSON.parse(experience);
+        } catch (error) {
+          console.error("Error parsing experience:", error.message);
+        }
+    }
+
      // Update profile picture if provided and delete the old one
      let updatedProfilePic = user.profilePicture
      if (req.file) {
+        console.log(req.file);
         // Delete old profile picture from cloudinary if it exists
         if (user.profilePicture && user.profilePicture.public_id) {
             await cloudinary.uploader.destroy(user.profilePicture.public_id);
@@ -199,16 +223,21 @@ export const updateUser = async (req, res) => {
         phone: phone || user.phone,
         location: location || user.location,
         bio: bio || user.bio,
+        about: about || user.about,
         status: status || user.status,
         verified: verified || user.verified,
         profilePicture: req.file ? updatedProfilePic : profilePicture,
         available: available || user.available,
-        workingHours: workingHours || user.workingHours,
         achievements: achievements || user.achievements,
+        experience: experience || user.experience,
+        specialization: specialization || user.specialization,
+        workingHours: timeSlots || user.workingHours,
     }
 
 
         const newUpdatedUser = await User.findByIdAndUpdate(id, updatedUser, { new: true })
+
+        console.log(newUpdatedUser);
 
         if (!newUpdatedUser) {
             return res.status(404).json({ success: false, message: "User not found" });

@@ -21,10 +21,7 @@ userRouter.get("/providers", getAllProviders) //Get all providers
 userRouter.get("/customers", getAllCustomers) //Get all customers
 userRouter.get("/:id", getSingleUserById) //Get a single user
 userRouter.post("/", upload.single("profilePicture"), createNewUser)
-userRouter.patch("/:id", requireAuth, upload.fields([
-    { name: "profilePicture", maxCount: 1 }, // Single profile picture
-    { name: "gallery", maxCount: 15 }, // Multiple gallery images
-]), updateUser)
+userRouter.patch("/:id", requireAuth, upload.single("profilePicture"), updateUser)// Single profile picture), updateUser)
 userRouter.delete("/:id", requireAuth, deleteUser)
 
 //get all appointments on the user dashboard

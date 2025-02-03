@@ -1,10 +1,12 @@
 /* eslint-disable no-undef */
-import signupImg from '../assets/images/signup.gif';
+import signupImg from '../assets/images/signup.png';
+import signupImg1 from '../assets/images/signup1.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { BASE_URL } from '../config';
 import {toast} from 'react-toastify';
 import HashLoader from 'react-spinners/BeatLoader';
+import { FcGoogle } from 'react-icons/fc'
 
 const Signup = () => {
   // State for handling file upload preview
@@ -138,25 +140,27 @@ const Signup = () => {
     
   return (
     <section className='px-5 xl:px-0'>
+      <div className='px-5 lg:px-0 min-h-screen flex items-center justify-center'>
       <div className='max-w-[1000px] mx-auto'>
         <div className='grid grid-cols-1 lg:grid-cols-2'>
+          
           {/* Left side - Image display (hidden on mobile) */}
-          <div className='hidden lg:block bg-primaryColor rounded-l-lg'>
+          <div className='hidden lg:block rounded-l-lg'>
             <figure className='rounded-l-lg'>
               <img src={signupImg} alt='SignUp Image' className='w-full rounded-l-lg'/>
+              <img src={signupImg1} alt='SignUp Image' className='w-full rounded-l-lg'/>
             </figure>
           </div>
 
           {/* Right side - Signup form */}
+        <div className='w-full max-w-[600px] mx-auto bg-white/90 rounded-lg shadow-[0_5px_20px_rgba(0,0,0,0.1)] md:p-10 p-6 backdrop-blur-sm my-8'>    {/* Added Logo Section */}
           <div className='rounded-l-lg lg:pl-16 py-10'>
             <h3 className='text-headingColor text-[22px] leading-9 font-bold mb-10'>
               Create an
               <span className='text-primaryColor'> Account</span>
             </h3>
 
-            <div className="text-center">
-              <button className="googleOauthBtn bg-primaryColor p-3 rounded-lg text-white" onClick={handleOauth}>Sign in with Google</button>
-            </div>
+
 
             {/* Sign up form */}
             <form onSubmit={submitHandler}>
@@ -307,18 +311,66 @@ const Signup = () => {
                   </label>
                 </div>
               </div>
+              <div className="flex flex-col gap-4 w-full max-w-md mx-auto">
+      {/* Primary Sign Up Button */}
+      <div className="flex justify-center">
+        <button
+          disabled={loading}
+          type="submit"
+          onClick={submitHandler}
+          className="w-full relative bg-primaryColor text-white text-lg font-semibold rounded-xl
+                   px-6 py-4 shadow-lg hover:shadow-primaryColor/30
+                   transform hover:-translate-y-0.5 active:translate-y-0
+                   transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed
+                   disabled:hover:shadow-none disabled:hover:translate-y-0"
+        >
+          <div className="flex items-center justify-center min-h-[30px]">
+            {loading ? (
+              <HashLoader size={30} color="#ffffff" />
+            ) : (
+              <span>Sign Up</span>
+            )}
+          </div>
+        </button>
+      </div>
 
-              {/* Submit button with loading state */}
-              <div className='mt-7 flex justify-center'>
-                <button
-                  disabled={loading}  // Disable button while loading
-                  type='submit' 
-                  className='w-64 bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'
-                >
-                  {/* Show loader or 'Sign Up' text based on loading state */}
-                  {loading ? <HashLoader size={35} color='#ffffff'/> : 'Sign Up'}
-                </button>
-              </div>
+      {/* Divider */}
+      <div className="flex items-center gap-4 my-2">
+        <div className="flex-1 h-px bg-gray-300"></div>
+        <span className="text-gray-500 text-sm font-medium">OR</span>
+        <div className="flex-1 h-px bg-gray-300"></div>
+      </div>
+
+      {/* Google Auth Button */}
+      <div>
+        <button 
+          onClick={handleOauth}
+          className="group relative w-full bg-white text-gray-700 font-medium
+                   rounded-xl border border-gray-300 shadow-sm
+                   hover:shadow-lg hover:border-gray-400
+                   transition-all duration-200 overflow-hidden"
+        >
+          {/* Colored top border */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r 
+                        from-[#4285F4] via-[#34A853] to-[#FBBC05]"></div>
+          
+          {/* Button content */}
+          <div className="flex items-center justify-center gap-3 px-6 py-4">
+            <FcGoogle className="text-2xl" />
+            <span className="font-roboto">Sign in with Google</span>
+          </div>
+
+          {/* Hover gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r 
+                        from-[#4285F4]/5 via-[#34A853]/5 to-[#FBBC05]/5 
+                        opacity-0 group-hover:opacity-100 
+                        transition-opacity duration-200" />
+        </button>
+      </div>
+    </div>
+  
+
+
 
               {/* Login link for existing users */}
               <p className='mt-5 text-textColor text-center'>
@@ -328,6 +380,8 @@ const Signup = () => {
                 </Link>
               </p>
             </form>
+            </div>
+          </div>
           </div>
         </div>
       </div>
