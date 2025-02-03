@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { BASE_URL } from '../../config';
 import { toast } from 'react-toastify';
+import TimeSlotSection from './TimeSlotSection';
 // import ServiceManagement from './ServiceManagement';
 
 const Profile = ({barberData}) => {
@@ -25,7 +26,6 @@ const Profile = ({barberData}) => {
   });
 
   // Populate the form data when barberData changes
-
   useEffect(() => {
     if (barberData) {
       setFormData({
@@ -39,17 +39,15 @@ const Profile = ({barberData}) => {
         achievements: barberData.achievements || [],
         timeSlots: barberData.timeSlots || [],
         about: barberData.about || '',
-        profilePicture: barberData.profilePicture || "/api/placeholder/100/100",
+        profilePicture: barberData.profilePicture?.url || barberData.profilePicture || "/api/placeholder/100/100",
         services: barberData.services || [],
       });
-    }
-    if (barberData.profilePicture?.url) {
-      setPreviewURL(barberData.profilePicture.url);
-    }
-    else{
-      setPreviewURL(barberData.profilePicture)
+  
+      // Ensure previewURL is always a string URL
+      setPreviewURL(barberData.profilePicture?.url || barberData.profilePicture || "/api/placeholder/100/100");
     }
   }, [barberData]);
+  
 
   // Cleanup preview URL on component unmount or new upload
   useEffect(() => {
@@ -71,30 +69,22 @@ const Profile = ({barberData}) => {
     e.preventDefault();
     
     try {
-      // Create a FormData object to handle file upload
       const updateData = new FormData();
-      // Append all form data fields except profilePicture to FormData
-      // Append all text fields to FormData
+      
+      // Append all text fields
       Object.keys(formData).forEach(key => {
-        if (key !== "profilePicture") {
-          if (typeof formData[key] === "object") {
-            updateData.append(key, JSON.stringify(formData[key]));
-          } else {
-            updateData.append(key, formData[key]);
-          }
+        if (key !== 'profilePicture') {
+          updateData.append(key, formData[key]);
         }
       });
-      
-      // Append the profile picture file if it exists
-      if (formData.profilePicture instanceof File) {
+  
+      // Ensure correct file handling
+      if (formData.profilePicture && formData.profilePicture instanceof File) {
         updateData.append('profilePicture', formData.profilePicture);
       }
-      for (let [key, value] of updateData.entries()) {
-        console.log(key, value);
-      }
-      console.log("Achievement: ", updateData.experience);
+  
       const token = localStorage.getItem('token');
-      // Send the updated data to the server
+  
       const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
         method: 'PATCH',
         headers: {
@@ -102,14 +92,13 @@ const Profile = ({barberData}) => {
         },
         body: updateData
       });
-      // console.log('Barber data',barberData._id);
-
   
       const result = await res.json();
   
       if (!res.ok) {
         throw Error(result.message);
       }
+  
       localStorage.setItem('user', JSON.stringify(result.data));
       localStorage.setItem('role', result.data.role);
       localStorage.setItem('token', token);
@@ -121,12 +110,12 @@ const Profile = ({barberData}) => {
     }
   };
   
+  
     // Handle file input change for profile picture
   // Modify handleFileInputChange to store the File object
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("File", file);
       const validImageTypes = ['image/jpeg', 'image/png'];
       if (!validImageTypes.includes(file.type)) {
         toast.error('Invalid file type. Please upload a JPEG or PNG image.');
@@ -136,7 +125,6 @@ const Profile = ({barberData}) => {
         toast.error('File size exceeds 5MB.');
         return;
       }
-      // Generate a preview URL for the image
       const objectURL = URL.createObjectURL(file);
       setPreviewURL(objectURL);
       setFormData({ ...formData, profilePicture: file });
@@ -164,9 +152,9 @@ const Profile = ({barberData}) => {
   const addAchievements = (e) => {
     e.preventDefault();
     addItem('achievements', {
-      date: '',
-      description: '',
-      title: 'Best Stylist'
+      startingDate: '',
+      endingDate: '',
+      achievement: 'Best Stylist'
     });
   };
 
@@ -195,9 +183,8 @@ const Profile = ({barberData}) => {
     addItem('experience', {
       startingDate: '',
       endingDate: '',
-      workplace: 'Ecutz Barbering Shop',
-      role: '',
-      description: ''
+      workplaces: 'Ecutz Barbering Shop',
+      years: '2 years'
     });
   };
 
@@ -210,22 +197,6 @@ const Profile = ({barberData}) => {
   // reusable function that updates the 'experience' field in the form data when a change event occurs
   const handleExperienceChange = (event, index) => {
     handleReusableInputChangeFunc('experience', index, event);
-  };
-
-   // reusable function for adding more time slots
-   const addTimeSlot = (e) => {
-    e.preventDefault();
-    addItem('timeSlots', {
-      day: 'Sunday',
-      startingTime: '10:00',
-      endingTime: '05:00',
-    });
-  };  
-    // Handle changes to specific time slots
-
-  // reusable function that updates the 'timeSlots' field in the form data when a change event occurs
-  const handleTimeSlotsChange = (event, index) => {
-    handleReusableInputChangeFunc('timeSlots', index, event);
   };
 
   
@@ -303,9 +274,9 @@ const Profile = ({barberData}) => {
                   onChange={handleInputChange}
                   className="form__input py-3.5">
                     <option value="">Select</option>
-                    <option value="Shaving">Shaving</option>
-                    <option value="Braiding">Braiding</option>
-                    <option value="Hairstyling">Hair Styling</option>
+                    <option value="shaving">Shaving</option>
+                    <option value="braiding">Braiding</option>
+                    <option value="hairstyling">Hair Styling</option>
                   </select>
                 </div>
 
@@ -325,31 +296,31 @@ const Profile = ({barberData}) => {
             <div key={index}>
               <div className="grid grid-cols-2 gap-5 mt-5">
                 <div>
-                  <p className="form__label">Date</p>
+                  <p className="form__label">Starting Date</p>
                   <input
                     type="date"
-                    name="date"
-                    value={item.date ? new Date(item.date).toISOString().split('T')[0] : ''}
+                    name="startingDate"
+                    value={item.startingDate}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleAchievementsChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Description</p>
+                  <p className="form__label">Ending Date</p>
                   <input
-                    type="text"
-                    name="description"
-                    value={item.description}
+                    type="date"
+                    name="endingDate"
+                    value={item.endingDate}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleAchievementsChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Title of Achievement</p>
+                  <p className="form__label">Type Of Achievement</p>
                   <input
                     type="text"
-                    name="title"
-                    value={item.title}
+                    name="achievement"
+                    value={item.achievement}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleAchievementsChange(e, index)}
                   />
@@ -384,7 +355,7 @@ const Profile = ({barberData}) => {
                   <input
                     type="date"
                     name="startingDate"
-                    value={item.startingDate ? new Date(item.startingDate).toISOString().split('T')[0] : ''}
+                    value={item.startingDate}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
@@ -394,37 +365,27 @@ const Profile = ({barberData}) => {
                   <input
                     type="date"
                     name="endingDate"
-                    value={item.endingDate ? new Date(item.endingDate).toISOString().split('T')[0] : ''}
+                    value={item.endingDate}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Workplace</p>
+                  <p className="form__label">Workplaces</p>
                   <input
                     type="text"
-                    name="workplace"
-                    value={item.workplace}
+                    name="workplaces"
+                    value={item.workplaces}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Role</p>
+                  <p className="form__label">Years of Practice</p>
                   <input
                     type="text"
-                    name="role"
-                    value={item.role}
-                    className="form__input mt-1 focus:outline-none focus:border-primaryColor"
-                    onChange={(e) => handleExperienceChange(e, index)}
-                  />
-                </div>
-                <div>
-                  <p className="form__label">Description</p>
-                  <input
-                    type="text"
-                    name="description"
-                    value={item.description}
+                    name="years"
+                    value={item.years}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
@@ -448,8 +409,10 @@ const Profile = ({barberData}) => {
           </button>
         </div>
 
+        <TimeSlotSection formData={formData} setFormData={setFormData} />
+        
         {/* Time Slots Section */}
-        <div className="mb-5">
+        {/* <div className="mb-5">
           <p className="form__label">Time Slots</p>
           {formData.timeSlots?.map((item, index) => (
             <div key={index}>
@@ -463,13 +426,13 @@ const Profile = ({barberData}) => {
                     onChange={(e) => handleTimeSlotsChange(e, index)}
                   >
                     <option value="">Select</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
-                    <option value="Saturday">Saturday</option>
-                    <option value="Sunday">Sunday</option>
+                    <option value="monday">Monday</option>
+                    <option value="tuesday">Tuesday</option>
+                    <option value="wednesday">Wednesday</option>
+                    <option value="thursday">Thursday</option>
+                    <option value="friday">Friday</option>
+                    <option value="saturday">Saturday</option>
+                    <option value="sunday">Sunday</option>
                   </select>
                 </div>
                 <div>
@@ -509,7 +472,7 @@ const Profile = ({barberData}) => {
           >
             Add Time Slot
           </button>
-        </div>
+        </div> */}
 
 
         
