@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import starIcon from '../../assets/images/Star.png';
 import BarberAbout from './BarberAbout';
 import Feedback from './Feedback';
@@ -12,6 +12,7 @@ import Loader from '../../components/Loading/Loading.jsx'
 import Error from '../../components/Error/Error';
 
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const BarbersDetails = () => {
   const [tab, setTab] = useState('about');
 
@@ -22,8 +23,7 @@ const BarbersDetails = () => {
   const { name,
     achievements,
     experience,
-    // timeSlots,
-    reviews,
+    workingHours,
     bio,
     about,
     averageRating,
@@ -32,6 +32,36 @@ const BarbersDetails = () => {
     profilePicture,
   } = provider || {};
 
+   // State to store reviews
+   const [reviews, setReviews] = useState([]);
+   const [reviewsLoading, setReviewsLoading] = useState(false);
+   const [reviewsError, setReviewsError] = useState(null);
+ 
+   // Fetch reviews on mount or when 'id' changes
+   useEffect(() => {
+     const fetchReviews = async () => {
+       setReviewsLoading(true);
+       try {
+         const response = await fetch(`${BASE_URL}reviews/user/${id}`, { method: 'GET' });
+         const result = await response.json();
+         console.log("result: ",result);
+         if (response.ok) {
+           setReviews(result.data || []); // Set reviews (ensure it's an array)
+         } else {
+           setReviewsError(result.message || "Error fetching reviews");
+           toast.error(result.message || "Error fetching reviews");
+         }
+       } catch (err) {
+         setReviewsError(err.message);
+         toast.error(err.message);
+       } finally {
+         setReviewsLoading(false);
+       }
+     };
+ 
+     fetchReviews();
+   }, [id]);
+ 
   return (
     <section>
       <div className="max-w-[1170px] px-5 mx-auto">
@@ -110,7 +140,7 @@ const BarbersDetails = () => {
               experience={experience}/>
               }
               {tab === 'feedback' && (
-                <Feedback reviews={reviews} totalRating={totalRating} />)}
+              <Feedback reviews={reviews} totalRating={totalRating} loading={reviewsLoading} error={reviewsError} />)}
 
               {/* === Will be added later == Dynamic Services */}
               {tab === 'services' && <BarberServices barberData={provider} />}
@@ -119,7 +149,7 @@ const BarbersDetails = () => {
 
           <div>
             {/* work on it later */}
-            <SidePanel />
+            <SidePanel timeSlots={workingHours} />
           </div>
 
           

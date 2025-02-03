@@ -37,7 +37,7 @@ const Profile = ({barberData}) => {
         specialization: barberData.specialization || '',
         experience: barberData.experience || [],
         achievements: barberData.achievements || [],
-        timeSlots: barberData.timeSlots || [],
+        timeSlots: barberData.workingHours || [],
         about: barberData.about || '',
         profilePicture: barberData.profilePicture || "/api/placeholder/100/100",
         services: barberData.services || [],
