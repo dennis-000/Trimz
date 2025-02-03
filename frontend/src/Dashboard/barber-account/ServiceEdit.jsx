@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
 import { X } from "lucide-react"; // Using Lucide for a more modern icon
@@ -92,18 +92,21 @@ const handleUpdate = async () => {
   
     // Handle image upload if a new image is selected
     if (editingService.image instanceof File) {
-      formData.append('image', editingService.image);
+      formData.append('providerServiceImage', editingService.image);
     }
 try {
     // Show loading toast
     const loadingToastId = toast.loading("Updating service...", { autoClose: false });
 
+  const jwt = localStorage.getItem("token");
 // Make API call to update service
-const response = await fetch(`${BASE_URL}/services/${editingService._id}`, {
+const response = await fetch(`${BASE_URL}provider-services/${editingService._id}`, {
     method: 'PATCH',
     body: formData, // Use FormData for file uploads
     // Include credentials if using authentication
-    credentials: 'include'
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
   });
 
   // Check if the response is successful
@@ -220,6 +223,7 @@ const response = await fetch(`${BASE_URL}/services/${editingService._id}`, {
             <input
               type="file"
               accept="image/*"
+              name="providerServiceImage"
               onChange={(e) => handleEditImageUpload(e.target.files[0])}
               className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-700"
             />

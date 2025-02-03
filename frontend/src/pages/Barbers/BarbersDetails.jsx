@@ -3,7 +3,7 @@ import starIcon from '../../assets/images/Star.png';
 import BarberAbout from './BarberAbout';
 import Feedback from './Feedback';
 import SidePanel from './SidePanel';
-import BarberServices from './BarberServices';
+import BarberServices from './BarberServices/BarberServices.jsx';
 import BarberGallery from './BarberGallery';
 
 import {BASE_URL} from './../../config';
@@ -43,8 +43,8 @@ const BarbersDetails = () => {
           <div className='grid md:grid-cols-3 gap-[50px]'>
           <div className='md:col-span-2'>
             <div className='flex items-center gap-5'>
-              <figure className="max-w-[200px] max-h-[200px]">
-                <img src={profilePicture} alt="" className='w-full' />
+              <figure className="w-[200px] h-[200px] min-w-[200px]">
+                <img src={profilePicture.url} alt="" className='w-full h-full object-cover rounded-full' />
               </figure>
 
               <div>
@@ -113,7 +113,7 @@ const BarbersDetails = () => {
                 <Feedback reviews={reviews} totalRating={totalRating} />)}
 
               {/* === Will be added later == Dynamic Services */}
-              {tab === 'services' && <BarberServices />}
+              {tab === 'services' && <BarberServices barberData={provider} />}
             </div>
           </div>
 

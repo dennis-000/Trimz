@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import {AuthContext} from '../context/AuthContext.jsx'
 import HashLoader from 'react-spinners/BeatLoader';
 import logo from '../assets/images/ecutz.png'
+import { FcGoogle } from 'react-icons/fc'
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -94,7 +95,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}auth/reset-password/`, {
+      const res = await fetch(`${BASE_URL}auth/forgot-password`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -118,6 +119,14 @@ const Login = () => {
   };
 
 
+  const handleOauth = async () => {
+    try {
+      window.location.href = "http://localhost:5000/api/auth/google";
+      
+    }catch(err){
+      toast.error(err.message)
+    }
+  }
 
 
   return (
@@ -168,18 +177,67 @@ const Login = () => {
 
           {/* Forgot Password */}
           <div className='text-right mb-4'>
-            <button 
+            <button
+            type='button'
             onClick={handleForgotPassword}
             className='text-primaryColor text-[16px] leading-7 text-headingColor hover:underline'>
               Forgot Password?
             </button>
           </div>
 
-          <div className='mt-7 flex justify-center'>
-            <button type='submit' className='w-64 bg-primaryColor text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'>
-              {loading ? <HashLoader size={25} color='#fff'/> : 'Login'}
+          <div 
+          className='flex justify-center'>
+            <button 
+            type='submit' 
+            className="w-full relative bg-primaryColor text-white text-lg font-semibold rounded-xl
+            px-6 py-4 shadow-lg hover:shadow-primaryColor/30
+            transform hover:-translate-y-0.5 active:translate-y-0
+            transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed
+            disabled:hover:shadow-none disabled:hover:translate-y-0">
+
+          <div className="flex items-center justify-center min-h-[30px]">
+              {loading ? (<HashLoader size={25} color='#fff'/>)
+               :(
+                <span>Login</span>
+               )}
+              </div>
             </button>
           </div>
+
+          {/* Divider */}
+            <div className="flex items-center gap-4 my-2">
+              <div className="flex-1 h-px bg-gray-300"></div>
+              <span className="text-gray-500 text-sm font-medium">OR</span>
+              <div className="flex-1 h-px bg-gray-300"></div>
+            </div>
+
+
+          {/* Google Auth Button */}
+                <div>
+                  <button 
+                    onClick={handleOauth}
+                    className="group relative w-full bg-white text-gray-700 font-medium
+                             rounded-xl border border-gray-300 shadow-sm
+                             hover:shadow-lg hover:border-gray-400
+                             transition-all duration-200 overflow-hidden"
+                  >
+                    {/* Colored top border */}
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r 
+                                  from-[#4285F4] via-[#34A853] to-[#FBBC05]"></div>
+                    
+                    {/* Button content */}
+                    <div className="flex items-center justify-center gap-3 px-6 py-4">
+                      <FcGoogle className="text-2xl" />
+                      <span className="font-roboto">Sign in with Google</span>
+                    </div>
+          
+                    {/* Hover gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r 
+                                  from-[#4285F4]/5 via-[#34A853]/5 to-[#FBBC05]/5 
+                                  opacity-0 group-hover:opacity-100 
+                                  transition-opacity duration-200" />
+                  </button>
+                </div>
 
           <p className='mt-5 text-textColor text-center'>
             {/* Don&apos;t have an account? */}

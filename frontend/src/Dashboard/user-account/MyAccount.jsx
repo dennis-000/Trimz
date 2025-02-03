@@ -58,6 +58,7 @@ const MyAccount = () => {
               localStorage.setItem('role', role);
   
               window.history.replaceState({}, document.title, window.location.pathname);
+              window.location.reload()
             } else {
               setError('Failed to fetch user role.');
               console.error('Failed to fetch user role:', userData.message);

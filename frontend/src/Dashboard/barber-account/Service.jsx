@@ -221,20 +221,20 @@ const Service = () => {
   };
 
   // Validates all services before submission
-  const validateServices = () => {
-    for (const service of formData.services) {
-      if (
-        !service.name ||
-        !service.description ||
-        !service.price ||
-        !service.duration
-      ) {
-        toast.error("All fields are required for each service.");
-        return false;
-      }
-    }
-    return true;
-  };
+  // const validateServices = () => {
+  //   for (const service of formData.services) {
+  //     if (
+  //       !service.name ||
+  //       !service.description ||
+  //       !service.price ||
+  //       !service.duration
+  //     ) {
+  //       toast.error("All fields are required for each service.");
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // };
 
   // Submits all services to the backend API
  // Modified submitServices to refresh existing services after submission
