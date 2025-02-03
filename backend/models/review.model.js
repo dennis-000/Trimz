@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const ReviewSchema = new mongoose.Schema({
-    service: { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
+    providerService: { type: mongoose.Schema.Types.ObjectId, ref: "ProviderService" },
     customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     provider: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     rating: {
@@ -9,7 +9,7 @@ const ReviewSchema = new mongoose.Schema({
         min: 0,
         max: 5,
         default: 0,
-        required: true
+        required: null
     },
     comment: { type: String },
 }, { timestamps: true });

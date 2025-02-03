@@ -228,7 +228,6 @@ export const updateUser = async (req, res) => {
         verified: verified || user.verified,
         profilePicture: req.file ? updatedProfilePic : profilePicture,
         available: available || user.available,
-        workingHours: workingHours || user.workingHours,
         achievements: achievements || user.achievements,
         experience: experience || user.experience,
         specialization: specialization || user.specialization,

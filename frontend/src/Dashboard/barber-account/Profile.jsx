@@ -26,6 +26,7 @@ const Profile = ({barberData}) => {
   });
 
   // Populate the form data when barberData changes
+
   useEffect(() => {
     if (barberData) {
       setFormData({
@@ -37,17 +38,19 @@ const Profile = ({barberData}) => {
         specialization: barberData.specialization || '',
         experience: barberData.experience || [],
         achievements: barberData.achievements || [],
-        timeSlots: barberData.timeSlots || [],
+        timeSlots: barberData.workingHours || [],
         about: barberData.about || '',
-        profilePicture: barberData.profilePicture?.url || barberData.profilePicture || "/api/placeholder/100/100",
+        profilePicture: barberData.profilePicture || "/api/placeholder/100/100",
         services: barberData.services || [],
       });
-  
-      // Ensure previewURL is always a string URL
-      setPreviewURL(barberData.profilePicture?.url || barberData.profilePicture || "/api/placeholder/100/100");
+    }
+    if (barberData.profilePicture?.url) {
+      setPreviewURL(barberData.profilePicture.url);
+    }
+    else{
+      setPreviewURL(barberData.profilePicture)
     }
   }, [barberData]);
-  
 
   // Cleanup preview URL on component unmount or new upload
   useEffect(() => {
@@ -69,22 +72,30 @@ const Profile = ({barberData}) => {
     e.preventDefault();
     
     try {
+      // Create a FormData object to handle file upload
       const updateData = new FormData();
-      
-      // Append all text fields
+      // Append all form data fields except profilePicture to FormData
+      // Append all text fields to FormData
       Object.keys(formData).forEach(key => {
-        if (key !== 'profilePicture') {
-          updateData.append(key, formData[key]);
+        if (key !== "profilePicture") {
+          if (typeof formData[key] === "object") {
+            updateData.append(key, JSON.stringify(formData[key]));
+          } else {
+            updateData.append(key, formData[key]);
+          }
         }
       });
-  
-      // Ensure correct file handling
-      if (formData.profilePicture && formData.profilePicture instanceof File) {
+      
+      // Append the profile picture file if it exists
+      if (formData.profilePicture instanceof File) {
         updateData.append('profilePicture', formData.profilePicture);
       }
-  
+      for (let [key, value] of updateData.entries()) {
+        console.log(key, value);
+      }
+      console.log("Achievement: ", updateData.experience);
       const token = localStorage.getItem('token');
-  
+      // Send the updated data to the server
       const res = await fetch(`${BASE_URL}users/${barberData._id}`, {
         method: 'PATCH',
         headers: {
@@ -92,13 +103,14 @@ const Profile = ({barberData}) => {
         },
         body: updateData
       });
+      // console.log('Barber data',barberData._id);
+
   
       const result = await res.json();
   
       if (!res.ok) {
         throw Error(result.message);
       }
-  
       localStorage.setItem('user', JSON.stringify(result.data));
       localStorage.setItem('role', result.data.role);
       localStorage.setItem('token', token);
@@ -110,12 +122,12 @@ const Profile = ({barberData}) => {
     }
   };
   
-  
     // Handle file input change for profile picture
   // Modify handleFileInputChange to store the File object
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      console.log("File", file);
       const validImageTypes = ['image/jpeg', 'image/png'];
       if (!validImageTypes.includes(file.type)) {
         toast.error('Invalid file type. Please upload a JPEG or PNG image.');
@@ -125,6 +137,7 @@ const Profile = ({barberData}) => {
         toast.error('File size exceeds 5MB.');
         return;
       }
+      // Generate a preview URL for the image
       const objectURL = URL.createObjectURL(file);
       setPreviewURL(objectURL);
       setFormData({ ...formData, profilePicture: file });
@@ -152,9 +165,9 @@ const Profile = ({barberData}) => {
   const addAchievements = (e) => {
     e.preventDefault();
     addItem('achievements', {
-      startingDate: '',
-      endingDate: '',
-      achievement: 'Best Stylist'
+      date: '',
+      description: '',
+      title: 'Best Stylist'
     });
   };
 
@@ -183,8 +196,9 @@ const Profile = ({barberData}) => {
     addItem('experience', {
       startingDate: '',
       endingDate: '',
-      workplaces: 'Ecutz Barbering Shop',
-      years: '2 years'
+      workplace: 'Ecutz Barbering Shop',
+      role: '',
+      description: ''
     });
   };
 
@@ -198,7 +212,6 @@ const Profile = ({barberData}) => {
   const handleExperienceChange = (event, index) => {
     handleReusableInputChangeFunc('experience', index, event);
   };
-
   
 
     return (
@@ -274,9 +287,9 @@ const Profile = ({barberData}) => {
                   onChange={handleInputChange}
                   className="form__input py-3.5">
                     <option value="">Select</option>
-                    <option value="shaving">Shaving</option>
-                    <option value="braiding">Braiding</option>
-                    <option value="hairstyling">Hair Styling</option>
+                    <option value="Shaving">Shaving</option>
+                    <option value="Braiding">Braiding</option>
+                    <option value="Hairstyling">Hair Styling</option>
                   </select>
                 </div>
 
@@ -296,31 +309,31 @@ const Profile = ({barberData}) => {
             <div key={index}>
               <div className="grid grid-cols-2 gap-5 mt-5">
                 <div>
-                  <p className="form__label">Starting Date</p>
+                  <p className="form__label">Date</p>
                   <input
                     type="date"
-                    name="startingDate"
-                    value={item.startingDate}
+                    name="date"
+                    value={item.date ? new Date(item.date).toISOString().split('T')[0] : ''}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleAchievementsChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Ending Date</p>
-                  <input
-                    type="date"
-                    name="endingDate"
-                    value={item.endingDate}
-                    className="form__input mt-1 focus:outline-none focus:border-primaryColor"
-                    onChange={(e) => handleAchievementsChange(e, index)}
-                  />
-                </div>
-                <div>
-                  <p className="form__label">Type Of Achievement</p>
+                  <p className="form__label">Description</p>
                   <input
                     type="text"
-                    name="achievement"
-                    value={item.achievement}
+                    name="description"
+                    value={item.description}
+                    className="form__input mt-1 focus:outline-none focus:border-primaryColor"
+                    onChange={(e) => handleAchievementsChange(e, index)}
+                  />
+                </div>
+                <div>
+                  <p className="form__label">Title of Achievement</p>
+                  <input
+                    type="text"
+                    name="title"
+                    value={item.title}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleAchievementsChange(e, index)}
                   />
@@ -355,7 +368,7 @@ const Profile = ({barberData}) => {
                   <input
                     type="date"
                     name="startingDate"
-                    value={item.startingDate}
+                    value={item.startingDate ? new Date(item.startingDate).toISOString().split('T')[0] : ''}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
@@ -365,27 +378,37 @@ const Profile = ({barberData}) => {
                   <input
                     type="date"
                     name="endingDate"
-                    value={item.endingDate}
+                    value={item.endingDate ? new Date(item.endingDate).toISOString().split('T')[0] : ''}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Workplaces</p>
+                  <p className="form__label">Workplace</p>
                   <input
                     type="text"
-                    name="workplaces"
-                    value={item.workplaces}
+                    name="workplace"
+                    value={item.workplace}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
                 </div>
                 <div>
-                  <p className="form__label">Years of Practice</p>
+                  <p className="form__label">Role</p>
                   <input
                     type="text"
-                    name="years"
-                    value={item.years}
+                    name="role"
+                    value={item.role}
+                    className="form__input mt-1 focus:outline-none focus:border-primaryColor"
+                    onChange={(e) => handleExperienceChange(e, index)}
+                  />
+                </div>
+                <div>
+                  <p className="form__label">Description</p>
+                  <input
+                    type="text"
+                    name="description"
+                    value={item.description}
                     className="form__input mt-1 focus:outline-none focus:border-primaryColor"
                     onChange={(e) => handleExperienceChange(e, index)}
                   />
@@ -408,7 +431,6 @@ const Profile = ({barberData}) => {
             Add Experience
           </button>
         </div>
-
         <TimeSlotSection formData={formData} setFormData={setFormData} />
         
         {/* Time Slots Section */}
@@ -426,13 +448,13 @@ const Profile = ({barberData}) => {
                     onChange={(e) => handleTimeSlotsChange(e, index)}
                   >
                     <option value="">Select</option>
-                    <option value="monday">Monday</option>
-                    <option value="tuesday">Tuesday</option>
-                    <option value="wednesday">Wednesday</option>
-                    <option value="thursday">Thursday</option>
-                    <option value="friday">Friday</option>
-                    <option value="saturday">Saturday</option>
-                    <option value="sunday">Sunday</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
                   </select>
                 </div>
                 <div>
