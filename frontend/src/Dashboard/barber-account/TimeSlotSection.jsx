@@ -1,13 +1,15 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 
 const TimeSlotSection = ({ formData, setFormData }) => {
-  const [selectedDates, setSelectedDates] = useState([]);
-
+  // Update the handler to convert "isRecurring" to a boolean.
   const handleTimeSlotsChange = (event, index) => {
-    const { name, value } = event.target;
+    let { name, value } = event.target;
+    if (name === "isRecurring") {
+      // Convert the string "true"/"false" to a boolean
+      value = value === "true";
+    }
     setFormData(prevData => {
       const updatedSlots = [...prevData.timeSlots];
       updatedSlots[index] = {
@@ -19,7 +21,7 @@ const TimeSlotSection = ({ formData, setFormData }) => {
   };
 
   const DEFAULT_TIME_SLOT = {
-    day: 'monday',
+    day: 'Monday',
     isRecurring: true,
     startingTime: '09:00',
     endingTime: '17:00',
@@ -32,14 +34,7 @@ const TimeSlotSection = ({ formData, setFormData }) => {
       ...prevData,
       timeSlots: [
         ...prevData.timeSlots,
-        {
-          day: 'monday',
-          isRecurring: true,
-          startingTime: '09:00',
-          endingTime: '17:00',
-          specificDate: '',
-          status: 'available'
-        }
+        { ...DEFAULT_TIME_SLOT }
       ]
     }));
   };
@@ -55,18 +50,19 @@ const TimeSlotSection = ({ formData, setFormData }) => {
     <div className="mb-5">
       <p className="form__label">Availability Schedule</p>
       {formData.timeSlots?.map((slot, index) => (
-        <div key={slot.id} className="border p-4 rounded-lg mb-4">
+        <div key={index} className="border p-4 rounded-lg mb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Schedule Type</label>
               <select
                 name="isRecurring"
-                value={slot.isRecurring}
+                // Convert boolean to string for the select value
+                value={slot.isRecurring.toString()}
                 onChange={(e) => handleTimeSlotsChange(e, index)}
                 className="form__input py-2.5"
               >
-                <option value={true}>Weekly Recurring</option>
-                <option value={false}>Specific Date</option>
+                <option value="true">Weekly Recurring</option>
+                <option value="false">Specific Date</option>
               </select>
             </div>
 
@@ -76,16 +72,16 @@ const TimeSlotSection = ({ formData, setFormData }) => {
                 <select
                   name="day"
                   value={slot.day}
-                  className="form__input py-2.5"
                   onChange={(e) => handleTimeSlotsChange(e, index)}
+                  className="form__input py-2.5"
                 >
-                  <option value="monday">Monday</option>
-                  <option value="tuesday">Tuesday</option>
-                  <option value="wednesday">Wednesday</option>
-                  <option value="thursday">Thursday</option>
-                  <option value="friday">Friday</option>
-                  <option value="saturday">Saturday</option>
-                  <option value="sunday">Sunday</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
                 </select>
               </div>
             ) : (
@@ -94,7 +90,7 @@ const TimeSlotSection = ({ formData, setFormData }) => {
                 <input
                   type="date"
                   name="specificDate"
-                  value={slot.specificDate}
+                  value={slot.specificDate ? new Date(slot.specificDate).toISOString().split('T')[0] : ''}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => handleTimeSlotsChange(e, index)}
                   className="form__input py-2"
