@@ -14,5 +14,6 @@ providerServiceRouter.patch("/:id", requireAuth, upload.single('providerServiceI
 providerServiceRouter.delete("/:id", requireAuth, deleteProviderService)
 
 providerServiceRouter.get("/profile/me", requireAuth, restrict(['providers']), getProviderProfile);
+providerServiceRouter.get("/profile/me", requireAuth, restrict(['providers']), getProviderProfile);
 
 export default providerServiceRouter
