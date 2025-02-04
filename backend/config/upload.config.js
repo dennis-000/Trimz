@@ -30,9 +30,6 @@ const createDirectory = (dir) => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
     }
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-    }
 };
 
 const profilePictureDir = "uploads/profilePictures";
@@ -77,9 +74,6 @@ const fileFilter = (req, file, cb) => {
 
 // Configure upload instance
 const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max per file
     storage: storage,
     fileFilter: fileFilter,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max per file
