@@ -5,7 +5,7 @@ const AppointmentSchema = new mongoose.Schema({
   service: { type: mongoose.Schema.Types.ObjectId, ref: "Service" },
   customer: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   provider: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  providerService: { type: mongoose.Schema.Types.ObjectId, ref: "ProviderService", required: true },
+  providerServices: [{ type: mongoose.Schema.Types.ObjectId, ref: "ProviderService", required: true }],
   date: { type: Date, required: true },
   startTime: { type: Date, required: true },
   duration: { type: Number, required: true, default: 30 },
@@ -14,7 +14,9 @@ const AppointmentSchema = new mongoose.Schema({
     enum: ["pending", "in-progress", "completed", "cancelled"],
     default: "pending",
   },
+  totalPrice: { type: String },
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },
+  paymentMethod: { type: String, enum: ["cash", "card", "momo"] },
   rating: {
     score: {
       type: Number,

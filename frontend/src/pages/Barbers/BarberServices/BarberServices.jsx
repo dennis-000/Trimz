@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/*eslint no-unused-vars: ["error", { "args": "none" }]*/
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { BASE_URL } from '../../../config';
@@ -29,6 +30,8 @@ const BarberServices = ({ barberData }) => {
       setCurrentStep(3);
     }
   }, [selectedDate, selectedTime]);
+
+  console.log('Barber Data:', barberData);
 
   // Fetch services for the provider
   const fetchServices = async () => {
@@ -102,6 +105,7 @@ const BarberServices = ({ barberData }) => {
 
   // Handle Pay Cash
   const handlePayCash = () => {
+    handleConfirmBooking('cash');
     alert('Booked!');
   };
 
@@ -116,7 +120,7 @@ const BarberServices = ({ barberData }) => {
       ref: `booking_${Date.now()}`,
       callback: function (response) {
         toast.success('Payment successful!');
-        handleConfirmBooking();
+        handleConfirmBooking("momo");
       },
       onClose: function () {
         toast.info('Payment window closed.');
@@ -126,7 +130,7 @@ const BarberServices = ({ barberData }) => {
   };
 
   // Handle booking confirmation
-  const handleConfirmBooking = async () => {
+  const handleConfirmBooking = async (paymentMethod) => {
     if (!selectedDate || !selectedTime || selectedServices.length === 0) {
       toast.error('Please complete all steps before confirming.');
       return;
@@ -134,14 +138,18 @@ const BarberServices = ({ barberData }) => {
 
     try {
       const bookingData = {
-        barberId: barberData._id,
-        services: selectedServices.map((service) => service.id),
+        provider: barberData._id,
+        providerServices: selectedServices.map((service) => service.id),
         date: selectedDate.toISOString().split('T')[0],
-        time: selectedTime,
-        totalPrice: calculateTotalPrice(),
+        startTime: new Date(`${selectedDate.toISOString().split('T')[0]}T${selectedTime}:00.000Z`), // Full DateTime format
+        duration: calculateTotalDuration(),
+        totalPrice: formatPrice(calculateTotalPrice()),
+        paymentMethod: paymentMethod || 'cash',
       };
 
-      const res = await fetch(`${BASE_URL}bookings`, {
+      console.log(bookingData);
+
+      const res = await fetch(`${BASE_URL}appointments`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -185,6 +193,7 @@ const BarberServices = ({ barberData }) => {
           selectedTime={selectedTime}
           handleDateSelect={handleDateSelect}
           handleTimeSelect={handleTimeSelect}
+          workingHours={barberData.workingHours}
         />
       )}
       {currentStep === 3 && (
