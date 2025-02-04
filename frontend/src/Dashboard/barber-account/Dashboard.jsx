@@ -4,7 +4,7 @@ import useGetProfile from "../../hooks/useFetchData";
 import { BASE_URL } from "../../config";
 import Tabs from "./Tabs";
 // import { barbers } from "../../assets/data/barbers";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BarberAbout from './../../pages/Barbers/BarberAbout';
 import Profile from "./Profile";
 import starIcon from '../../assets/images/star.png'
@@ -20,6 +20,33 @@ const Dashboard = () => {
      error } = useGetProfile(`${BASE_URL}users/${user._id}`);
      
   const [tab, setTab] = useState('overview');
+  const [appointments, setAppointments] = useState([]);
+
+  // ✅ Fetch Appointments in useEffect
+  useEffect(() => {
+    const getAppointmentsData = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}appointments/provider`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch appointments");
+        }
+
+        const result = await response.json();
+        console.log(result);
+        setAppointments(result.data); // ✅ Correctly setting state
+      } catch (error) {
+        console.error("Error fetching appointments:", error.message);
+      }
+    };
+
+    getAppointmentsData();
+  }, []); // ✅ Runs once when component mounts
 
   // console.log("Profile Picture URL:", data?.profilePicture);
   // console.log("Profile Picture URL:", data?.user?.profilePicture);
@@ -107,7 +134,7 @@ const Dashboard = () => {
                   
 
                 {tab==='appointments' && 
-                <Appointments appointments={data.appointments}/>}
+                <Appointments appointments={appointments}/>}
                 {tab==='settings' && <Profile barberData={data}/>}
                 {tab==='services' && <Service barberData={data}/>}
                 </div>
