@@ -2,7 +2,6 @@ import { Router } from "express"
 import { createNewProviderService, deleteProviderService, getAllProviderService, getAllProviderServicesByProviderId, getProviderProfile, getSingleProviderService, updateProviderService } from "../controllers/providerService.controller.js"
 import { requireAuth, restrict } from "../middlewares/auth.middleware.js"
 import upload from "../config/upload.config.js"
-import upload from "../config/upload.config.js"
 
 const providerServiceRouter = Router()
 

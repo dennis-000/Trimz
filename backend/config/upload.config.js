@@ -38,11 +38,9 @@ const createDirectory = (dir) => {
 const profilePictureDir = "uploads/profilePictures";
 const galleryDir = "uploads/gallery";
 const serviceDir = "uploads/service";
-const serviceDir = "uploads/service";
 
 createDirectory(profilePictureDir);
 createDirectory(galleryDir);
-createDirectory(serviceDir);
 
 
 // Set up Multer to temporarily store files locally
@@ -69,12 +67,6 @@ const storage = multer.diskStorage({
 
 // File type validation
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-    if (allowedTypes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error("Unsupported file type. Only JPEG, PNG, and JPG are allowed."));
-    }
     const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
