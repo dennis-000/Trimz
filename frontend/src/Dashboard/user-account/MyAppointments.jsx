@@ -1,44 +1,88 @@
-import useFetchData from "../../hooks/useFetchData"
-import { BASE_URL } from "../../config"
-import BarberCard from "../../components/Barbers/BarberCard";
-import Loading from "../../components/Loading/Loading";
+import Loader from "../../components/Loading/Loading";
 import Error from "../../components/Error/Error";
+import { BASE_URL } from "../../config";
+import BarberCard from "../../components/Barbers/BarberCard";
+import { useEffect, useState } from "react";
+import Appointments from "./Appointment";
 
 const MyAppointments = () => {
-  const { data: appointments, loading, error } = useFetchData(`${BASE_URL}appointments/all`);
-  
-  console.log('Appointments Data:', { appointments, loading, error });
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // If error is specifically "Appointment not found", treat it as no appointments
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const url = `${BASE_URL}appointments/user`;
+      
+      // Check if URL is valid
+      if (!url || url.includes("undefined")) {
+        setLoading(false);
+        setError({ message: "Invalid URL provided." });
+        return;
+      }
+
+      try {
+        const response = await fetch(url, { 
+          method: "GET", 
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+
+        // Parse the response once
+        const result = await response.json();
+        console.log("Fetched result:", result);
+
+        if (!response.ok) {
+          const errorMessage = result?.message || `Error: ${response.status} ${response.statusText}`;
+          throw new Error(errorMessage);
+        }
+
+        // Normalize the data:
+        // If result.data exists and is an array, use it;
+        // otherwise, if result itself is an array, use that;
+        // else, default to an empty array.
+        const fetchedAppointments = result.data && Array.isArray(result.data)
+          ? result.data
+          : Array.isArray(result)
+            ? result
+            : [];
+        console.log("Appointments:", fetchedAppointments);
+        setAppointments(fetchedAppointments);
+      } catch (err) {
+        setError({ message: err.message, stack: err.stack });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, []);
+
+  // Determine if there are no appointments
   const isNoAppointments = 
-  error?.message === "Appointment not found" || 
-  error === "Appointment not found";
+    !loading &&
+    (!appointments || (Array.isArray(appointments) && appointments.length === 0));
 
   return (
     <div>
-      {loading && !error && <Loading/>}
+      {loading && !error && <Loader />}
 
-      {/* If there's a generic error and it's not the "no appointments" case, show the error */}
-      { error && !isNoAppointments && !loading && <Error errMessage={error}/>}
+      {error && !loading && <Error errMessage={error.message} />}
 
-      {!loading && !error && appointments && (
+      {!loading && !error && appointments.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {appointments.map(appointment=> (
-            <BarberCard key={appointment._id} barber={appointment}/>
-          ))}
+          <Appointments appointments={appointments} />
         </div>
       )}
 
-      {/* Show "no appointments" message when there are no appointments or on specific "not found" error */}
-      {((!loading && !error && (!appointments || appointments.length === 0)) || 
-        isNoAppointments) && (
-        <h2 className="mt-5 text-center leading-7 text-[20px] font-semibold 
-        text-primaryColor">
+      {!loading && !error && isNoAppointments && (
+        <h2 className="mt-5 text-center leading-7 text-[20px] font-semibold text-primaryColor">
           You have not made any appointments
         </h2>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default MyAppointments;

@@ -23,7 +23,7 @@ const Profile = ({user}) => {
     phone: '',
     bio: '',  
   });
-
+  console.log('user', user);
   // Hook for programmatic navigation
   const navigate = useNavigate()
 
@@ -117,13 +117,17 @@ const Profile = ({user}) => {
       console.log('FormData', formDataToSend)
   
       const data = await res.json();
-  
+      
       if (!res.ok) {
         throw new Error(data.message);
       }
       
-  
+      localStorage.setItem('user', JSON.stringify(data.data));
+      localStorage.setItem('role', data.data.role);
+      localStorage.setItem('token', token);
 
+      
+      
       // Update the user data in parent component
       // onUpdateUser({
       //   ...user,
@@ -158,6 +162,7 @@ const Profile = ({user}) => {
 
       // Optional: navigate only if specified
       navigate('/users/profile/me');
+      window.location.reload();
     } catch (err) {
       toast.error(err.message);
       setLoading(false);
@@ -220,7 +225,7 @@ const Profile = ({user}) => {
 
               <div className='mb-5'>
                 <input
-                  type="number"
+                  type="tel"
                   placeholder='Phone'
                   name='phone'
                   value={formData.phone}
@@ -282,7 +287,7 @@ const Profile = ({user}) => {
 
            {/* Photo upload section */}
 <div className='mb-5 flex items-center gap-3'>
-  {selectedFile && (
+  { (
     <figure className='w-[70px] h-[70px] rounded-full border-2 border-solid
         border-primaryColor flex items-center justify-center overflow-hidden bg-[#f5f5f5]'>
       <img 

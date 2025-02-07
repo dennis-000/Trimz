@@ -136,11 +136,12 @@ export const deleteAppointment = async (req, res) => {
 export const getUserAppointments = async(req,res) => {
     try {
         // Ensure you're using 'customer' instead of 'user'
-        const appointments = await Appointment.find({ customer: req.user.id })
+        console.log('User: ', req.user);
+        const appointments = await Appointment.find({ customer: req.user.id }).populate('provider').populate('providerServices')
 
         if(!appointments || appointments.length === 0){
-            return res.status(404).json({ 
-                success: false, 
+            return res.status(200).json({ 
+                success: true, 
                 message: "No appointments found" 
             });
         }
