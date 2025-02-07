@@ -1,7 +1,6 @@
 import Loader from "../../components/Loading/Loading";
 import Error from "../../components/Error/Error";
 import { BASE_URL } from "../../config";
-import BarberCard from "../../components/Barbers/BarberCard";
 import { useEffect, useState } from "react";
 import Appointments from "./Appointment";
 
@@ -71,7 +70,7 @@ const MyAppointments = () => {
       {error && !loading && <Error errMessage={error.message} />}
 
       {!loading && !error && appointments.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="">
           <Appointments appointments={appointments} />
         </div>
       )}
