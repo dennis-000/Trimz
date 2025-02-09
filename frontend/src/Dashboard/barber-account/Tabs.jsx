@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { BiMenu } from 'react-icons/bi';
 import { AuthContext } from '../../context/AuthContext';
 import { useContext, useState, useEffect, useRef } from 'react';
