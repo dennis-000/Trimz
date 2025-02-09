@@ -9,12 +9,7 @@ const BarberCard = ({ user }) => {
     // console.log('User:', user);
     const navigate = useNavigate();
     const {
-        name ,
-        avgRating ,
-        totalRating ,
-        specialization ,
-        experiences ,
-        profilePicture ,
+        name
     } = user || {};
 
     const handleCardClick = () => {
@@ -57,7 +52,7 @@ const BarberCard = ({ user }) => {
             <div className='flex items-center gap-[6px]'>
                 <span className='flex items-center gap-[6px] text-[14px] leading-6 lg:text-[16px] lg:leading-7
                 font-semibold text-headingColor'>
-                    <img src={starIcon} alt="" />{user?.avgRating}
+                    <img src={starIcon} alt="" />{user?.averageRating}
                 </span>
                 <span className='text-[14px] leading-6 lg:text-[16px] lg:leading-7
                 font-[400] text-textColor'>({user?.totalRating})</span>
@@ -67,7 +62,7 @@ const BarberCard = ({ user }) => {
         <div className='mt-[18px] lg:mt-5 flex items-center justify-between'>
             <div>
                 <p className='text-[14px] leading-6 font-[400] text-textColor'>
-                    {experiences?.length > 0 ? `At ${experiences[0]?.experience}` : 'Experience details not available'}
+                    {user?.bio}
                 </p>
             </div>
 

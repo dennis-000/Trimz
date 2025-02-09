@@ -27,7 +27,7 @@ const UserSchema = new mongoose.Schema(
     bio: { type: String }, // Provider's bio
     about: { type: String }, // About User
     location: { type: String }, // Provider's working location
-    averageRating: { type: Number, default: 0 }, // Average rating for provider
+    averageRating: { type: Number, default: 0, set: v => Math.round(v * 100) / 100 }, // Average rating for provider
     totalRating: { type: Number, default: 0 }, // Total rating for provider
     verified: {
       type: Boolean,
