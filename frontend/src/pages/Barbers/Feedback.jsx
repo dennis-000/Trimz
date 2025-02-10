@@ -4,9 +4,13 @@ import { AiFillStar } from 'react-icons/ai';
 import { useState } from 'react';
 import FeedbackForm from './FeedbackForm';
 import Loader from '../../components/Loading/Loading.jsx'
+import { useParams } from 'react-router-dom';
 
 const Feedback = ({reviews, loading}) => {
-
+    const user = JSON.parse(localStorage.getItem('user'))
+    console.log("User", user);
+    const paramId = useParams().id
+    console.log(paramId);
     const [showFeedbackForm, setShowFeedbackForm] = useState(false)
   return (
       <div>
@@ -50,7 +54,7 @@ const Feedback = ({reviews, loading}) => {
           </div>
 
             {/* === Give Feedback btn ==== */}
-          {!showFeedbackForm &&
+          {!showFeedbackForm && (user._id !== paramId) &&
               <div className='text-center'>
                   <button className='btn' onClick={() => setShowFeedbackForm(true)}>
                       Give Feedback

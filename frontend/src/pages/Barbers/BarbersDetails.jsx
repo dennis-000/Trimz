@@ -126,7 +126,7 @@ const BarbersDetails = () => {
                 className={`${tab === 'services' && 'border-b border-solid border-primaryColor'} py-2 px-3 mr-5 
                   text-[16px] leading-7 text-headingColor font-semibold`}
               >
-                Services
+                Book Appointment
               </button>
             </div>
 

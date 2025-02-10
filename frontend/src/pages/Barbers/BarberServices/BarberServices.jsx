@@ -17,6 +17,11 @@ const BarberServices = ({ barberData }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const formatTime = (timeStr) => {
+    const [hour, minute] = timeStr.split(':');
+    return `${hour.padStart(2, '0')}:${minute}`;
+  };
+
   // Fetch provider services
   useEffect(() => {
     if (barberData?._id) {
@@ -141,13 +146,15 @@ const BarberServices = ({ barberData }) => {
         provider: barberData._id,
         providerServices: selectedServices.map((service) => service.id),
         date: selectedDate.toISOString().split('T')[0],
-        startTime: new Date(`${selectedDate.toISOString().split('T')[0]}T${selectedTime}:00.000Z`), // Full DateTime format
+        startTime: new Date(`${selectedDate.toISOString().split('T')[0]}T${formatTime(selectedTime)}:00.000Z`), // Full DateTime format
         duration: calculateTotalDuration(),
         totalPrice: formatPrice(calculateTotalPrice()),
         paymentMethod: paymentMethod || 'cash',
       };
 
-      console.log(bookingData);
+      console.log("Booking: ",bookingData);
+      console.log("DAte: ",selectedDate);
+      console.log("time: ",selectedTime);
 
       const res = await fetch(`${BASE_URL}appointments`, {
         method: 'POST',
