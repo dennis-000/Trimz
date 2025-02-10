@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
-// Import necessary assets and dependencies
-// import avatar from '../assets/images/doctor-img01.png';
+ // import avatar from '../assets/images/doctor-img01.png';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { BASE_URL } from '../../config';
@@ -56,11 +55,6 @@ const Profile = ({user}) => {
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       console.log('File', file);
-      // const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setPreviewUrl(reader.result);
-  //   };
-  //   reader.readAsDataURL(file);
 
   }
   };
@@ -127,32 +121,9 @@ const Profile = ({user}) => {
       localStorage.setItem('token', token);
 
       
-      
-      // Update the user data in parent component
-      // onUpdateUser({
-      //   ...user,
-      //   name: formData.name,
-      //   gender: formData.gender,
-      //   phone: formData.phone,
-      //   bio: formData.bio,
-      //   profilePicture: previewUrl || user.profilePicture
-      // });
-
-      // setLoading(false);
-      // toast.success(onUpdateUser.message);
-
       setLoading(false);
       toast.success('Profile updated successfully!');
 
-      // Update the parent `user` state with the new data
-      
-
-
-      // Update user data in parent component or global state
-      // if(onUserUpdate){
-      //   onUserUpdate(updateUser);
-      // }
-  
       // Optional: Clear password fields after successful update
       setFormData((prev) => ({
         ...prev,

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AiFillStar } from "react-icons/ai"
 import { useParams } from "react-router-dom";
-import { BASE_URL, token } from "../../config";
+import { BASE_URL } from "../../config";
 import { toast } from "react-toastify";
 import HashLoader from "react-spinners/BeatLoader";
 const FeedbackForm = () => {
@@ -24,7 +24,7 @@ const FeedbackForm = () => {
     
            
         }
-
+        const token = localStorage.getItem('token');
          // API request for a single provider reviews by id 
          const res = await fetch(`${BASE_URL}reviews/${id}`, {
             method: 'POST',

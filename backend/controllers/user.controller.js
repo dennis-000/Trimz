@@ -20,7 +20,7 @@ export const getAllUsers = async (req, res) => {
 
 export const getAllProviders = async (req, res) => {
     try {
-        const users = await User.find({ role: "provider" })
+        const users = await User.find({ role: "provider" }).sort({ averageRating: -1 })
         res.status(200).json({success: true, data: users, message: "Providers retrieved successfully"})
     } catch (error) {
         console.log("Error in fetching providers: ", error.message);
