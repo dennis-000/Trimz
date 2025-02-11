@@ -29,6 +29,8 @@ const Service = () => {
 
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingService, setEditingService] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
 
 
   // Fetch existing services when component mounts
@@ -43,7 +45,7 @@ const Service = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       
       if (!jwt || !user?._id) {
-        toast.warn("Authentication required");
+        toast.error("Authentication required");
         return;
       }
       // GET THE REQUEST FROM THE SERVICE THE PROVIDER POST
@@ -100,7 +102,7 @@ const Service = () => {
     }
   };
 
-  // Delete existing service
+  // =========== Delete existing service =============
   const deleteExistingService = async (serviceId) => {
     try {
       const jwt = localStorage.getItem("token");
@@ -289,6 +291,18 @@ const Service = () => {
     }
   };
 
+  const handleDeleteClick = (serviceId) => {
+    setSelectedServiceId(serviceId);
+    setShowConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (selectedServiceId) {
+      deleteExistingService(selectedServiceId);
+      setShowConfirm(false);
+      setSelectedServiceId(null);
+    }
+  };
   
   return (
     // Displaying the Services
@@ -332,8 +346,9 @@ const Service = () => {
                     >
                       <AiOutlineEdit size={20} />
                   </button>
-                  <button 
-                    onClick={() => deleteExistingService(service._id)}
+                  {/* Delete Button */}
+                  <button
+                    onClick={() => handleDeleteClick(service._id)}
                     className="text-red-500 hover:text-red-700 transition-colors"
                     aria-label="Delete Service"
                   >
@@ -341,6 +356,41 @@ const Service = () => {
                   </button>
                 </div>
               </div>
+
+
+      {/* =========== Confirmation Modal ============== */}
+      {showConfirm && (
+  <div className="fixed inset-0 flex items-center justify-center bg-transparent backdrop-blur-sm">
+    <div className="bg-white/80 p-5 rounded-lg shadow-md w-[90%] md:w-[350px] border border-gray-300">
+      
+      {/* Header */}
+      <h2 className="text-lg font-medium text-gray-800">Confirm Deletion</h2>
+
+      {/* Modal Content */}
+      <p className="text-gray-600 mt-2 text-sm">
+        Are you sure you want to delete this service?
+      </p>
+
+      {/* Action Buttons */}
+      <div className="mt-4 flex justify-end space-x-3">
+        <button
+          onClick={() => setShowConfirm(false)}
+          className="px-4 py-2 rounded border text-gray-700 hover:bg-gray-100 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={confirmDelete}
+          className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
               
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-4">

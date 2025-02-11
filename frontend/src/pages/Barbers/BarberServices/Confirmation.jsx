@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+
 const Confirmation = ({ selectedDate, selectedTime, selectedServices, calculateTotalDuration, calculateTotalPrice, formatPrice, handlePayCash, handlePayWithPaystack }) => (
     <div className="mt-8">
       <h2 className="text-2xl font-bold mb-6 px-2">Confirm Booking</h2>
