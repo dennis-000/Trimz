@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
-import { X } from "lucide-react"; // Using Lucide for a more modern icon
+import { X } from "lucide-react";
 
 const ServiceEdit = ({ isOpen, service, onClose, onUpdate }) => {
   const [editingService, setEditingService] = useState(null);

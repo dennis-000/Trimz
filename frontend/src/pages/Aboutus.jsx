@@ -1,7 +1,6 @@
 import { Users,Award, Star, Store, TrendingUp } from 'lucide-react';
 import About from '../components/About/about';
 import ecutzImg from '../assets/images/ecutz.png';
-import Footer from '../components/footer/Footer';
 
 const Aboutus = () => {
   return (
@@ -10,7 +9,7 @@ const Aboutus = () => {
             <About/>
         </div>
       {/* Hero Section */}
-      <div className="bg-yellow-50">
+      <div className="bg-yellow-50 mb-[-90px] ">
         <div className="max-w-6xl mx-auto px-4 py-20 text-center">
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
             Connecting Clients with Top Barbers & Stylists

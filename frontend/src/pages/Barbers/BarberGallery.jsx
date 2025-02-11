@@ -50,7 +50,7 @@ const BarberGallery = () => {
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-zinc-900 mb-2">Our Masterpieces</h2>
           <p className="text-zinc-600 text-sm max-w-2xl mx-auto">
-            Every cut tells a story of precision, style, and excellence
+            Every style tells a story of precision, style, and excellence
           </p>
         </div>
 

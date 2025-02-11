@@ -1,5 +1,4 @@
-import React from 'react';
-import { BsArrowRight, BsCalendar2Check, BsClock, BsScissors } from 'react-icons/bs';
+import { BsCalendar2Check, BsClock, BsScissors } from 'react-icons/bs';
 
 const BottomCTA = () => {
   return (
@@ -7,10 +6,10 @@ const BottomCTA = () => {
       {/* Decorative Elements */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute transform rotate-12 -right-24 -top-24">
-          <BsScissors className="w-48 h-48 text-gray-300" />
+          <BsScissors className="w-48 h-48 text-gray-900" />
         </div>
         <div className="absolute -left-24 -bottom-24">
-          <BsScissors className="w-48 h-48 text-gray-300" />
+          <BsScissors className="w-48 h-48 text-gray-800" />
         </div>
       </div>
 

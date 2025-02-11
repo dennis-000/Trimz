@@ -156,8 +156,10 @@ const Signup = () => {
         <div className='w-full max-w-[600px] mx-auto bg-white/90 rounded-lg shadow-[0_5px_20px_rgba(0,0,0,0.1)] md:p-10 p-6 backdrop-blur-sm my-8'>    {/* Added Logo Section */}
           <div className='rounded-l-lg lg:pl-16 py-10'>
             <h3 className='text-headingColor text-[22px] leading-9 font-bold mb-10'>
-              Create an
-              <span className='text-primaryColor'> Account</span>
+              Create an Account with
+              <p>
+                <span className='text-primaryColor'> 
+                  Ecutz and Style</span></p>
             </h3>
 
 
@@ -253,8 +255,8 @@ const Signup = () => {
                     className="text-textColor font-semibold text-[15px] leading-7 px-4 py-3
                       focus:outline-none"
                   >
-                    <option value="provider">Barber/Stylist</option>
-                    <option value="customer">User</option>
+                    <option value="provider">Provider</option>
+                    <option value="customer">Customer</option>
                   </select>
                 </label>
                 
@@ -270,7 +272,8 @@ const Signup = () => {
                   >
                     <option value="male">Male</option>
                     <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    {/* Uncomment later ---- Only 2 genders for now */}
+                    {/* <option value="other">Other</option> */}
                   </select>
                 </label>
               </div>
@@ -357,7 +360,7 @@ const Signup = () => {
           {/* Button content */}
           <div className="flex items-center justify-center gap-3 px-6 py-4">
             <FcGoogle className="text-2xl" />
-            <span className="font-roboto">Sign in with Google</span>
+            <span className="font-roboto">Sign up with Google</span>
           </div>
 
           {/* Hover gradient overlay */}

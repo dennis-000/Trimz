@@ -43,7 +43,7 @@ const Service = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       
       if (!jwt || !user?._id) {
-        toast.error("Authentication required");
+        toast.warn("Authentication required");
         return;
       }
       // GET THE REQUEST FROM THE SERVICE THE PROVIDER POST

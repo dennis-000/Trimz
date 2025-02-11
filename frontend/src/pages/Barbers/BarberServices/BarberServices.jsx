@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /*eslint no-unused-vars: ["error", { "args": "none" }]*/
 import { useState, useEffect } from 'react';
@@ -43,7 +44,7 @@ const BarberServices = ({ barberData }) => {
     try {
       const jwt = localStorage.getItem('token');
       if (!jwt || !barberData?._id) {
-        toast.error('Authentication required');
+        toast.warn('Please login to view services');
         return;
       }
 
