@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unknown-property */
 import ceoImg from "../../assets/images/ecutz-ceo.png";
 import aboutCardimg from "../../assets/images/about-card1.png";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
+import { Facebook, Twitter, Instagram } from "lucide-react";
+
 
 // Functional component for the About section
 function About() {
@@ -88,11 +90,11 @@ function About() {
               Meet the Visionary Behind Ecutz and Style
             </h2>
             <p className="text__para">
-              Ecutz is the brainchild of Saddiq Ahmed, a forward-thinking
+              Ecutz and Style is the brainchild of Saddiq Ahmed, a forward-thinking
               entrepreneur passionate about blending technology with everyday
-              convenience. Recognizing the challenges students face in accessing
-              quality grooming services, Saddiq Ahmed envisioned Ecutz as more
-              than just an app—it’s a lifestyle solution.
+              convenience. Recognizing the challenges people face in accessing
+              quality grooming services, Saddiq Ahmed envisioned Ecutz and Style as more
+              than just an app it’s a lifestyle solution.
             </p>
             {/* ========= FOR MORE THEN UNCOMMENT =========== */}
             {/* <p className='text__para mt-[30px]'>
@@ -102,9 +104,22 @@ function About() {
                         easily book services and get a fresh cut or style with just a few taps.
                         Ecutz makes on-campus grooming quick, convenient, and hassle-free.
                     </p> */}
-            <Link to="/about">
+            {/* <Link to="/about">
               <button className="btn">Learn More</button>
-            </Link>
+            </Link> */}
+           
+            <div className="flex space-x-4 mt-[30px]">
+                <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer">
+                  <Facebook className="w-6 h-6 text-gray-700 hover:text-blue-600 transition" />
+                </a>
+                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
+                  <Twitter className="w-6 h-6 text-gray-700 hover:text-blue-400 transition" />
+                </a>
+                <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
+                  <Instagram className="w-6 h-6 text-gray-700 hover:text-pink-500 transition" />
+                </a>
+            </div>
+
           </div>
         </div>
       </div>

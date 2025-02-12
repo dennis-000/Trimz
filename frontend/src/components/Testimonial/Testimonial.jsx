@@ -51,7 +51,7 @@ const Testimonial = () => {
                         <h4 className='text-[15px] leading-[20px] font-medium text-headingColor'>
                             "Convenient and Reliable"
                         </h4>
-                        <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
+                        <p className='text-[16px] leading-5 mt-4 text-textColor font-[400]'>
                             "Ecutz and style makes booking haircuts easy, and getting styled on campus is so
                             convenient!"
                         </p>
@@ -78,9 +78,9 @@ const Testimonial = () => {
                             </div>
                         </div>
                         <h4 className='text-[15px] leading-[20px] font-medium text-headingColor'>
-                            "Great Service"
+                            "Great Services"
                         </h4>
-                        <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
+                        <p className='text-[16px] leading-5 mt-4 text-textColor font-[400]'>
                             "Every barber and stylist I've tried on Ecutz and Style is professional and friendly. Always a
                             great experience!"
                         </p>
@@ -107,10 +107,10 @@ const Testimonial = () => {
                             </div>
                         </div>
                         <h4 className='text-[15px] leading-[20px] font-medium text-headingColor'>
-                            "Perfect for Students"
+                            "Perfect for Everyone"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Ecutz and style saves me time with quality on-campus haircuts, no need to
+                            "Ecutz and style saves me time with quality haircuts, no need to
                             leave your hostel."
                         </p>
                     </div>

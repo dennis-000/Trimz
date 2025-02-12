@@ -241,7 +241,7 @@ const Login = () => {
 
           <p className='mt-5 text-textColor text-center'>
             {/* Don&apos;t have an account? */}
-            New to Ecutz? 
+            New to Ecutz and Style? 
             <Link to='/register' className='text-primaryColor font-medium mt-1'>
                Register
             </Link>

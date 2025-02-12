@@ -1,16 +1,43 @@
-import { useState } from 'react';
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 import { BASE_URL, token } from '../../config';
 
-/**
- * Gallery Component
- * Allows barbers to upload and preview gallery pictures before submitting to the backend.
- */
-const GalleryUpload = () => {
-  const [images, setImages] = useState([]); // Array to store uploaded images
+const GalleryUpload = ({ barberId }) => {
+  const [images, setImages] = useState([]); // For upload preview
+  const [galleryImages, setGalleryImages] = useState([]); // For existing images
 
-  // Handles image upload with validation and preview functionality
+  // Fetch existing gallery images on component mount
+  useEffect(() => {
+    if (barberId) {
+      fetchGalleryImages();
+    }
+  }, [barberId]);
+
+  // Fetch gallery images
+  const fetchGalleryImages = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/barber-gallery/${barberId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setGalleryImages(data.images);
+      } else {
+        toast.error('Failed to fetch gallery images');
+      }
+    } catch (error) {
+      console.error('Error fetching gallery:', error);
+      toast.error('Error loading gallery images');
+    }
+  };
+
+  // Handle image upload and preview
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -24,30 +51,50 @@ const GalleryUpload = () => {
     });
 
     if (validFiles.length > 0) {
-      const filePreviews = validFiles.map((file) => {
-        return {
-          file,
-          preview: URL.createObjectURL(file),
-        };
-      });
+      const filePreviews = validFiles.map((file) => ({
+        file,
+        preview: URL.createObjectURL(file),
+      }));
 
       setImages((prevImages) => [...prevImages, ...filePreviews]);
       toast.success('Images added successfully!');
     }
   };
 
-  // Removes an image from the preview list
-  const removeImage = (index) => {
+  // Remove preview image
+  const removePreviewImage = (index) => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages];
-      URL.revokeObjectURL(updatedImages[index].preview); // Revoke preview URL
+      URL.revokeObjectURL(updatedImages[index].preview);
       updatedImages.splice(index, 1);
       return updatedImages;
     });
-    toast.info('Image removed.');
+    toast.info('Preview image removed');
   };
 
-  // Submits all uploaded images to the backend
+  // Delete an image from the gallery
+  const deleteGalleryImage = async (imageId) => {
+    try {
+      const res = await fetch(`${BASE_URL}/barber-gallery/${barberId}/${imageId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setGalleryImages((prevImages) => prevImages.filter((image) => image.id !== imageId));
+        toast.success('Image deleted successfully');
+      } else {
+        toast.error('Failed to delete image');
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      toast.error('Error deleting image');
+    }
+  };
+
+  // Submit uploaded images
   const submitGallery = async () => {
     if (images.length === 0) {
       toast.error('Please add at least one image before submitting.');
@@ -60,7 +107,7 @@ const GalleryUpload = () => {
     });
 
     try {
-      const res = await fetch(`${BASE_URL}barber-gallery`, {
+      const res = await fetch(`${BASE_URL}/barber-gallery/${barberId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -69,8 +116,9 @@ const GalleryUpload = () => {
       });
 
       if (res.ok) {
-        toast.success('Gallery images submitted successfully!');
-        setImages([]); // Clear images after successful submission
+        toast.success('Gallery images uploaded successfully!');
+        setImages([]); // Clear preview images
+        fetchGalleryImages(); // Refresh gallery
       } else {
         const errorData = await res.json();
         toast.error(`Error: ${errorData.message}`);
@@ -82,53 +130,78 @@ const GalleryUpload = () => {
   };
 
   return (
-    <div className='mb-5'>
-      <p className='form__label'>Upload Gallery Pictures</p>
+    <div className="mb-5">
+      <h2 className="text-xl font-bold mb-4">Gallery Management</h2>
 
-      {/* Image Upload Input */}
-      <input
-        type='file'
-        accept='image/*'
-        multiple
-        onChange={handleImageUpload}
-        className='block w-full text-sm text-gray-500
-          file:mr-4 file:py-2 file:px-4
-          file:rounded-full file:border-0
-          file:text-sm file:font-semibold
-          file:bg-blue-50 file:text-blue-700
-          hover:file:bg-blue-100'
-      />
+      {/* Upload Section */}
+      <div className="mb-8">
+        <p className="form__label">Upload New Pictures</p>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageUpload}
+          className="block w-full text-sm text-gray-500
+            file:mr-4 file:py-2 file:px-4
+            file:rounded-full file:border-0
+            file:text-sm file:font-semibold
+            file:bg-blue-50 file:text-blue-700
+            hover:file:bg-blue-100"
+        />
 
-      {/* Image Previews */}
-      <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4'>
-        {images.map((imageObj, index) => (
-          <div key={index} className='relative'>
-            <img
-              src={imageObj.preview}
-              alt={`Preview ${index}`}
-              className='w-full h-32 object-cover rounded-md shadow-md'
-            />
-            <button
-              type='button'
-              onClick={() => removeImage(index)}
-              className='absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer'
-            >
-              <AiOutlineDelete />
-            </button>
-          </div>
-        ))}
+        {/* Upload Previews */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          {images.map((imageObj, index) => (
+            <div key={index} className="relative">
+              <img
+                src={imageObj.preview}
+                alt={`Preview ${index}`}
+                className="w-full h-32 object-cover rounded-md shadow-md"
+              />
+              <button
+                type="button"
+                onClick={() => removePreviewImage(index)}
+                className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
+              >
+                <AiOutlineDelete />
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {images.length > 0 && (
+          <button
+            type="button"
+            onClick={submitGallery}
+            className="bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md"
+          >
+            Upload New Images
+          </button>
+        )}
       </div>
 
-      {/* Submit Button */}
-      {images.length > 0 && (
-        <button
-          type='button'
-          onClick={submitGallery}
-          className='bg-blue-600 py-2 px-5 h-fit text-white cursor-pointer btn mt-4 rounded-md'
-        >
-          Submit Gallery
-        </button>
-      )}
+      {/* Existing Gallery Section */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3">Current Gallery</h3>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {galleryImages.map((image) => (
+            <div key={image.id} className="relative">
+              <img
+                src={image.url}
+                alt={`Gallery ${image.id}`}
+                className="w-full h-32 object-cover rounded-md shadow-md"
+              />
+              <button
+                type="button"
+                onClick={() => deleteGalleryImage(image.id)}
+                className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
+              >
+                <AiOutlineDelete />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

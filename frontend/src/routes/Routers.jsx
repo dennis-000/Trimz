@@ -13,6 +13,8 @@ import MyAccount from '../Dashboard/user-account/MyAccount';
 import Header from '../components/header/Header';
 import Footer from '../components/footer/Footer';
 import ResetPassword from '../pages/ResetPassword';
+import Thankyou from '../../src/pages/Barbers/BarberServices/ThankYou';
+import Confirmation from '../pages/Barbers/BarberServices/Confirmation';
 
 
 const Routers = () => {
@@ -27,6 +29,8 @@ const Routers = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/services" element={<Services />} />
       <Route path="/aboutus" element={<Aboutus />} />
+      <Route path="/thank-you" element={<Thankyou />} />
+      <Route path="/confirm-booking" element={<Confirmation />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route
         path="/users/profile/me"
