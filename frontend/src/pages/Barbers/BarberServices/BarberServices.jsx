@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /*eslint no-unused-vars: ["error", { "args": "none" }]*/
 import { useState, useEffect } from 'react';
@@ -7,6 +8,8 @@ import ServiceSelection from './ServiceSelection';
 import DateTimeSelection from './DateTimeSelection.jsx';
 import Confirmation from './Confirmation';
 import BookingSteps from './BookingSteps';
+import { useNavigate } from 'react-router-dom';
+import { BsCheckCircle } from 'react-icons/bs'; // Import a checkmark icon
 
 const BarberServices = ({ barberData }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -16,6 +19,7 @@ const BarberServices = ({ barberData }) => {
   const [providerServices, setProviderServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const formatTime = (timeStr) => {
     const [hour, minute] = timeStr.split(':');
@@ -43,7 +47,7 @@ const BarberServices = ({ barberData }) => {
     try {
       const jwt = localStorage.getItem('token');
       if (!jwt || !barberData?._id) {
-        toast.error('Authentication required');
+        toast.warn('Please login to view services');
         return;
       }
 
@@ -109,9 +113,17 @@ const BarberServices = ({ barberData }) => {
   };
 
   // Handle Pay Cash
-  const handlePayCash = () => {
-    handleConfirmBooking('cash');
-    alert('Booked!');
+  const handlePayCash = async () => {
+    try {
+      await handleConfirmBooking('cash'); // Ensure booking is confirmed
+        
+      // Redirect to the Thank You page after a short delay
+      setTimeout(() => {
+        navigate('/thank-you'); // Update with your actual route
+      }, 2000);
+    } catch (error) {
+      toast.error('Booking failed. Please try again.');
+    }
   };
 
   // Handle Pay with Paystack

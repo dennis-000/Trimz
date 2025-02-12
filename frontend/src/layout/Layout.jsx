@@ -15,7 +15,7 @@ const Layout = () => {
   const location = useLocation();
 
   // check if you are on this location
-  const isAuthPage = ['/login', '/register'].includes(location.pathname)
+  const isAuthPage = ['/login', '/register', '/thank-you'].includes(location.pathname)
 
   useEffect(() => {
     const checkTokenExpiry = () => {

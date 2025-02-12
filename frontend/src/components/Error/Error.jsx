@@ -1,4 +1,3 @@
-import React from 'react';
 
 const Error = ({ errMessage, type = 'error' }) => {
   const message = typeof errMessage === "string" 

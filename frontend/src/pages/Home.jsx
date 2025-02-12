@@ -11,7 +11,7 @@ import faqImg from '../assets/images/faq-img1.png';
 import { BsArrowRight } from 'react-icons/bs';
 import About from '../components/About/about';
 import ServiceList from '../components/Services/ServiceList';
-import BarberList from '../components/Barbers/BarberList';
+// import BarberList from '../components/Barbers/BarberList';
 import FaqList from '../components/faq/faqList';
 import Testimonial from'../components/Testimonial/Testimonial';
 import CounterSection from '../components/Counter/CounterSection';
@@ -21,7 +21,7 @@ import { useEffect } from 'react';
 import 'aos/dist/aos.css'; // Import AOS styles
 import AOS from 'aos'; // Import AOS library
 import ScrollToTop from './ScrollToTop';
-import RecomBarbers from '../components/Barbers/RecomBarbers';
+// import RecomBarbers from '../components/Barbers/RecomBarbers';
 
 const Home = () => {
   useEffect(() => {
@@ -116,7 +116,7 @@ const Home = () => {
         <div className='lg:w-[470px] mx-auto'>
           <h2 className='heading text-center'>Providing the Best Hair Styling Services
           </h2>
-          <p className='text__para text-center'>First-Class Barbers and hair Stylists. View profiles and choose your favorite barber. 
+          <p className='text__para text-center'>First-Class Barbers and hair Stylists. View profiles and choose your favorite styler. 
           </p>
         </div>
 
@@ -136,7 +136,7 @@ const Home = () => {
                 Find a Stylist Or Barber
               </h2>
               <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-                Discover skilled hair stylists and barbers at the University of Ghana. Ecutz allows you to explore profiles,
+                Discover skilled hair stylists and barbers. Ecutz allows you to explore profiles,
                 view ratings, and choose your ideal professional.
               </p>
 
@@ -159,8 +159,8 @@ const Home = () => {
                 Find a Location
               </h2>
               <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-                Locate your favorite barbers on campus with Ecutz. Use our map to find barbers near you, check their availability,
-                and book a convenient time for your haircut.
+              Find your favorite stylists on campus with Ecutz and Style. Use our map to locate nearby stylists,
+              check availability, and book your slot.
               </p>
               <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
               flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
@@ -181,8 +181,7 @@ const Home = () => {
                 Book Appointment
               </h2>
               <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-                Scheduling your next haircut is simple with Ecutz. Browse hair stylists and barbers, choose a service, select a time,
-                and confirm your appointment—all in a few clicks.
+              Book your next haircut easily with Ecutz and Style. Browse stylists, choose a service, pick a time, and confirm in just a few clicks.
               </p>
               <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
               flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
@@ -265,7 +264,7 @@ const Home = () => {
                   </p>
                 </div>
                 <span className='w-5 h-5 lg:w-[34px] lg:h-[34px] flex items-center justify-center
-                bg-yellowColor rounded py-1 px-[6px] lg:py-3 lg:px-[9px]'>
+                bg-irisBlueColor rounded py-1 px-[6px] lg:py-3 lg:px-[9px]'>
                   <img src={videoIcon} alt="Small Video Icon" />
                 </span>
               </div>
@@ -278,6 +277,7 @@ const Home = () => {
               </div>
 
             {/* ======= small Profile Icon Image */}
+            {/* ========== CHANGE THIS IMAGE/ AVATAR ICON ============== */}
               <div className='flex items-center gap-[6px] lg:gap-[10px] mt-2 lg:mt-[18px]'>
                 <img src={avatarIcon} alt="Profile Avartar Icon" />
                 <h4 className='text-[10px] leading-3 lg:text-[16px] lg:leading-[22px] font-[700] text-headingColor'>
@@ -297,9 +297,9 @@ const Home = () => {
 
     {/* ============= Feature Section ============== */}
     {/* ============= High Rated OR Recommended Barbers Section START ============== */}
-    <div>
+    {/* <div>
         <RecomBarbers/>
-      </div>
+      </div> */}
     {/* ============= High Rated OR Recommended Barbers Section END ============== */}
 
 
@@ -331,8 +331,8 @@ const Home = () => {
         <div className='xl:w-[470] mx-auto'>
             <h2 className='heading text-center'>What our clients say</h2>
             <p className='text__para text-center'>
-            At Ecutz, we pride ourselves on delivering top-notch barbering
-            services to students right on campus.
+            At Ecutz and Style, we pride ourselves on delivering top-notch styling
+            services to everyone everywhere.
             </p> 
         </div>
         <Testimonial/>

@@ -4,7 +4,7 @@ import ServiceCard from '../components/Services/ServiceCard';
 import { services } from '../assets/data/services';
 import { BsSearch, BsScissors } from 'react-icons/bs';
 import BottomCTA from '../components/CTA/BottomCTA';
-
+import { Link } from 'react-router-dom';
 const Services = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -30,7 +30,7 @@ const Services = () => {
             </h1>
           </div>
           <p className="text-[16px] leading-7 text-textColor max-w-2xl mx-auto">
-            Experience the art of grooming with our professional barbers. 
+            Experience the art of grooming with our professional Stylists. 
             From classic cuts to modern styles, we&apos;ve got you covered.
           </p>
         </div>
@@ -99,16 +99,19 @@ const Services = () => {
           <h2 className="text-yellow-600 text-3xl font-bold mb-6">Ready to Get Started?</h2>
           <div className="flex gap-4 justify-center">
             <button className="bg-primaryColor text-white-600 px-8 py-3 rounded-lg hover:bg-irisBlueColor transition-colors">
-              List Your Business
+              <Link to='/register'>
+                List Your Business
+              </Link>
             </button>
             <button className="bg-irisBlueColor px-8 py-3 rounded-lg hover:bg-primaryColor transition-colors">
-              Find Services
+              <Link to='/services'>Find Services</Link>
             </button>
           </div>
         </div>
+
+
       </div>
         <BottomCTA/>
-        
       </div>
     </section>
   );
