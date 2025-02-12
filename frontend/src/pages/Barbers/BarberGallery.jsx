@@ -1,33 +1,21 @@
-import { useEffect ,useState } from 'react';
-
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from 'react';
 import { BASE_URL } from '../../config';
 
-
-const BarberGallery = () => {
+const BarberGallery = ({ gallery }) => {
+  // Ensure we always have an array for images
+  const [images, setImages] = useState(gallery || []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch images from API
+  // When the gallery prop changes, update the images state and set loading to false
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/gallery`);
-        if (!response.ok) throw new Error('Failed to load images');
-        const data = await response.json();
-        setImages(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchImages();
-  }, []);
+    setImages(gallery || []);
+    setLoading(false);
+  }, [gallery]);
 
   const openModal = (index) => {
     setCurrentIndex(index);
@@ -58,7 +46,7 @@ const BarberGallery = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {images.map((image, index) => (
             <div
-              key={image.id}
+              key={image._id || index} // Use image._id if available; fallback to index
               className="relative group cursor-pointer overflow-hidden rounded-lg shadow-md"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
@@ -87,8 +75,14 @@ const BarberGallery = () => {
 
         {/* Modal */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4" onClick={closeModal}>
-            <div className="relative w-full max-w-2xl bg-zinc-900 rounded-xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+            onClick={closeModal}
+          >
+            <div
+              className="relative w-full max-w-2xl bg-zinc-900 rounded-xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
                 onClick={closeModal}
                 className="absolute top-2 right-2 z-50 bg-black/50 hover:bg-black/70 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200"
