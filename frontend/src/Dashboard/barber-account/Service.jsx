@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { BASE_URL } from "../../config";
-import GalleryUpload from "./GalleryUpload";
+// import GalleryUpload from "./GalleryUpload";
 import ServiceEdit from './ServiceEdit'; 
 
 
@@ -591,11 +591,9 @@ const Service = () => {
           </button>
         )}
       </div>
-              <GalleryUpload providerId={JSON.parse(localStorage.getItem("user"))._id} />
-            </div>
-     
+              {/*<GalleryUpload providerId={JSON.parse(localStorage.getItem("user"))._id} />*/}
+      </div>
 
-    
   );
 }
 

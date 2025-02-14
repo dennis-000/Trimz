@@ -139,7 +139,7 @@ const Profile = ({user}) => {
       setLoading(false);
     }
   };
-  
+   
 
 
   return (
