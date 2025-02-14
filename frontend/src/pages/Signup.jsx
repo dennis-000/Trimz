@@ -98,7 +98,7 @@ const Signup = () => {
       if (selectedFile) {
         formDataToSend.append('profilePicture', selectedFile);
       }
-      // const token = localStorage.getItem('token');
+      const token = localStorage.getItem('token');
 
       const res = await fetch(`${BASE_URL}users`, {
         method: 'post',

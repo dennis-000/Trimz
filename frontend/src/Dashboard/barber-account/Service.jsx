@@ -591,7 +591,7 @@ const Service = () => {
           </button>
         )}
       </div>
-              <GalleryUpload />
+              <GalleryUpload providerId={JSON.parse(localStorage.getItem("user"))._id} />
             </div>
      
 
