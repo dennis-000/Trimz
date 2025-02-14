@@ -54,7 +54,7 @@ const BarberGallery = ({ gallery }) => {
             >
               <div className="aspect-square overflow-hidden">
                 <img
-                  src={`${BASE_URL}/${image.url}`} // Dynamically load image
+                  src={image.url} // Dynamically load image
                   alt={image.caption}
                   className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
                 />
@@ -92,7 +92,7 @@ const BarberGallery = ({ gallery }) => {
               </button>
               <div className="relative">
                 <img
-                  src={`${BASE_URL}/${images[currentIndex].url}`}
+                  src={`${images[currentIndex].url}`}
                   alt={images[currentIndex].caption}
                   className="w-full h-auto"
                 />

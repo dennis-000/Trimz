@@ -60,6 +60,7 @@ export const addGalleryImages = async (req, res) => {
 export const deleteGalleryImage = async (req, res) => {
     const { id } = req.params;
     const { imageIds } = req.body;
+    console.log('Image ID: ', req.body);
     try {
         if (!Array.isArray(imageIds) || imageIds.length === 0) {
             return res.status(400).json({ success: false, message: "No image IDs provided" });

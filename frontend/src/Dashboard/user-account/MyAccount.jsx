@@ -129,7 +129,7 @@ const MyAccount = () => {
                 <img
                 src={userData.profilePicture.url}
                 alt="The user's image"
-                className="w-full h-full rounded-full"
+                className="w-full h-full object-cover object-top rounded-full"
               />)}
             </figure>
             

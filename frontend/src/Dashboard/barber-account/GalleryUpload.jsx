@@ -3,42 +3,47 @@
 import { useState, useEffect } from 'react';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { toast } from 'react-toastify';
-import { BASE_URL, token } from '../../config';
+import { BASE_URL } from '../../config';
 
-const GalleryUpload = ({ barberId }) => {
-  const [images, setImages] = useState([]); // For upload preview
-  const [galleryImages, setGalleryImages] = useState([]); // For existing images
+const GalleryUpload = ({ providerId }) => {
+  const [images, setImages] = useState([]); // For newly uploaded images (previews)
+  const [galleryImages, setGalleryImages] = useState([]); // For images already in the gallery
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem('token');
 
-  // Fetch existing gallery images on component mount
+  console.log(providerId);
+
+  // Fetch existing gallery images on component mount or when providerId changes
   useEffect(() => {
-    if (barberId) {
+    if (providerId) {
       fetchGalleryImages();
     }
-  }, [barberId]);
+  }, [providerId]);
 
-  // Fetch gallery images
+  // Fetch gallery images from the user endpoint
   const fetchGalleryImages = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/barber-gallery/${barberId}`, {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}users/${providerId}`, {
         method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
-
       if (res.ok) {
-        const data = await res.json();
-        setGalleryImages(data.images);
+        const response = await res.json();
+        // Assuming the user object contains a 'gallery' field
+        console.log('Gallery:', response.data.gallery);
+        setGalleryImages(response.data.gallery || []);
       } else {
         toast.error('Failed to fetch gallery images');
       }
     } catch (error) {
       console.error('Error fetching gallery:', error);
       toast.error('Error loading gallery images');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Handle image upload and preview
+  // Handle image upload and preview for new images
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
@@ -56,13 +61,12 @@ const GalleryUpload = ({ barberId }) => {
         file,
         preview: URL.createObjectURL(file),
       }));
-
       setImages((prevImages) => [...prevImages, ...filePreviews]);
       toast.success('Images added successfully!');
     }
   };
 
-  // Remove preview image
+  // Remove a preview image from the new uploads list
   const removePreviewImage = (index) => {
     setImages((prevImages) => {
       const updatedImages = [...prevImages];
@@ -73,18 +77,22 @@ const GalleryUpload = ({ barberId }) => {
     toast.info('Preview image removed');
   };
 
-  // Delete an image from the gallery
-  const deleteGalleryImage = async (imageId) => {
+  // Delete an image from the existing gallery (by its Cloudinary public_id)
+  const deleteGalleryImage = async (publicId) => {
     try {
-      const res = await fetch(`${BASE_URL}/barber-gallery/${barberId}/${imageId}`, {
+      console.log('Public ID: ', JSON.stringify({ imageIds: [publicId] }));
+      const res = await fetch(`${BASE_URL}users/gallery/${providerId}`, {
         method: 'DELETE',
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ imageIds: [publicId] }),
       });
-
       if (res.ok) {
-        setGalleryImages((prevImages) => prevImages.filter((image) => image.id !== imageId));
+        setGalleryImages((prevImages) =>
+          prevImages.filter((image) => image.public_id !== publicId)
+        );
         toast.success('Image deleted successfully');
       } else {
         toast.error('Failed to delete image');
@@ -95,7 +103,7 @@ const GalleryUpload = ({ barberId }) => {
     }
   };
 
-  // Submit uploaded images
+  // Submit new uploaded images to the backend
   const submitGallery = async () => {
     if (images.length === 0) {
       toast.error('Please add at least one image before submitting.');
@@ -104,22 +112,23 @@ const GalleryUpload = ({ barberId }) => {
 
     const formData = new FormData();
     images.forEach((imageObj, index) => {
-      formData.append(`image${index}`, imageObj.file);
+      // Use a key that your backend expects; here we simply use "image" for each file
+      formData.append(`galleryImages`, imageObj.file);
     });
 
     try {
-      const res = await fetch(`${BASE_URL}/barber-gallery/${barberId}`, {
+      console.log("Provider: ", providerId);
+      const res = await fetch(`${BASE_URL}users/gallery/${providerId}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body: formData,
       });
-
       if (res.ok) {
         toast.success('Gallery images uploaded successfully!');
-        setImages([]); // Clear preview images
-        fetchGalleryImages(); // Refresh gallery
+        setImages([]); // Clear new images preview
+        fetchGalleryImages(); // Refresh existing gallery images
       } else {
         const errorData = await res.json();
         toast.error(`Error: ${errorData.message}`);
@@ -151,24 +160,26 @@ const GalleryUpload = ({ barberId }) => {
         />
 
         {/* Upload Previews */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-          {images.map((imageObj, index) => (
-            <div key={index} className="relative">
-              <img
-                src={imageObj.preview}
-                alt={`Preview ${index}`}
-                className="w-full h-32 object-cover rounded-md shadow-md"
-              />
-              <button
-                type="button"
-                onClick={() => removePreviewImage(index)}
-                className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
-              >
-                <AiOutlineDelete />
-              </button>
-            </div>
-          ))}
-        </div>
+        {images.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+            {images.map((imageObj, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={imageObj.preview}
+                  alt={`Preview ${index}`}
+                  className="w-full h-32 object-cover rounded-md shadow-md"
+                />
+                <button
+                  type="button"
+                  onClick={() => removePreviewImage(index)}
+                  className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
+                >
+                  <AiOutlineDelete />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {images.length > 0 && (
           <button
@@ -184,27 +195,34 @@ const GalleryUpload = ({ barberId }) => {
       {/* Existing Gallery Section */}
       <div>
         <h3 className="text-lg font-semibold mb-3">Current Gallery</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {galleryImages.map((image) => (
-            <div key={image.id} className="relative">
-              <img
-                src={image.url}
-                alt={`Gallery ${image.id}`}
-                className="w-full h-32 object-cover rounded-md shadow-md"
-              />
-              <button
-                type="button"
-                onClick={() => deleteGalleryImage(image.id)}
-                className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
-              >
-                <AiOutlineDelete />
-              </button>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <p className="text-center text-zinc-600">Loading gallery...</p>
+        ) : galleryImages.length == 0 ? (
+          <p className="text-zinc-600">No images in the gallery</p>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {galleryImages.map((image) => (
+              <div key={image.public_id} className="relative">
+                <img
+                  src={image.url}
+                  alt={`Gallery ${image.public_id}`}
+                  className="w-full h-32 object-cover rounded-md shadow-md"
+                />
+                <button
+                  type="button"
+                  onClick={() => deleteGalleryImage(image.public_id)}
+                  className="absolute top-2 right-2 bg-red-600 p-1 rounded-full text-white text-[12px] cursor-pointer"
+                >
+                  <AiOutlineDelete />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default GalleryUpload;
+
