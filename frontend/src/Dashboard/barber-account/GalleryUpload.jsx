@@ -11,6 +11,8 @@ const GalleryUpload = ({ providerId }) => {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
 
+  console.log(providerId);
+
   // Fetch existing gallery images on component mount or when providerId changes
   useEffect(() => {
     if (providerId) {
@@ -115,6 +117,7 @@ const GalleryUpload = ({ providerId }) => {
     });
 
     try {
+      console.log("Provider: ", providerId);
       const res = await fetch(`${BASE_URL}users/gallery/${providerId}`, {
         method: 'POST',
         headers: {
