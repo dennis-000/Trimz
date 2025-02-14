@@ -138,7 +138,7 @@ const Dashboard = () => {
                 <Appointments appointments={appointments}/>}
                 {tab==='settings' && <Profile barberData={data}/>}
                 {tab==='services' && <Service barberData={data}/>}
-                {tab==='galleryupload' && <GalleryUpload barberData={data}/>}
+                {tab==='galleryupload' && <GalleryUpload providerId={JSON.parse(localStorage.getItem('user'))._id}/>}
                 </div>
                 
                 
