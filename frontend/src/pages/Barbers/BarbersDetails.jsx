@@ -30,6 +30,7 @@ const BarbersDetails = () => {
     totalRating,
     specialization,
     profilePicture,
+    gallery
   } = provider || {};
 
    // State to store reviews
@@ -157,7 +158,7 @@ const BarbersDetails = () => {
       </div>
 
       <div>
-      <BarberGallery/>
+      <BarberGallery gallery={gallery}/>
       </div>
     </section>
   );

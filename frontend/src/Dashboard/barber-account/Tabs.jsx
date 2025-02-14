@@ -37,6 +37,7 @@ const Tabs = ({ tab, setTab }) => {
         { id: 'appointments', label: 'Appointments', icon: '📅' },
         { id: 'settings', label: 'Profile', icon: '👤' },
         { id: 'services', label: 'Add Service', icon: '➕' },
+        { id: 'galleryupload', label: 'Gallery Upload', icon: '🖼️' },
     ];
 
     return (

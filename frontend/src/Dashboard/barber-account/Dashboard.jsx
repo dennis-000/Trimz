@@ -12,6 +12,7 @@ import { AuthContext } from "../../context/AuthContext";
 
 import Appointments  from "./Appointments";
 import Service from "./Service";
+import GalleryUpload from "./GalleryUpload";
 const Dashboard = () => {
     const {user} = useContext(AuthContext)
   const { data,
@@ -39,7 +40,7 @@ const Dashboard = () => {
 
         const result = await response.json();
         console.log(result);
-        setAppointments(result.data); // ✅ Correctly setting state
+        setAppointments(result.data); // Correctly setting state
       } catch (error) {
         console.error("Error fetching appointments:", error.message);
       }
@@ -137,6 +138,7 @@ const Dashboard = () => {
                 <Appointments appointments={appointments}/>}
                 {tab==='settings' && <Profile barberData={data}/>}
                 {tab==='services' && <Service barberData={data}/>}
+                {tab==='galleryupload' && <GalleryUpload barberData={data}/>}
                 </div>
                 
                 
