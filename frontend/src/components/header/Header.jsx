@@ -4,6 +4,7 @@ import { NavLink, Link } from "react-router-dom";
 import { BiMenu, BiX, BiStore, BiCog, BiEnvelope, BiInfoCircle } from "react-icons/bi";
 import { FaHome } from "react-icons/fa";
 import { AuthContext } from "../../context/AuthContext";
+import NotificationIcon from "./NotificationIcon.jsx";
 
 const navLinks = [
   {
@@ -89,37 +90,42 @@ const Header = () => {
           </div>
 
           {/* Right section with profile/login and menu button */}
-          <div className="flex items-center gap-4">
-            {token && user ? (
-              <div>
-                <Link to={`${role === "provider" ? "/barbers/profile/me" : "/users/profile/me"}`}>
-                  <figure className="w-[40px] h-[40px] rounded-full cursor-pointer">
-                    <img
-                      src={user.profilePicture?.url}
-                      className="w-full h-full rounded-full object-cover block"
-                      alt="User"
-                    />
-                  </figure>
-                </Link>
-              </div>
-            ) : (
-              <Link to="/login">
-                <button className="bg-primaryColor py-6 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
-                  Login / Register
-                </button>
-              </Link>
-            )}
+          {/* Right section with profile/login, notification, and menu button */}
+<div className="flex items-center gap-4">
+<NotificationIcon/>
 
-            {/* Mobile menu button */}
-            <span className="md:hidden" onClick={toggleMenu}>
-              {isMenuOpen ? (
-                <BiX className="w-6 h-6 cursor-pointer" />
-              ) : (
-                <BiMenu className="w-6 h-6 cursor-pointer" />
-              )}
-            </span>
-          </div>
+  {token && user ? (
+    <div>
+      <Link to={`${role === "provider" ? "/barbers/profile/me" : "/users/profile/me"}`}>
+        <figure className="w-[40px] h-[40px] rounded-full cursor-pointer">
+          <img
+            src={user.profilePicture?.url}
+            className="w-full h-full rounded-full object-cover block"
+            alt="User"
+          />
+        </figure>
+      </Link>
+    </div>
+  ) : (
+    <Link to="/login">
+      <button className="bg-primaryColor py-6 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px]">
+        Login / Register
+      </button>
+    </Link>
+  )}
+
+  {/* Mobile menu button */}
+  <span className="md:hidden" onClick={toggleMenu}>
+    {isMenuOpen ? (
+      <BiX className="w-6 h-6 cursor-pointer" />
+    ) : (
+      <BiMenu className="w-6 h-6 cursor-pointer" />
+    )}
+  </span>
+</div>
+
         </div>
+        
 
         {/* Mobile Navigation Menu */}
         {isMenuOpen && (
