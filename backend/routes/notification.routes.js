@@ -1,10 +1,11 @@
-import express from 'express';
+import { Router } from 'express'
 import Appointment from '../models/appointment.model.js';
+import { requireAuth } from '../middlewares/auth.middleware.js';
 
-const router = express.Router();
+const notificationRouter = Router();
 
 // Get unread notifications for provider
-router.get('/:providerId', async(req, res) => {
+notificationRouter.get('/:providerId', async(req, res) => {
     try {
         const notifications = await Appointment.find({
                 provider: req.params.providerId,
@@ -12,20 +13,20 @@ router.get('/:providerId', async(req, res) => {
             })
             .populate('customer', 'name') // Populate customer name
             .populate('service', 'name'); // Populate service name
-        res.json(notifications);
+        res.status(200).json({success: true, data: notifications, message: 'Unread notifications fetched successfully'});
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ success: false, error: err.message });
     }
 });
 
 // Mark notification as read
-router.put('/:id', async(req, res) => {
+notificationRouter.patch('/:id', async(req, res) => {
     try {
         await Appointment.findByIdAndUpdate(req.params.id, { notificationStatus: 'read' });
-        res.json({ message: 'Notification marked as read' });
+        res.status(200).json({ message: 'Notification marked as read' });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        res.status(500).json({ success: false, error: err.message, message: err.message });
     }
 });
 
-export default router;
+export default notificationRouter;

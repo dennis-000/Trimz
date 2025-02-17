@@ -20,7 +20,7 @@ import { updateAverageRating } from "./controllers/rating.controller.js"
 import ratingRouter from "./routes/rating.routes.js"
 import passport from "passport"
 import "./config/passport.config.js"
-import notificationRoutes from './routes/notification.routes.js';
+import notificationRouter from "./routes/notification.routes.js"
 
 dotenv.config()
 
@@ -49,7 +49,7 @@ app.use("/api/appointments", appointmentRouter)
 app.use("/api", loginRouter)
 app.use("/api/users/gallery", galleryRouter)
 app.use("/api/rating", ratingRouter)
-app.use('/api/notifications', notificationRoutes);
+app.use('/api/notifications', notificationRouter);
 
 //cron job
 // Start background job

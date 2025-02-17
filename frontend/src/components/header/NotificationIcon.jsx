@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { BellIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import {BASE_URL} from '../../config'
+import { BASE_URL } from "../../config";
 
 const NotificationIcon = () => {
   const { user } = useAuth();
@@ -14,11 +14,18 @@ const NotificationIcon = () => {
     const fetchUnreadCount = async () => {
       try {
         if (isProvider) {
-          const res = await fetch(`${BASE_URL}/notifications/${user._id}`);
+          const res = await fetch(`${BASE_URL}notifications/${user._id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
           if (!res.ok) {
             throw new Error("Network response was not ok");
           }
           const data = await res.json();
+          // Assume that data is an array of notifications;
+          // if your API returns an object with a data property, adjust accordingly.
           setUnreadCount(data.length);
         }
       } catch (err) {
@@ -28,7 +35,10 @@ const NotificationIcon = () => {
     fetchUnreadCount();
   }, [isProvider, user._id]);
 
-  const handleIconClick = () => {
+  const handleIconClick = async () => {
+    // Clear the badge
+    setUnreadCount(0);
+    // Navigate to the notifications page
     navigate("/notifications");
   };
 
