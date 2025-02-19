@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, useEffect, useReducer, useContext } from "react";
 
 
 // Initial state setup
@@ -82,3 +82,6 @@ export const AuthContextProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
+
+export const useAuth = () => useContext(AuthContext);

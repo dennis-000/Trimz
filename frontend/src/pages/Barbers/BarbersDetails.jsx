@@ -116,7 +116,7 @@ const BarbersDetails = () => {
 
               <button
                 onClick={() => setTab('feedback')}
-                className={`${tab === 'feedback' && 'border-b border-solid border-primaryColor'} py-2 px-3 mr-5 
+                className={`${tab === 'feedback' && 'border-b border-solid border-primaryColor'} py-2 px-2 mr-5 
                   text-[16px] leading-7 text-headingColor font-semibold`}
               >
                 Feedback
@@ -124,10 +124,10 @@ const BarbersDetails = () => {
 
               <button
                 onClick={() => setTab('services')}
-                className={`${tab === 'services' && 'border-b border-solid border-primaryColor'} py-2 px-3 mr-5 
+                className={`${tab === 'services' && 'border-b border-solid border-primaryColor'} py-2 px-2 mr-5 
                   text-[16px] leading-7 text-headingColor font-semibold`}
               >
-                Book Appointment
+                Book Now
               </button>
             </div>
 

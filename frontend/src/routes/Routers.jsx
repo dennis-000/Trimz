@@ -15,6 +15,7 @@ import Footer from '../components/footer/Footer';
 import ResetPassword from '../pages/ResetPassword';
 import Thankyou from '../../src/pages/Barbers/BarberServices/ThankYou';
 import Confirmation from '../pages/Barbers/BarberServices/Confirmation';
+import NotificationPage from '../pages/Notifications';
 
 
 const Routers = () => {
@@ -32,6 +33,7 @@ const Routers = () => {
       <Route path="/thank-you" element={<Thankyou />} />
       <Route path="/confirm-booking" element={<Confirmation />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/notifications" element={<NotificationPage />} />
       <Route
         path="/users/profile/me"
         element={
