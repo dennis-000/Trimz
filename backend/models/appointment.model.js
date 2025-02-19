@@ -26,6 +26,11 @@ const AppointmentSchema = new mongoose.Schema({
     },
     comment: { type: String, default: "" } // Optional field for user feedback
   },
+  notificationStatus: {
+    type: String,
+    enum: ["unread", "read"],
+    default: "unread"
+  }
 }, { timestamps: true });
 
 // Pre-save hook to format startTime
