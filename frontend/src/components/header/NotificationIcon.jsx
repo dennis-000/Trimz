@@ -12,52 +12,42 @@ const NotificationIcon = () => {
 
   useEffect(() => {
     const fetchUnreadCount = async () => {
+      if (!isProvider || !user?._id) return;
+
       try {
-        if (isProvider) {
-          const res = await fetch(`${BASE_URL}notifications/${user._id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          if (!res.ok) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await res.json();
-          // Assume that data is an array of notifications;
-          // if your API returns an object with a data property, adjust accordingly.
-          setUnreadCount(data.length);
-        }
+        const res = await fetch(`${BASE_URL}notifications/${user._id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!res.ok) throw new Error("Failed to fetch notifications");
+        
+        const data = await res.json();
+        setUnreadCount(data.length);
       } catch (err) {
-        console.error("Error fetching unread notifications:", err);
+        console.error("Error fetching notifications:", err);
       }
     };
-    fetchUnreadCount();
-  }, [isProvider, user._id]);
 
-  const handleIconClick = async () => {
-    // Clear the badge
-    setUnreadCount(0);
-    // Navigate to the notifications page
+    fetchUnreadCount();
+  }, [isProvider, user?._id]);
+
+  const handleIconClick = () => {
     navigate("/notifications");
   };
 
   return (
-    <>
-      {isProvider && (
-        <div className="relative">
-          <BellIcon
-            className="text-gray-600 hover:text-black cursor-pointer"
-            onClick={handleIconClick}
-          />
-          {unreadCount > 0 && (
-            <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </div>
-      )}
-    </>
+    isProvider && (
+      <div className="relative cursor-pointer" onClick={handleIconClick}>
+        <BellIcon className="text-gray-600 hover:text-black" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
+      </div>
+    )
   );
 };
 
