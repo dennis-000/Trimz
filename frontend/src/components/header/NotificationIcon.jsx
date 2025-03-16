@@ -1,37 +1,20 @@
+// NotificationIcon.jsx
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { BellIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "../../config";
+import { useEffect } from "react";
+// import { BASE_URL } from "../../config";
 
 const NotificationIcon = () => {
-  const { user } = useAuth();
+  const { user, unreadCount, refreshNotifications } = useAuth();
   const isProvider = user && user.role === "provider";
   const navigate = useNavigate();
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    const fetchUnreadCount = async () => {
-      if (!isProvider || !user?._id) return;
-
-      try {
-        const res = await fetch(`${BASE_URL}notifications/${user._id}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!res.ok) throw new Error("Failed to fetch notifications");
-        
-        const data = await res.json();
-        setUnreadCount(data.length);
-      } catch (err) {
-        console.error("Error fetching notifications:", err);
-      }
-    };
-
-    fetchUnreadCount();
-  }, [isProvider, user?._id]);
+    if (isProvider && user?._id) {
+      refreshNotifications(); // Initial fetch when component mounts
+    }
+  }, [isProvider, user?._id, refreshNotifications]);
 
   const handleIconClick = () => {
     navigate("/notifications");
