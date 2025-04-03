@@ -1,6 +1,7 @@
 import { Users,Award, Star, Store, TrendingUp } from 'lucide-react';
 import About from '../components/About/about';
-import ecutzImg from '../assets/images/ecutz.png';
+// import trimzImg from '../assets/images/trimz.png';
+import trimzImg from '../assets/images/about1.jpg';
 
 const Aboutus = () => {
   return (
@@ -45,7 +46,7 @@ const Aboutus = () => {
             </div>
             <div>
               <img 
-                src={ecutzImg} 
+                src={trimzImg} 
                 alt="Platform showcase" 
                 className="rounded-lg shadow-lg"
               />
