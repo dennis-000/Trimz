@@ -159,7 +159,7 @@ const Signup = () => {
               Create an Account with
               <p>
                 <span className='text-primaryColor'> 
-                  Ecutz and Style</span></p>
+                  Trimz</span></p>
             </h3>
 
 

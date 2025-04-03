@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { AiFillDelete, AiFillEdit } from "react-icons/ai";
+// import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { formateDate } from "../../utils/formateDate";
 import { useState } from "react";
 import { BASE_URL } from "../../config";
@@ -272,7 +272,7 @@ const Appointments = ({ appointments, refreshAppointments }) => {
                 </div>
               </div>
             </div>
-          ))}
+          ))} 
         </div>
 
         {/* No Appointments Message */}

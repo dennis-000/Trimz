@@ -87,13 +87,13 @@ function About() {
           {/* =========== About Content ============ */}
           <div className="w-full lg:w-1/2 xl:w-[670px] order-1 lg:order-2">
             <h2 className="heading">
-              Meet the Visionary Behind Ecutz and Style
+              Meet the Visionary Behind Trimz
             </h2>
             <p className="text__para">
-              Ecutz and Style is the brainchild of Saddiq Ahmed, a forward-thinking
+              Trimz is the brainchild of Saddiq Ahmed, a forward-thinking
               entrepreneur passionate about blending technology with everyday
               convenience. Recognizing the challenges people face in accessing
-              quality grooming services, Saddiq Ahmed envisioned Ecutz and Style as more
+              quality grooming services, Saddiq Ahmed envisioned Trimz as more
               than just an app it’s a lifestyle solution.
             </p>
             {/* ========= FOR MORE THEN UNCOMMENT =========== */}
@@ -102,7 +102,7 @@ function About() {
                         connecting them with skilled barbers and hair stylists on campus. With features
                         like profile browsing, appointment scheduling, and location finding, students can
                         easily book services and get a fresh cut or style with just a few taps.
-                        Ecutz makes on-campus grooming quick, convenient, and hassle-free.
+                        Trimz makes on-campus grooming quick, convenient, and hassle-free.
                     </p> */}
             {/* <Link to="/about">
               <button className="btn">Learn More</button>

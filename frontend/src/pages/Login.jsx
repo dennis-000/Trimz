@@ -4,7 +4,7 @@ import { BASE_URL } from '../config';
 import { toast } from 'react-toastify';
 import {AuthContext} from '../context/AuthContext.jsx'
 import HashLoader from 'react-spinners/BeatLoader';
-import logo from '../assets/images/ecutz.png'
+import logo from '../assets/images/trimz.png'
 import { FcGoogle } from 'react-icons/fc'
 
 const Login = () => {
@@ -132,12 +132,12 @@ const Login = () => {
   return (
     <section className='px-5 lg:px-0 min-h-screen flex items-center justify-center'>
       <div className='w-full max-w-[500px] mx-auto bg-white/90 rounded-lg shadow-[0_5px_20px_rgba(0,0,0,0.1)] md:p-10 p-6 backdrop-blur-sm my-8'>    {/* Added Logo Section */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-4">
           <Link to="/">
             <img 
               src={logo} 
-              alt="Ecutz Logo" 
-              className="h-20 w-auto cursor-pointer"
+              alt="Trimz Logo" 
+              className="h-40 w-auto cursor-pointer"
             />
           </Link>
         </div>
@@ -241,7 +241,7 @@ const Login = () => {
 
           <p className='mt-5 text-textColor text-center'>
             {/* Don&apos;t have an account? */}
-            New to Ecutz and Style? 
+            New to Trimz? 
             <Link to='/register' className='text-primaryColor font-medium mt-1'>
                Register
             </Link>
