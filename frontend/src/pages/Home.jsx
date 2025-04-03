@@ -45,12 +45,12 @@ const Home = () => {
               Looking for Expert Grooming Services Near You?
                 </h1>
 
-              <p className='text_para'>Ecutz and Style offers expert grooming for everyone, with professional barbers and stylists delivering haircuts, 
+              <p className='text_para'> Trimz offers expert grooming for everyone, with professional barbers and stylists delivering haircuts, 
                 beard grooming, and chic hairstyles. Enjoy convenient online booking for effortless service anywhere.
               </p>
             </div>
             {/* Home btn */}
-            <Link to="services" smooth={true} duration={500}>
+            <Link to="/services" smooth={true} duration={500}>
                 <button className="btn">Our Services</button>
               </Link>
           </div>
@@ -62,7 +62,7 @@ const Home = () => {
       'justify-center' centers the images on small screens, 'md:justify-end' aligns them to the right on medium and larger screens. */}
   
   <div>
-              <img className='w-[150px] h-[250px] sm:w-[200px] sm:h-[300px] md:w-[250px] md:h-[400px] 
+  <img className='w-[150px] h-[250px] sm:w-[200px] sm:h-[300px] md:w-[250px] md:h-[400px] 
     rounded-3xl' src={heroImg01} alt="First content Image" />
     {/* Responsive image sizing: 
         - On small screens (sm), it will scale to width 200px, height 300px.
@@ -136,7 +136,7 @@ const Home = () => {
                 Find a Stylist Or Barber
               </h2>
               <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-                Discover skilled hair stylists and barbers. Ecutz allows you to explore profiles,
+                Discover skilled hair stylists and barbers.  Trimz allows you to explore profiles,
                 view ratings, and choose your ideal professional.
               </p>
 
@@ -159,7 +159,7 @@ const Home = () => {
                 Find a Location
               </h2>
               <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-              Find your favorite stylists on campus with Ecutz and Style. Use our map to locate nearby stylists,
+              Find your favorite stylists on campus with  Trimz. Use our map to locate nearby stylists,
               check availability, and book your slot.
               </p>
               <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
@@ -181,7 +181,7 @@ const Home = () => {
                 Book Appointment
               </h2>
               <p className='text-[16px] leading-7 text-textColor font-[400] mt-4 text-center'>
-              Book your next haircut easily with Ecutz and Style. Browse stylists, choose a service, pick a time, and confirm in just a few clicks.
+              Book your next haircut easily with  Trimz. Browse stylists, choose a service, pick a time, and confirm in just a few clicks.
               </p>
               <Link to='/barbers' className='w-[44px] h-[44px] rounded-full border border-solid border-[#181A1E] mt-[30px] mx-auto 
               flex items-center justify-center group hover:bg-primaryColor hover:border-none'>
@@ -206,7 +206,7 @@ const Home = () => {
         <div className='xl:w-[470] mx-auto'>
           <h2 className='heading text-center'>Styling and Babering Services</h2>
           <p className='text__para text-center'>
-            Ecutz provides on-campus haircuts, trims, beard grooming, and styling.
+             Trimz provides on-campus haircuts, trims, beard grooming, and styling.
             Enjoy quick, quality service.
           </p> 
         </div>
@@ -331,7 +331,7 @@ const Home = () => {
         <div className='xl:w-[470] mx-auto'>
             <h2 className='heading text-center'>What our clients say</h2>
             <p className='text__para text-center'>
-            At Ecutz and Style, we pride ourselves on delivering top-notch styling
+            At Trimz, we pride ourselves on delivering top-notch styling
             services to everyone everywhere.
             </p> 
         </div>

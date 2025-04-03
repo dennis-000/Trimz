@@ -1,5 +1,5 @@
 import { useEffect, useRef, useContext, useState } from "react";
-import logo from "../../assets/images/ecutz.png";
+import logo from "../../assets/images/trimz.png";
 import { NavLink, Link } from "react-router-dom";
 import { BiMenu, BiX, BiStore, BiCog, BiEnvelope, BiInfoCircle } from "react-icons/bi";
 import { FaHome } from "react-icons/fa";
@@ -64,7 +64,7 @@ const Header = () => {
           {/* Logo */}
           <div>
             <Link to="/home" className="flex items-center gap-2">
-              <img src={logo} alt="Ecutz Logo" style={{ width: "70px", height: "70px" }} />
+              <img src={logo} alt="Trimz Logo" style={{ width: "140px", height: "100px" }} />
             </Link>
           </div>
 
