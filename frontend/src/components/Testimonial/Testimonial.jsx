@@ -52,7 +52,7 @@ const Testimonial = () => {
                             "Convenient and Reliable"
                         </h4>
                         <p className='text-[16px] leading-5 mt-4 text-textColor font-[400]'>
-                            "Ecutz and style makes booking haircuts easy, and getting styled on campus is so
+                            "Trimz makes booking haircuts easy, and getting styled on campus is so
                             convenient!"
                         </p>
                     </div>
@@ -81,7 +81,7 @@ const Testimonial = () => {
                             "Great Services"
                         </h4>
                         <p className='text-[16px] leading-5 mt-4 text-textColor font-[400]'>
-                            "Every barber and stylist I've tried on Ecutz and Style is professional and friendly. Always a
+                            "Every barber and stylist I've tried on Trimz is professional and friendly. Always a
                             great experience!"
                         </p>
                     </div>
@@ -110,7 +110,7 @@ const Testimonial = () => {
                             "Perfect for Everyone"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Ecutz and style saves me time with quality haircuts, no need to
+                            "Trimz saves me time with quality haircuts, no need to
                             leave your hostel."
                         </p>
                     </div>
@@ -139,7 +139,7 @@ const Testimonial = () => {
                             "Highly Recommended"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Skilled workers, fast service, and flexible booking make Ecutz and style a must!"
+                            "Skilled workers, fast service, and flexible booking make Trimz a must!"
                         </p>
                     </div>
                 </SwiperSlide>
@@ -167,7 +167,7 @@ const Testimonial = () => {
                             "Exceptional Experience"
                         </h4>
                         <p className='text-[16px] leading-4 mt-4 text-textColor font-[400]'>
-                            "Ecutz and Style provides top-notch grooming with great customer service. I’ve never
+                            "Trimz provides top-notch grooming with great customer service. I’ve never
                             been disappointed!"
                         </p>
                     </div>

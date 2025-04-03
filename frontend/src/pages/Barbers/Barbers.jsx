@@ -140,7 +140,7 @@ const Barbers = () => {
               What our clients say
             </h2>
             <p className="text-textColor">
-              At Ecutz, we pride ourselves on delivering top-notch barbering services to students right on campus.
+              At Trimz, we pride ourselves on delivering top-notch barbering services to students right on campus.
             </p>
           </div>
           <Testimonial />

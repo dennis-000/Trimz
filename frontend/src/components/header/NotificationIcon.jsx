@@ -1,63 +1,36 @@
+// NotificationIcon.jsx
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { BellIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { BASE_URL } from "../../config";
+import { useEffect } from "react";
+// import { BASE_URL } from "../../config";
 
 const NotificationIcon = () => {
-  const { user } = useAuth();
+  const { user, unreadCount, refreshNotifications } = useAuth();
   const isProvider = user && user.role === "provider";
   const navigate = useNavigate();
-  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    const fetchUnreadCount = async () => {
-      try {
-        if (isProvider) {
-          const res = await fetch(`${BASE_URL}notifications/${user._id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          if (!res.ok) {
-            throw new Error("Network response was not ok");
-          }
-          const data = await res.json();
-          // Assume that data is an array of notifications;
-          // if your API returns an object with a data property, adjust accordingly.
-          setUnreadCount(data.length);
-        }
-      } catch (err) {
-        console.error("Error fetching unread notifications:", err);
-      }
-    };
-    fetchUnreadCount();
-  }, [isProvider, user._id]);
+    if (isProvider && user?._id) {
+      refreshNotifications(); // Initial fetch when component mounts
+    }
+  }, [isProvider, user?._id, refreshNotifications]);
 
-  const handleIconClick = async () => {
-    // Clear the badge
-    setUnreadCount(0);
-    // Navigate to the notifications page
+  const handleIconClick = () => {
     navigate("/notifications");
   };
 
   return (
-    <>
-      {isProvider && (
-        <div className="relative">
-          <BellIcon
-            className="text-gray-600 hover:text-black cursor-pointer"
-            onClick={handleIconClick}
-          />
-          {unreadCount > 0 && (
-            <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </div>
-      )}
-    </>
+    isProvider && (
+      <div className="relative cursor-pointer" onClick={handleIconClick}>
+        <BellIcon className="text-gray-600 hover:text-black" />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">
+            {unreadCount > 9 ? "9+" : unreadCount}
+          </span>
+        )}
+      </div>
+    )
   );
 };
 

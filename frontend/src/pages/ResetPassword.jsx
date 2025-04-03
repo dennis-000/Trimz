@@ -3,7 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { BASE_URL } from '../config';
 import { toast } from 'react-toastify';
 import HashLoader from 'react-spinners/BeatLoader';
-import logo from '../assets/images/ecutz.png';
+import logo from '../assets/images/trimz.png';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');

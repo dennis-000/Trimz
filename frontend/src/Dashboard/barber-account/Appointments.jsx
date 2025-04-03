@@ -80,10 +80,10 @@ const Appointments = ({ appointments, refreshAppointments }) => {
               {appointments.map((item) => (
                 <tr key={item._id} className="bg-white border-b hover:bg-gray-50 relative">
                   <th scope="row" className="flex items-center px-6 py-4 text-gray-900">
-                    <img
-                      src={item.customer.profilePicture.url}
-                      className="w-10 h-10 rounded-full object-cover"
-                      alt="Client"
+                  <img
+                    src={item.customer.profilePicture?.url || "/default-profile.png"}
+                    className="w-10 h-10 rounded-full object-cover"
+                    alt="Client"
                     />
                     <div className="pl-3">
                       <div className="text-base font-semibold">{item.customer.name}</div>
@@ -167,9 +167,9 @@ const Appointments = ({ appointments, refreshAppointments }) => {
           {appointments.map((item) => (
             <div key={item._id} className="bg-white p-4 rounded-lg shadow space-y-3 relative">
               <div className="flex items-center space-x-3">
-                <img
-                  src={item.customer.profilePicture.url}
-                  className="w-12 h-12 rounded-full object-cover"
+              <img
+                  src={item.customer.profilePicture?.url || "/default-profile.png"}
+                  className="w-10 h-10 rounded-full object-cover"
                   alt="Client"
                 />
                 <div>
