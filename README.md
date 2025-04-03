@@ -1,22 +1,22 @@
 ## Zeal Craft Innovation Developers Team
-# Ecutz
+# Trimz
 
-## Ecutz Website
-Ecutz is a barbering service booking app designed for students at the University of Ghana, Legon. This app allows students to book individual barbers for on-demand, personalized barbering services. Barbers are registered on the platform, allowing students to browse profiles and book their preferred barber based on availability.
+## Trimz Website
+Trimz is a barbering service booking app designed for students at the University of Ghana, Legon. This app allows students to book individual barbers for on-demand, personalized barbering services. Barbers are registered on the platform, allowing students to browse profiles and book their preferred barber based on availability.
 
 ## Features
-- **User Registration & Login**: Students can create an account, log in, and manage their profile.
+- **Customer Registration & Login**: Students can create an account, log in, and manage their profile.
 - **Barber Listing**: Registered barbers are displayed, and students can book appointments with specific barbers.
 - **Appointment Scheduling**: Students can easily schedule barbering appointments.
 - **Responsive Design**: The mobile-friendly app works seamlessly across different devices.
-- ##AND OTHERS
+- **AND OTHERS**
 
 ## Tech Stack
 This project is built using the MERN stack:
 
-- **MongoDB**: NoSQL database for storing user, barber, and appointment data.
+- **MongoDB**: NoSQL database for storing customer, barber, and appointment data.
 - **Express.js**: Backend framework for handling API requests and routing.
-- **React**: The frontend framework is used to build the user interface.
+- **React**: The frontend framework is used to build the customer interface.
 - **Node.js**: JavaScript runtime environment for the server-side application.
 
 ## Project Structure
@@ -34,8 +34,8 @@ This project is built using the MERN stack:
 
 /Backend
     /server          # Backend Node.js application
-    /models          # MongoDB models (User, Barber, Appointment)
-    /routes          # API routes (user, barber, appointment routes)
+    /models          # MongoDB models (Customer, Barber, Appointment)
+    /routes          # API routes (customer, barber, appointment routes)
     /controllers     # Logic for handling requests to the routes
     /config          # Database connection and environment configuration
     /middlewares     # Middleware functions (authentication, error handling)
@@ -50,8 +50,8 @@ Ensure you have the following installed:
 ### Backend Setup (Server)
 1. Clone the repository:
     ```bash
-    git clone https://github.com/dennis-000/Ecutz.git
-    cd Ecutz/server
+    git clone https://github.com/dennis-000/Trimz.git
+    cd Trimz/server
     ```
 2. Install backend dependencies:
     ```bash
@@ -81,21 +81,21 @@ Ensure you have the following installed:
     ```
 3. Run the frontend development server:
     ```bash
-    npm start
+    npm run dev
     ```
     The frontend server will run on [http://localhost:3000](http://localhost:3000).
 
 ## Usage
 Once both the frontend and backend are running:
-- Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to access the Ecutz app.
-- You can register as a user or a barber.
+- Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to access the Trimz app.
+- You can register as a customer or a barber.
 - Barbers can manage their appointments, and students can book barbering services based on the barbers' availability.
 
 ## API Endpoints
 
-### User Routes
-- **POST** `/api/users/register`: Register a new user.
-- **POST** `/api/users/login`: Log in as a user.
+### Customer Routes
+- **POST** `/api/customers/register`: Register a new customer.
+- **POST** `/api/customers/login`: Log in as a customer.
 
 ### Barber Routes
 - **GET** `/api/barbers`: Retrieve a list of all registered barbers.
@@ -103,7 +103,7 @@ Once both the frontend and backend are running:
 
 ### Appointment Routes
 - **POST** `/api/appointments`: Book an appointment with a barber.
-- **GET** `/api/appointments/user/:userId`: Retrieve appointments for a specific user.
+- **GET** `/api/appointments/customer/:customerId`: Retrieve appointments for a specific customer.
 
 ## Production Build
 To build the app for production:
