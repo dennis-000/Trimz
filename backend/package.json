@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon run backend/server.js"
+    "dev": "nodemon server.js"
   },
   "type": "module",
   "keywords": [],
@@ -11,13 +11,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@emailjs/browser": "^4.4.1",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
+    "axios": "^1.7.7",
     "express": "^4.21.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",

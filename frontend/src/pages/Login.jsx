@@ -23,7 +23,6 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Form submission handler
   const submitHandler = async (event) => {
     event.preventDefault(); // Prevent default form submission
 
@@ -31,7 +30,7 @@ const Login = () => {
 
     try {
       // Send login request to backend
-      const res = await fetch(`${BASE_URL}/login`, {
+      const res = await fetch(`${BASE_URL}login`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json',
@@ -44,20 +43,17 @@ const Login = () => {
       // Log response for debugging
       console.log(result);
 
-      // Handle unsuccessful login
       if (!res.ok) {
-        throw new Error(result.message);
+        throw new Error(result.message || 'Login failed');
       }
 
-      const userRole = result.data.role;
-
-      // After successful login
+      // Save auth state
       dispatch({
         type: 'LOGIN_SUCCESS',
         payload: {
           user: result.data,
           token: result.token,
-          role: userRole,
+          role: result.data.role,
         },
       });
 
@@ -65,10 +61,10 @@ const Login = () => {
       console.log("User Role:", result.data.role);
 
       // Dynamically navigate based on role
-      if (userRole === 'user') {
-        navigate('/users/profile/me', {replace: true}); // Redirect to user dashboard
-      } else if (userRole === 'barber') {
-        navigate('/barber/profile/me', {replace: true}); // Redirect to barber dashboard
+      if (result.data.role === 'customer') {
+        navigate('/users/profile/me', { replace: true }); // Redirect to customer dashboard
+      } else if (result.data.role === 'provider') {
+        navigate('/barbers/profile/me', { replace: true }); // Redirect to provider dashboard
       } else {
         navigate('/home', {replace: true}); // Fallback navigation
       }
@@ -77,10 +73,10 @@ const Login = () => {
       setLoading(false); // Stop loading state
     } catch (err) {
       // Handle login errors
-      toast.success(err.message); // Show error message
+      toast.error(err.message); // Show error message
       setLoading(false); // Stop loading state
     }
-    
+
   };
   
   //Add forgotPassword handler

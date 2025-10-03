@@ -28,13 +28,12 @@ const app = express()
 const PORT = process.env.PORT || 5000
 
 const corsOptions = {
-    origin: 'http://localhost:5173', // Frontend URL
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Include PATCH
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
-    // allowedHeaders: ['Content-Type', 'Authorization'], // Allow necessary headers
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 };
-app.use('*', cors(corsOptions))
+app.use(cors(corsOptions))
 
 app.use(express.json()) //allows us to accept json data in the req.body
 app.use(cookieParser());

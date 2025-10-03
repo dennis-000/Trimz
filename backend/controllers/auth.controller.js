@@ -36,7 +36,14 @@ export const login = async (req, res) => {
         }
 
         const token = createToken(user._id)
-        res.cookie('jwt', token, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000 })
+        // Use secure cookies only in production; SameSite 'none' requires secure
+        const isProd = process.env.NODE_ENV === 'production'
+        res.cookie('jwt', token, { 
+            httpOnly: true, 
+            secure: isProd, 
+            sameSite: isProd ? 'none' : 'lax',
+            maxAge: 24 * 60 * 60 * 1000 
+        })
         console.log(`User ${ email } logged in successfully`);
         res.status(200).json({ success: true, message: 'Login successfully', token , data: user })
     } catch (error) {
@@ -132,7 +139,7 @@ export const forgotPasswordController = async (req, res) => {
               <p>For your security, this link will expire in <em><b>15 minutes.</b></em></p>
             </div>
             <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} Ecutz. All rights reserved.</p>
+              <p>&copy; ${new Date().getFullYear()} Trimz. All rights reserved.</p>
             </div>
           </div>
         </body>

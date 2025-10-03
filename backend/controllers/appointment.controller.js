@@ -3,6 +3,8 @@ import Appointment from "../models/appointment.model.js";
 import { appointmentIsActive } from "../server.js";
 import { createAuditLog } from "./audit.controller.js";
 import ProviderService from '../models/providerService.model.js';
+import User from "../models/user.model.js";
+import { sendAppointmentNotifications } from "../services/notification.service.js";
 
 
 export const getAllAppointments = async (req, res) => {
@@ -73,6 +75,19 @@ export const createAppointment = async (req, res) => {
 
         // Audit log
         await createAuditLog(req.user ? req.user.id : "system", newAppointment._id, "Appointment", "create", "Appointment created");
+
+        // Send notifications (email & SMS) to customer and provider
+        try {
+            const customer = await User.findById(request.customer);
+            const provider = await User.findById(request.provider);
+            await sendAppointmentNotifications({
+                appointment: savedAppointment,
+                customer,
+                provider,
+            });
+        } catch (notifyErr) {
+            console.log("Notification error:", notifyErr.message);
+        }
 
         res.status(201).json({ success: true, message: "Appointment created successfully", data: savedAppointment });
 
