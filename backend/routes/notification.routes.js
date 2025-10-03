@@ -5,43 +5,37 @@ import { requireAuth } from '../middlewares/auth.middleware.js';
 const notificationRouter = Router();
 
 // Get unread notifications for provider - protected route
-// notificationRouter.get('/:providerId', requireAuth, async(req, res) => {
-//     try {
-//         // Add validation to ensure the user is requesting their own notifications
-//         if (req.user._id.toString() !== req.params.providerId) {
-//             return res.status(403).json({ 
-//                 success: false, 
-//                 message: 'Unauthorized access to notifications' 
-//             });
-//         }
-//         try {
-//         const notifications = await Appointment.find({
-//                 provider: req.params.providerId,
-//                 notificationStatus: 'unread'
-//             })
-//             .populate('customer', 'name')
-//             .populate('service', 'name');
-//         }catch(err) {
-//             console.error('Error fetching notifications:', err);
-//             res.status(500).json({ 
-//                 success: false, 
-//                 error: err.message
-//             });
-//         }
-            
-//         res.status(200).json({
-//             success: true, 
-//             data: notifications, 
-//             message: 'Unread notifications fetched successfully'
-//         });
-//     } catch (err) {
-//         console.error('Error fetching notifications:', err);
-//         res.status(500).json({ 
-//             success: false, 
-//             error: err.message 
-//         });
-//     }
-// });
+notificationRouter.get('/:providerId', requireAuth, async (req, res) => {
+    try {
+        // Ensure the provider is requesting their own notifications
+        if ((req.user?.id || req.user?._id)?.toString() !== req.params.providerId) {
+            return res.status(403).json({
+                success: false,
+                message: 'Unauthorized access to notifications'
+            });
+        }
+
+        const notifications = await Appointment.find({
+            provider: req.params.providerId,
+            notificationStatus: 'unread'
+        })
+            .populate('customer', 'name')
+            .populate('service', 'name')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            data: notifications,
+            message: 'Unread notifications fetched successfully'
+        });
+    } catch (err) {
+        console.error('Error fetching notifications:', err);
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
 
 // Mark notification as read - protected route
 notificationRouter.patch('/:id', requireAuth, async(req, res) => {
@@ -57,7 +51,7 @@ notificationRouter.patch('/:id', requireAuth, async(req, res) => {
         }
         
         // Ensure the provider is updating their own notification
-        if (notification.provider.toString() !== req.user._id.toString()) {
+        if (notification.provider.toString() !== (req.user?.id || req.user?._id)?.toString()) {
             return res.status(403).json({
                 success: false,
                 message: 'Unauthorized to update this notification'

@@ -16,7 +16,13 @@ loginRouter.get('/auth/google', passport.authenticate('google', { scope: ['profi
 loginRouter.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: 'http://localhost:5173/register', session: false }), (req, res) => {
   const { token } = req.user;
   const { role } = req.user.user;
-  res.cookie('jwt', token, { httpOnly: true });
+  const isProd = process.env.NODE_ENV === 'production';
+  res.cookie('jwt', token, { 
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
+    maxAge: 24 * 60 * 60 * 1000
+  });
   console.log(req.user);
   // res.status(200).json({ success: true, message: 'Login successful', token, data: req.user });
   res.redirect(`http://localhost:5173/${role == 'customer' ? 'users/profile/me' : 'barbers/profile/me'}?token=${token}&method=googleoauth`); // Redirect to dashboard after login
